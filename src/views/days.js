@@ -106,7 +106,8 @@ function DaysView( { schedulerSettings, schedulerState } ) {
                 'top: 0',
                 'left: 0',
                 'right: 0',
-                'bottom: 0'
+                'bottom: 0',
+                'z-index: 1',
             ].join(';');
             
             contents.push(`
@@ -121,7 +122,8 @@ function DaysView( { schedulerSettings, schedulerState } ) {
                 'left: 0',
                 'right: 0',
                 'bottom: 0',
-                'height: 10px'
+                'height: 10px',
+                'z-index: 2',
             ].join(';');
             
             contents.push(`
@@ -132,18 +134,20 @@ function DaysView( { schedulerSettings, schedulerState } ) {
         
         if (schedulerSettings.onEventClick) {
             contents.push(`
-                <a href="#" style="color: ${ event.color }">
-                    ${ format_date('hh:ii', event.start) }
-                    -
-                    ${ format_date('hh:ii', event.end) }
-                </a>
-                <br/>
-                <a href="#" style="color: ${ event.color }">
-                    ${ escape_html(event.label) }
-                </a>
+                <span style="position: relative; z-index: 3;">
+                    <a href="#" style="color: ${ event.color }">
+                        ${ format_date('hh:ii', event.start) }
+                        -
+                        ${ format_date('hh:ii', event.end) }
+                    </a>
+                    <br/>
+                    <a href="#" style="color: ${ event.color }">
+                        ${ escape_html(event.label) }
+                    </a>
+                </span>
             `);
         } else {
-            contents.push(`
+            contents.push(`                
                 <span style="color: ${ event.color }">
                     ${ format_date('hh:ii', event.start) }
                     -

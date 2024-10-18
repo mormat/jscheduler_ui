@@ -53,7 +53,8 @@ function TimelineView( { schedulerSettings } ) {
                 'top: 0',
                 'left: 0',
                 'right: 0',
-                'bottom: 0'
+                'bottom: 0',
+                'z-index: 1'
             ].join(';');
             
             contents.push(`
@@ -64,9 +65,11 @@ function TimelineView( { schedulerSettings } ) {
         
         if (schedulerSettings.onEventClick) {
             contents.push(`
-                <a href="#" style="color: ${ event.color }">
-                    ${ escape_html(event.label) }
-                </a>
+                <span style="position: relative; z-index: 2">
+                    <a href="#" style="color: ${ event.color }">
+                        ${ escape_html(event.label) }
+                    </a>
+                </span>
             `);
         } else {
             

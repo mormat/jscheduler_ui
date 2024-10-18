@@ -45,5 +45,31 @@ Feature: demo page
         Then I should see "August 2024"
         When I click on "<"
         Then I should see "July 2024"
-        
-        
+
+    # All the 'click', 'resize' and 'drop' listeners should still work if they are put together
+    Scenario: Event should be clickable
+        When I open the "index" page
+        And I click on the "interview" event
+        Then I should see "clicked on 'interview'"
+        When I click on the "training course" event
+        Then I should see "clicked on 'training course'"
+        When I click on "month"
+        And I click on the "interview" event
+        Then I should see "clicked on 'interview'"
+
+    @drag_and_drop
+    Scenario: Event should be resizable
+        When I open the "index" page
+        And I resize the "interview" event to "14:00"
+        Then the "interview" event should be displayed at "Tue, Aug 13" from "10:00" to "14:00"
+
+    @drag_and_drop @todo
+    Scenario: Event should be draggable
+        When I open the "index" page
+        And I drag the "interview" event to "Mon, Aug 12" at "10:00"
+        Then the "interview" event should be displayed at "Mon, Aug 12" from "10:00" to "12:00"
+        When I drag the "training course" event to "Wed, Aug 14"
+        Then the "training course" event should be displayed from "Wed, Aug 14" to "Fri, Aug 16"
+        When I click on "month"
+        And I drag the "training course" event to "22"
+        Then the "training course" event should be displayed from "22" to "24"

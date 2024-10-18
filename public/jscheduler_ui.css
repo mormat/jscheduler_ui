@@ -66,3 +66,11 @@
 .jscheduler_ui-resize-handler {
     cursor: ns-resize;
 }
+
+.jscheduler_ui-event a {
+    text-decoration: none;
+}
+
+.jscheduler_ui-event:hover a {
+    text-decoration: underline;
+}
