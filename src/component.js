@@ -26,7 +26,7 @@ function Scheduler( element, eventsOrSettings ) {
         onEventDrop: () => {},
         onEventResize: () => {},
         dateLocale:'en',
-        styles: {'min-height': '480px'},
+        styles: {'min-height': '480px', height: '100%'},
     }
     
     const schedulerSettings = {...defaultSettings, ...eventsOrSettings};

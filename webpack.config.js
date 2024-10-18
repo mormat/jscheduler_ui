@@ -6,8 +6,8 @@ const fs = require('fs');
 module.exports = function (env, argv) {
     return {
         entry: {
-            'jscheduler_ui': ['./src/index.js', ],
-            'examples':   ['./src/examples.js']
+            'jscheduler_ui': ['./src/jscheduler_ui.js', ],
+            'examples':      ['./src/examples.js']
         },
         devServer: {
             static: { 

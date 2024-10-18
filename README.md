@@ -1,6 +1,6 @@
 # jscheduler_ui
 
-An simple **scheduler component** written in javascript. 
+A javascript scheduler ui component
 
 week view                 | month view
 :-------------------------:|:-------------------------:
