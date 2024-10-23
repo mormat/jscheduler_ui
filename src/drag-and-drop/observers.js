@@ -1,7 +1,7 @@
 
 const { DateRange, format_date } = require('@src/utils/date');
 
-function getColumnDragAndDropObserver( { views, parentElement } ) {
+function getColumnDragAndDropObserver( { parentElement } ) {
     
     let clone = null;
     let initialDragArea = null;
@@ -44,9 +44,7 @@ function getColumnDragAndDropObserver( { views, parentElement } ) {
         clone.style['height']   = (rect.height * heightPercent) + 'px';
         clone.style['top']      = (rect.y + rect.height * topPercent) + 'px';
 
-        clone.innerHTML = views['days'].renderInnerEvent({
-            event: currentValue
-        });
+        clone.querySelector('.jscheduler_ui-event-header').innerHTML = currentValue.header;
 
         parentElement.style['display'] = 'none';
     }
@@ -109,13 +107,13 @@ function getTimelineDragAndDropObserver( { parentElement } ) {
 }
 
 // @todo rename parentElement to draggableElement
-function createDragAndDropObserver({ droppable, views, parentElement }) {
+function createDragAndDropObserver({ droppable, parentElement }) {
     
     switch (droppable.type) {
 
         case 'days': 
         
-            return getColumnDragAndDropObserver( { views, parentElement } );
+            return getColumnDragAndDropObserver( { parentElement } );
             
         case 'timeline':
             

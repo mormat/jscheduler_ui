@@ -1,5 +1,5 @@
 
-const { date_add_hour } = require('@src/utils/date.js');
+const { date_add_hour, format_date } = require('@src/utils/date.js');
 
 let lastId = 0;
 
@@ -68,6 +68,10 @@ class SchedulerEvent {
             return 'bg-' + this.bgColor;
         }
         return '';
+    }
+    
+    get header() {
+        return [this.start, this.end].map(v => format_date('hh:ii', v)).join(' - ');
     }
     
     // clone the current instance with a new Date Range

@@ -34,8 +34,8 @@ function Scheduler( element, eventsOrSettings ) {
     const schedulerState = new SchedulerState( schedulerSettings )
     
     const views = {
-        'days' : new DaysView( { schedulerSettings, schedulerState } ),
-        'month': new MonthView( { schedulerSettings, schedulerState } ),
+        'days' :     new DaysView( { schedulerSettings, schedulerState } ),
+        'month':     new MonthView( { schedulerSettings, schedulerState } ),
         'timeline' : new TimelineView( { schedulerSettings } )
     }
      
@@ -48,34 +48,15 @@ function Scheduler( element, eventsOrSettings ) {
         
         if (schedulerSettings.viewMode === 'day') {
             
-            schedulerState.dateRange = new DateRange(
-                currentDay  + ' 00:00:00',
-                currentDay + ' 23:59:59.999',
-            );
-            
             html = views['days'];
         }
         
         if (schedulerSettings.viewMode === 'week') {
-            const days = [ currentDay.getFirstDayOfWeek() ];
-            for (let n = 1; n < 7; n++) {
-                days.push ( days[0].addDays(n) )
-            }
             
-            schedulerState.dateRange = new DateRange(
-                currentDay.getFirstDayOfWeek() + ' 00:00:00',
-                currentDay.getLastDayOfWeek()  + ' 23:59:59.999',
-            );
-
             html = views['days'];
         }
         
         if (schedulerSettings.viewMode === 'month') {
-            
-            schedulerState.dateRange = new DateRange(
-                currentDay.getFirstDayOfMonth() + ' 00:00:00',
-                currentDay.getLastDayOfMonth()  + ' 23:59:59.999',
-            );
             
             html = views['month'];
         }
@@ -148,7 +129,7 @@ function Scheduler( element, eventsOrSettings ) {
             );
 
             const observer = createDragAndDropObserver(
-                { droppable, views, parentElement }
+                { droppable, parentElement }
             );
 
             draggable.startDragAndDrop({ mouseEvent: e, observer, droppable });
@@ -180,7 +161,7 @@ function Scheduler( element, eventsOrSettings ) {
             );
 
             const observer = createDragAndDropObserver(
-                { droppable, views, parentElement }
+                { droppable, parentElement }
             );
 
             draggable.startDragAndDrop({ mouseEvent: e, observer, droppable });
@@ -256,7 +237,11 @@ function Scheduler( element, eventsOrSettings ) {
     
     this.getDateRange = function() {
         
-        return schedulerState.dateRange;
+        if (schedulerSettings.viewMode === 'month') {
+            return views['month'].getDateRange();
+        } else {
+            return views['days'].getDateRange();
+        }
         
     }
     
@@ -272,12 +257,8 @@ function Scheduler( element, eventsOrSettings ) {
             
     this.getLabel = ( ) => {
         
-        if (!schedulerState.dateRange) {
-            return '';
-        }
-        
         const { viewMode } = schedulerSettings;
-        const { start, end } = schedulerState.dateRange;
+        const { start, end } = this.getDateRange();
         
         switch( viewMode ) {
             case 'day': 

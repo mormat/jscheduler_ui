@@ -135,10 +135,8 @@ function DaysView( { schedulerSettings, schedulerState } ) {
         if (schedulerSettings.onEventClick) {
             contents.push(`
                 <span style="position: relative; z-index: 3;">
-                    <a href="#" style="color: ${ event.color }">
-                        ${ format_date('hh:ii', event.start) }
-                        -
-                        ${ format_date('hh:ii', event.end) }
+                    <a href="#" style="color: ${ event.color }" class="jscheduler_ui-event-header">
+                        ${ event.header }
                     </a>
                     <br/>
                     <a href="#" style="color: ${ event.color }">
@@ -148,10 +146,8 @@ function DaysView( { schedulerSettings, schedulerState } ) {
             `);
         } else {
             contents.push(`                
-                <span style="color: ${ event.color }">
-                    ${ format_date('hh:ii', event.start) }
-                    -
-                    ${ format_date('hh:ii', event.end) }
+                <span style="color: ${ event.color }" class="jscheduler_ui-event-header">
+                    ${ event.header }
                 </span>
                 <br/>
                 <span style="color: ${ event.color }">
@@ -199,9 +195,30 @@ function DaysView( { schedulerSettings, schedulerState } ) {
         
     }
     
+    this.getDateRange = () => {
+        
+        const currentDay = new Day(schedulerState.currentDate);
+        if (schedulerSettings.viewMode === 'day') {
+            
+            return new DateRange(
+                currentDay  + ' 00:00:00',
+                currentDay + ' 23:59:59.999',
+            )
+            
+        } else {
+            
+            return new DateRange(
+                currentDay.getFirstDayOfWeek() + ' 00:00:00',
+                currentDay.getLastDayOfWeek()  + ' 23:59:59.999',
+            );
+            
+        }
+        
+    }
+    
     this.getEventsDateRange = () => {
         
-        return schedulerState.dateRange;
+        return this.getDateRange();
         
     }
     
@@ -210,8 +227,10 @@ function DaysView( { schedulerSettings, schedulerState } ) {
         const headerId = 'jscheduler_ui-' + getUniqueId();
         const bodyId   = 'jscheduler_ui-' + getUniqueId();
 
-        const lastDay = new Day( schedulerState.dateRange.end );
-        const days = [ new Day( schedulerState.dateRange.start ) ];
+        const dateRange = this.getDateRange();
+
+        const lastDay = new Day( dateRange.end );
+        const days = [ new Day( dateRange.start ) ];
         while (days.at(-1) < lastDay) {
             days.push( days.at(-1).addDays(1) );
         }

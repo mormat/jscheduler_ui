@@ -31,6 +31,17 @@ function MonthView( { schedulerSettings, schedulerState } ) {
                 
     }
     
+    this.getDateRange = () => {
+        
+        const currentDay  = new Day(schedulerState.currentDate);
+        
+        return new DateRange(
+            currentDay.getFirstDayOfMonth() + ' 00:00:00',
+            currentDay.getLastDayOfMonth()  + ' 23:59:59.999',
+        );
+        
+    }
+    
     this.getEventsDateRange = () => {
         
         const currentDay  = new Day(schedulerState.currentDate);
