@@ -6,7 +6,7 @@ var scheduler = jscheduler_ui.render(element, {
     currentDate: '2024-09-17'
 });
 
-var newEvent = scheduler.createEvent();
-
-// When validating the form, update the event like this
-newEvent.update({ label: 'meeting', start: '2024-09-17 10:00'});
+scheduler.pushEvent({ 
+    label: 'meeting', 
+    start: '2024-09-17 10:00'
+});

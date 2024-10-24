@@ -1,13 +1,13 @@
 // This example show how can an event can be updated from a form when clicking on it
 var element = document.getElementById('scheduler');
 
-jscheduler_ui.render(element, {
+var scheduler = jscheduler_ui.render(element, {
     viewMode: 'week',
     events: [{ 
         label: 'meeting', 
         start: '2024-09-17 10:00', 
         end:   '2024-09-17 12:00',
-        custom_id: '1234',
+        custom_id: '1234'
     }],
     eventsClickable: true,
     onEventClick: function(editedEvent) {
@@ -21,7 +21,8 @@ jscheduler_ui.render(element, {
             'custom_id' + values.custom_id;
     
         // When validating the form, update the event like this
-        editedEvent.update({ 
+        scheduler.replaceEvent({ 
+            id:     editedEvent.id,
             label: 'interview', 
             start: '2024-09-17 14:00',
             end:   '2024-09-17 16:00',

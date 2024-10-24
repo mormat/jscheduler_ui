@@ -1,7 +1,7 @@
 // This example show how can an event can be updated from a form when clicking on it
 var element = document.getElementById('scheduler');
 
-jscheduler_ui.render(element, {
+var scheduler = jscheduler_ui.render(element, {
     viewMode: 'week',
     events: [{ 
         label: 'meeting', 
@@ -11,6 +11,6 @@ jscheduler_ui.render(element, {
     }],
     eventsClickable: true,
     onEventClick: function(clickedEvent) {
-        clickedEvent.delete();
+        scheduler.removeEvent(clickedEvent);
     }
 });

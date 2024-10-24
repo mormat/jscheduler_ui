@@ -1,0 +1,75 @@
+<table id="{{headerId}}"
+    class="jscheduler_ui-day_view-header jscheduler_ui-daterange"
+    style="width: 100%; 
+           table-layout: fixed; 
+           flex: 0 1 auto;"
+    data-jscheduler_ui-droppable-type="timeline" 
+>    
+    {{# has_header }}
+    <thead>
+        <tr>
+            <td style="width: {{ hours[0].style.width }}">
+            </td>
+            {{# days }}
+            <th style="width: {{ style.width }};
+                       text-align: center" 
+                class="jscheduler_ui-daterange-header jscheduler_ui-day-header"
+            >
+                {{ label }}
+            </th>
+            {{/ days }}
+        </tr>
+    </thead>
+    {{/ has_header }}
+    
+    {{# events_row }}
+    <tbody>
+        <tr>
+            <td style="width: {{ hours[0].style.width }}"></td>
+            <td class="jscheduler_ui-daterange-row" colspan="{{ colspan }}">
+                {{> events_row }}
+            </td>
+        </tr>
+    </tbody>
+    {{/ events_row }}
+
+</table>
+
+<table  id="{{bodyId}}"
+        class="jscheduler_ui-day_view-body"
+        style="width: 100%; 
+               table-layout: fixed; 
+               flex: 1 1 auto;"
+        data-jscheduler_ui-droppable-type="days"
+>
+    <tbody style="position: relative">
+        {{# hours }}
+        <tr>
+            
+            <th style="width: {{ style.width }}"
+                data-hour>
+                {{ label }}
+                
+                {{ #grid }} {{> grid }} {{ /grid }}
+            </div>
+                
+            </th>
+            
+            {{# _days }}
+            <td style   = "width: {{ style.width }}%;
+                           position: relative" 
+                rowspan = "{{ rowspan }}"
+                data-jscheduler_ui-day = "{{ data.day }}"
+                data-day = "{{ data.day }}"
+                data-minhour = "{{ data.minhour }}"
+                data-maxhour = "{{ data.maxhour }}"
+            >
+                {{# events_column }} {{> events_column }} {{/ events_column }}
+            </td>
+            {{/ _days }}
+            
+        </tr>
+        {{/ hours }}
+    </tbody>    
+</table>
+

@@ -44,7 +44,7 @@ class Day {
             day:        this.date.getDate()
         }
     }
-    
+        
     getFirstDayOfWeek()
     {
         const d = new Date(this.date);
@@ -99,6 +99,14 @@ class Day {
     
     getDate() {
         return this.date;
+    }
+    
+    get numday() {
+        return this.date.getDate();
+    }
+    
+    get month() {
+        return this.date.getMonth();
     }
     
     toString()

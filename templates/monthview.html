@@ -1,0 +1,55 @@
+
+
+<table  class="jscheduler_ui-month_view"
+        style="width: 100%; 
+               table-layout: fixed; 
+               flex: 1 1 auto;"
+>
+    
+    <thead>
+        <tr>
+            {{ #weekdays }}
+            <th style="width: 14.28%">
+                {{ . }}
+            </th>
+            {{ /weekdays }}
+        </tr>
+    </thead>
+    <tbody id="{{bodyId}}"
+        data-jscheduler_ui-droppable-type="timeline" 
+    >
+        {{ #weeks }}
+        <tr>
+            <td colspan="7" 
+                style="position: relative; height: {{ style.height }}"
+                class="jscheduler_ui-daterange"
+            >
+
+                {{ #grid }} {{> grid }} {{ /grid }}
+                
+                {{ #days }}
+                <span style="width: {{ style.width }};
+                             left:  {{ style.left }};
+                             top: 0;
+                             position: absolute;
+                             text-align: right;
+                            " 
+                      class="jscheduler_ui-month_view-numday 
+                             jscheduler_ui-month_view-numday-{{ active }}
+                             jscheduler_ui-daterange-header
+                            "  
+                >{{ numday }}</span>
+                {{ /days }}
+                
+                
+                {{ #events_row }}
+                <div class="jscheduler_ui-daterange-row" >
+                    {{> events_row }}
+                </div>
+                {{ /events_row }}
+                
+            </td>
+        </tr>
+        {{ /weeks }}
+    </tbody>
+</table>

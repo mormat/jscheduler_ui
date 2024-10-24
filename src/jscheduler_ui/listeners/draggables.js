@@ -79,7 +79,9 @@ class TimelineDraggable extends AbstractDraggable {
         );
         const end = start.getTime() + this.#initialValue.length;
         
-        this.#currentValue = this.#currentValue.cloneWith( { start, end } );
+        this.#currentValue = this.#currentValue.cloneWith( 
+            { start, end },
+        );
         
     }
 
@@ -87,8 +89,7 @@ class TimelineDraggable extends AbstractDraggable {
         
         const { start, end } = this.#currentValue;
         const valuesBefore = this.#initialValue.values;
-        this.#initialValue.update({ ...valuesBefore, start, end });
-        this.#onChange(this.#initialValue, valuesBefore);
+        this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
         
     }
 
@@ -169,8 +170,7 @@ class MoveEventDraggable extends AbstractDraggable {
         
         const { start, end } = this.#currentValue;
         const valuesBefore = this.#initialValue.values;
-        this.#initialValue.update({ ...valuesBefore, start, end });
-        this.#onChange(this.#initialValue, valuesBefore);
+        this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
         
     }
 
@@ -254,8 +254,7 @@ class ResizeEventDraggable extends AbstractDraggable {
         
         const { start, end } = this.#currentValue;
         const valuesBefore = this.#initialValue.values;
-        this.#initialValue.update({ ...valuesBefore, start, end });
-        this.#onChange(this.#initialValue, valuesBefore);
+        this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
         
     }
 

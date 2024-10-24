@@ -69,6 +69,7 @@
 
 .jscheduler_ui-event a {
     text-decoration: none;
+    color: inherit;
 }
 
 .jscheduler_ui-event:hover a {

@@ -1,0 +1,66 @@
+
+    {{# for_each_events }}
+    <div class="jscheduler_ui-event jscheduler_ui-event-day {{ className }}"
+         style="position: absolute;
+                top:    {{ style.top }};
+                bottom: {{ style.bottom }};
+                left:   {{ style.left }};
+                width:  {{ style.width }};
+                background-color: {{ style.backgroundColor }}
+                "
+         data-event-id="{{event.id}}"
+         data-jscheduler_ui-droppable-target="{{eventDroppableTarget}}"
+    >
+
+        {{# if_draggable }}
+        <div class="jscheduler_ui-draggable" 
+             style="position: absolute; 
+                    top: 0; 
+                    left: 0; 
+                    right: 0; 
+                    bottom: 0; 
+                    z-index: 1" 
+        >    
+        </div>
+        {{/ if_draggable }}
+
+        {{# if_resizeable }}
+        <div class="jscheduler_ui-resize-handler" 
+             style="position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: 10px;
+                    z-index: 2" 
+        >    
+        </div>
+        {{/ if_resizeable }}
+
+        {{# if_clickable }}
+        <span style="position: relative;
+                     color: {{ event.color }};
+                     z-index: 3;"
+        >
+            <a class="jscheduler_ui-event-header" href="#">
+                {{ event.header }}
+            </a>
+            <br/>
+            <a href="#">
+                {{ event.label }}
+            </a>
+        </span>
+        {{/ if_clickable }}
+
+        {{^ if_clickable }}
+        <span style="color: {{ event.color }}">
+            <span class="jscheduler_ui-event-header">
+                {{ event.header }}
+            </span>
+            <br/>
+            {{ event.label }}
+        </span>
+        {{/ if_clickable }}
+
+    </div>
+    {{/ for_each_events }}
+                

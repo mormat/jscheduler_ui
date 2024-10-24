@@ -13,6 +13,7 @@ module.exports = function (env, argv) {
             static: { 
                 directory: path.join(__dirname, 'public'),
             }
+            // , watchFiles: ['./templates/**/*.html'] // not working ?
         },
         output: {
             filename: '[name].js',
@@ -37,8 +38,18 @@ module.exports = function (env, argv) {
                 ]
             }),
             new webpack.DefinePlugin({
+                '__WEBPACK_MODE__': JSON.stringify( argv.mode ),
                 '__EXAMPLES_SOURCES__': JSON.stringify(get_examples_sources()),
-                '__WEBPACK_MODE__': JSON.stringify( argv.mode )
+                '__MUSTACHE_TEMPLATES__': JSON.stringify({
+                    'daysview':  get_template('daysview.html'),
+                    'monthview': get_template('monthview.html'),
+                    'root':      get_template('root.html'),
+                }),
+                '__MUSTACHE_PARTIALS__': JSON.stringify({
+                    events_row:    get_template('partials/events_row.html'),
+                    events_column: get_template('partials/events_column.html'),
+                    grid:          get_template('partials/grid.html')
+                })
             })
         ]
     }
@@ -53,3 +64,10 @@ function get_examples_sources() {
         ])
     );
 }
+
+function get_template(filename) {
+    const fullpath = path.join(__dirname, 'templates', filename);
+    return fs.readFileSync(fullpath, 'utf8').replace(/\s+/g,' ');
+}
+
+

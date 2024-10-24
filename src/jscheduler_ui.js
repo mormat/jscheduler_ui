@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
  */
 
-const { Scheduler } = require('./component');
+const { Scheduler } = require('./jscheduler_ui/component');
 const { format_date, Day } = require('./utils/date');
 
 function render(element, eventsOrSettings)
@@ -12,11 +12,20 @@ function render(element, eventsOrSettings)
     const settings = Array.isArray(eventsOrSettings) ? 
         { events: eventsOrSettings } : 
         eventsOrSettings;
+
+    const props     = {};
+    const listeners = {};
+    for (const [k,v] of Object.entries(settings)) {
+        if (k.startsWith('on')) {
+            listeners[k] = v;
+        } else {
+            props[k] = v;
+        }
+    }
     
-    const scheduler = new Scheduler(element, settings);
     
-    scheduler.init(element);
-    
+    const scheduler = new Scheduler(element, props, listeners);
+        
     return scheduler;
     
 }

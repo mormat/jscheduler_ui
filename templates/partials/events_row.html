@@ -1,0 +1,54 @@
+<div data-daterange_start = "{{ dateRange.start }}"
+     data-daterange_end   = "{{ dateRange.end   }}"
+     style = "
+        width: 100%;
+        height: {{ style.height }};
+        position: relative
+     "
+>
+    {{# for_each_events }}
+    <div class = "jscheduler_ui-event jscheduler_ui-event-timeline {{ className }}"  
+         style = "
+            position: absolute; 
+            top:     {{ style.top }}; 
+            left:    {{ style.left }}; 
+            right:   {{ style.right }}; 
+            height:  {{ style.height }};
+            color:   {{ style.color }};
+            background-color: {{ style.backgroundColor }}
+         "
+         data-event-id = "{{ event.id }}"
+         data-jscheduler_ui-droppable-target = "{{ eventDroppableTarget }}"
+    >
+
+        {{# if_draggable }}
+            <div class="jscheduler_ui-draggable" 
+                 style="
+                    position: absolute; 
+                    top: 0; 
+                    left: 0; 
+                    right: 0; 
+                    bottom: 0; 
+                    z-index: 1
+                 " 
+            >
+            </div>
+        {{/ if_draggable }}
+
+        {{# if_clickable }}
+        <span style="position: relative; z-index: 2">
+            <a href="#" style="color: {{ event.color }}">
+                {{ event.label }}
+            </a>
+        </span>
+        {{/ if_clickable }}
+        
+        {{^ if_clickable }}
+        <span style="color: {{ event.color }}">
+            {{ event.label }}
+        </span>
+        {{/ if_clickable }}
+
+    </div>
+    {{/ for_each_events }}
+</div>
