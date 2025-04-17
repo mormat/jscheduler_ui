@@ -19,6 +19,8 @@ When(
             `.list-group-item:contains( "${exampleName}" )`
         ].join(' ~ '));
 
+        const actions = this.driver.actions({async: true});
+        await actions.move({origin: element}).perform();
         await element.click();
     }            
 );

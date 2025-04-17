@@ -191,11 +191,80 @@ function groupDateRangedItemsByPosition(dateRangeditems) {
 
 }
 
+function _groupDateRanges(dateRanges) {
+    
+    const groups = [];
+    const ignoredDateRanges = new Set();
+    
+    for (const dateRange of dateRanges) {
+        
+        if (ignoredDateRanges.has(dateRange)) {
+            continue;
+        }
+        
+        const overlappingDateRanges = dateRanges.filter(
+            i => i !== dateRange && dateRange.intersects(i)
+        );
+
+        if (overlappingDateRanges.length) {
+            const otherGroups = _groupDateRanges(overlappingDateRanges);
+            
+            for (const items of otherGroups) {
+                groups.push([dateRange, ...items]);
+            }
+            
+            for (const overlappingDateRange of overlappingDateRanges) {
+                ignoredDateRanges.add(overlappingDateRange);
+            }
+            
+            continue;
+        }
+        
+        groups.push([dateRange]);
+    }
+    
+    return groups;
+    
+}
+
+function _mapGroupedDateRanges(groupedDateRanges) {
+    const results = new Map();
+    
+    const sortedGroups = groupedDateRanges.sort(
+        (a, b) => b.length - a.length
+    );
+    
+    for (const items of sortedGroups) {
+        let length = 1 / items.length;
+        let offset = 0;
+        for (const n in items) {
+            
+            if (results.has(items[n])) {
+                const result = results.get(items[n]);
+                offset = result.offset + result.length;
+                length = (1 - offset) / (items.length - n - 1);
+                continue;
+            }
+            
+            results.set(items[n], { offset, length });
+            offset += length;
+        }
+    }
+    
+    return results;
+}
+
+function getOffsetAndLengthByDateRanges(dateRanges) {
+    return _mapGroupedDateRanges(_groupDateRanges(dateRanges));
+}
 
 module.exports = { 
     format_date,
     DateRange,
     Day,
     date_add_hour,
-    groupDateRangedItemsByPosition
+    groupDateRangedItemsByPosition,
+    getOffsetAndLengthByDateRanges,
+    _groupDateRanges,
+    _mapGroupedDateRanges,
 }

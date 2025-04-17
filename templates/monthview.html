@@ -21,29 +21,40 @@
         {{ #weeks }}
         <tr>
             <td colspan="7" 
-                style="position: relative; height: {{ style.height }}"
+                style="position: relative; 
+                       height: {{ style.height }};
+                       "
                 class="jscheduler_ui-daterange"
             >
 
-                {{ #grid }} {{> grid }} {{ /grid }}
-                
-                {{ #days }}
-                <span style="width: {{ style.width }};
-                             left:  {{ style.left }};
-                             top: 0;
-                             position: absolute;
-                             text-align: right;
-                            " 
-                      class="jscheduler_ui-month_view-numday 
-                             jscheduler_ui-month_view-numday-{{ active }}
-                             jscheduler_ui-daterange-header
-                            "  
-                >{{ numday }}</span>
-                {{ /days }}
-                
+                <div>                    
+                    {{ #grid }} {{> grid }} {{ /grid }}
+
+                    {{ #days }}
+                    <span style="width: {{ style.width }};
+                                 left:  {{ style.left }};
+                                 top: 0;
+                                 position: absolute;
+                                 text-align: right;
+                                " 
+                          class="jscheduler_ui-month_view-numday 
+                                 jscheduler_ui-month_view-numday-{{ active }}
+                                 jscheduler_ui-daterange-header
+                                "  
+                    >{{ numday }}</span>
+                    {{ /days }}
+                </div>
                 
                 {{ #events_row }}
-                <div class="jscheduler_ui-daterange-row" >
+                <div class="jscheduler_ui-daterange-row" style="
+                     position: absolute;
+                     top: 0;
+                     bottom: 0;
+                     left: 0;
+                     right: 0;
+                     padding-top: 20px;
+                    "
+                >
                     {{> events_row }}
                 </div>
                 {{ /events_row }}

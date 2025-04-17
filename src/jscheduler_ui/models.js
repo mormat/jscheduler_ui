@@ -83,4 +83,21 @@ class SchedulerEvent {
     
 }
 
-module.exports = { SchedulerEvent }
+/**
+ * Comparators to use in array.sort()
+ */
+
+// @todo unit test ?
+function compareSchedulerEventsByDaysCount(event1, event2)
+{
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    
+    const daysCount1 = Math.round(Math.abs((event1.end - event1.start) / oneDay));
+    const daysCount2 = Math.round(Math.abs((event2.end - event2.start) / oneDay));
+    return daysCount2 - daysCount1;
+}
+
+module.exports = { 
+    SchedulerEvent,
+    compareSchedulerEventsByDaysCount
+}
