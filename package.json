@@ -31,7 +31,7 @@
   ],
   "devDependencies": {
     "@cucumber/cucumber": "^11.0.1",
-    "chromedriver": "^128.0.0",
+    "chromedriver": "^133.0.0",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "css2xpath": "^0.0.3",
