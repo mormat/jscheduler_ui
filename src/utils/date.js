@@ -191,11 +191,38 @@ function groupDateRangedItemsByPosition(dateRangeditems) {
 
 }
 
+function getOffsetAndLengthByDateRanges(dateRanges) {
+    
+    const results = new Map();
+    for (const dateRange of dateRanges) {
+        
+        const overlappingDateRanges = dateRanges
+            .filter(i => i !== dateRange && dateRange.intersects(i))
+        ;
+        
+        let length = 1 / (overlappingDateRanges.length + 1);
+        let offset = -length;
+        
+        for (const overlappingDateRange of overlappingDateRanges) {
+            if (!results.has(overlappingDateRange)) {
+                continue;
+            }
+            offset = Math.max(offset, results.get(overlappingDateRange).offset);
+        }
+        
+        offset += length;
+        
+        results.set(dateRange, { offset, length });
+    }
+    
+    return results;
+}
 
 module.exports = { 
     format_date,
     DateRange,
     Day,
     date_add_hour,
-    groupDateRangedItemsByPosition
+    groupDateRangedItemsByPosition,
+    getOffsetAndLengthByDateRanges
 }

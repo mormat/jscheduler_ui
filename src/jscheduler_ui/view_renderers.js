@@ -1,5 +1,6 @@
 const { Day, format_date, DateRange } = require('@src/utils/date');
 const { groupDateRangedItemsByPosition } = require('@src/utils/date');
+const { getOffsetAndLengthByDateRanges } = require('@src/utils/date');
 const Mustache = require('mustache');
 
 const { DayView, WeekView, MonthView }  = require('./views');
@@ -79,49 +80,59 @@ class AbstractViewRenderer {
 
     withEventsRowPartial( { events, dateRange, eventDroppableTarget } ) {
 
-        const eventHeight = '20';
-
-        const groupedEvents = groupDateRangedItemsByPosition(
-            events.filter(e => dateRange.intersects(e))
-        );
+        const machins = new Map();
+        for (const event of events) {
+            const start = new Date(event.start);
+            const end   = new Date(event.end);
+            machins.set(event, new DateRange(start, end));
+        }
+        const dateRanges = [... machins.values()];
+        const trucmuches = getOffsetAndLengthByDateRanges(dateRanges);
+        const choses = new Map();
+        for (const event of machins.keys()) {
+            choses.set(event, trucmuches.get(machins.get(event)));
+        }
 
         return {
-            for_each_events: groupedEvents.map((events, eventIndex) => {
-                return events.map( ( event ) => {
+            
+            for_each_events: events.map ( ( event ) => {
+                const intersect = dateRange.intersects(event);
+                if (!intersect) {
+                    return null;
+                }
 
-                    const intersect = dateRange.intersects(event);
+                const start = new Day(intersect.start) + ' 00:00:00';
+                const end   = new Day(intersect.end)   + ' 23:59:59';
 
-                    const start = new Day(intersect.start) + ' 00:00:00';
-                    const end   = new Day(intersect.end)   + ' 23:59:59';
+                const eventOffset = choses.get(event).offset;
+                const eventLength = choses.get(event).length;
 
-                    const style = {
-                        top: (eventIndex * 100 / groupedEvents.length) + '%',
-                        height: 100 / groupedEvents.length + '%',
-                        left: dateRange.calcPercentPosition(start) + '%',
-                        right: (100 - dateRange.calcPercentPosition(end)) + '%'
-                    }
-                    
-                    let className = '';
-                    if (bootstrapColors.includes(event.bgColor)) {
-                        className = 'bg-' + event.bgColor;
-                    } else {
-                        style.backgroundColor = event.bgColor;
-                    }
+                const style = {
+                    top: (eventOffset * 100) + '%',
+                    height: (eventLength * 100) + '%',
+                    left: dateRange.calcPercentPosition(start) + '%',
+                    right: (100 - dateRange.calcPercentPosition(end)) + '%'
+                }
 
-                    return {
-                        if_draggable: this.#eventsDraggable,
-                        if_clickable: this.#eventsClickable,
-                        event, eventDroppableTarget, style, className
-                    }
+                let className = '';
+                if (bootstrapColors.includes(event.bgColor)) {
+                    className = 'bg-' + event.bgColor;
+                } else {
+                    style.backgroundColor = event.bgColor;
+                }
 
-                });
-            }).flat(),
+                return {
+                    if_draggable: this.#eventsDraggable,
+                    if_clickable: this.#eventsClickable,
+                    event, eventDroppableTarget, style, className
+                }
+            }).filter(i => i),
+            
             dateRange: {
                 start: format_date('yyyy-mm-dd hh:ii:ss', dateRange.start),
                 end:   format_date('yyyy-mm-dd hh:ii:ss', dateRange.end)
             },
             style: {
-                /* height: (eventHeight * groupedEvents.length) + 'px' */
                 height: '100%'
             }
 
