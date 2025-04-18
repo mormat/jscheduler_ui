@@ -65,6 +65,7 @@ function getTimelineDragAndDropObserver( { parentElement } ) {
         
         clone = parentElement.cloneNode(true);
         clone.style['display'] = 'none';
+        clone.style['max-height'] = '22px';
         document.body.appendChild(clone);
     }
     

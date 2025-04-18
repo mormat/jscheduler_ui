@@ -95,8 +95,8 @@ class AbstractViewRenderer {
                     const end   = new Day(intersect.end)   + ' 23:59:59';
 
                     const style = {
-                        top: (eventIndex * eventHeight) + 'px',
-                        height: eventHeight + 'px',
+                        top: (eventIndex * 100 / groupedEvents.length) + '%',
+                        height: 100 / groupedEvents.length + '%',
                         left: dateRange.calcPercentPosition(start) + '%',
                         right: (100 - dateRange.calcPercentPosition(end)) + '%'
                     }
@@ -121,7 +121,8 @@ class AbstractViewRenderer {
                 end:   format_date('yyyy-mm-dd hh:ii:ss', dateRange.end)
             },
             style: {
-                height: (eventHeight * groupedEvents.length) + 'px'
+                /* height: (eventHeight * groupedEvents.length) + 'px' */
+                height: '100%'
             }
 
         };
@@ -196,6 +197,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
                 } ),
                 colspan: vars.days.length
             }
+            vars.events_row_height = '22px'
         }
 
         return Mustache.render( templates['daysview'], vars, partials);

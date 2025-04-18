@@ -26,7 +26,10 @@
     <tbody>
         <tr>
             <td style="width: {{ hours[0].style.width }}"></td>
-            <td class="jscheduler_ui-daterange-row" colspan="{{ colspan }}">
+            <td class="jscheduler_ui-daterange-row" 
+                colspan="{{ colspan }}"
+                style="height: {{ events_row_height }}"
+            >
                 {{> events_row }}
             </td>
         </tr>
