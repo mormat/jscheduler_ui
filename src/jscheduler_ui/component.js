@@ -54,19 +54,6 @@ class Scheduler {
     
     refresh() {
         
-        /*
-        const options = {
-            styles: .styles,
-            eventsClickable:  .eventsClickable, 
-            eventsResizeable: .eventsResizeable, 
-            eventsDraggable:  .eventsDraggable,
-            minHour: .minHour,
-            maxHour: .maxHour,
-            dateLocale: .dateLocale,
-            currentDate: .currentDate,
-            events: .events
-        };*/
-        
         const viewParams = this.#state.values;
         viewParams.events = viewParams.events.filter(e => e.isValid());
         
@@ -153,17 +140,26 @@ class Scheduler {
         });
     }
         
-    replaceEvent(values) {
-        const { events } = this.#state.values;
+    replaceEvent(values, filterCallbackFn) {
+        const { events } = this.#state.values ;
+        
         this.#state.update( { 
-            events: events.map((e) => e.id !== values.id ? e : values)
+            events: events.map(function(e) {
+                if ([e.values].find(filterCallbackFn)) {
+                    return { ...e.values, ...values }
+                }
+                return e;
+            })
         });
+        
     }
     
-    removeEvent( { id } ) {
+    removeEvent( filterCallbackFn ) {
         const { events } = this.#state.values;
         this.#state.update( { 
-            events: events.filter(v => v.id != id)
+            events: events.filter(function(e) {
+                return ![e.values].find(filterCallbackFn);
+            })
         });
     }
     

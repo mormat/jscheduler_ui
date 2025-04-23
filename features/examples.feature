@@ -139,13 +139,15 @@ Feature: examples page
     Scenario: CRUD operations - Updating an event
         When I open the "examples" page
         And I select the "Updating an event" example in "CRUD operations"
-        And I click on the "meeting" event
-        Then the "meeting" event should not be displayed
-        And the "interview" event should be displayed at "Tue, Sep 17" from "14:00" to "16:00"
+        And I click on the "some task" event
+        Then the "some task" event should not be displayed
+        And the "some updated task" event should be displayed at "Tue, Sep 17" from "14:00" to "16:00"
+        And I should see "another task"
 
     @crud
     Scenario: CRUD operations - Deleting an event
         When I open the "examples" page
         And I select the "Deleting an event" example in "CRUD operations"
-        And I click on the "meeting" event
-        Then the "meeting" event should not be displayed
+        And I click on the "some task" event
+        Then the "some task" event should not be displayed
+        And I should see "another task"
