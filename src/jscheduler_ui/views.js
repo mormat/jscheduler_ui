@@ -138,6 +138,10 @@ class AbstractDaysView {
         
         const { eventsDateRange, minHour, maxHour } = this;
         
+        const events = this.#events.filter(
+            e => eventsDateRange.intersects(e)
+        );
+        
         const hours = this.hours.map((hour) => {
             return {
                 label: String(hour).padStart(2, '0') + ':00',
@@ -159,13 +163,13 @@ class AbstractDaysView {
             
             return { 
                 value: day, 
-                events: this.#events.filter(e => dateRange.contains(e)),
+                events: events.filter(e => dateRange.contains(e)),
                 label, 
                 dateRange
             }
         });
         
-        const spannedEvents = this.#events.filter( function( otherEvent ) {
+        const spannedEvents = events.filter( function( otherEvent ) {
             const filter = d => d.events.includes( otherEvent );
             return (days.findIndex( filter ) === -1);
         });
