@@ -33,13 +33,31 @@ class AbstractViewRenderer {
     #eventsClickable;
     #eventsDraggable;
     #eventsResizeable;
+    #eventsEditable;
+    #translations;
     
-    constructor( { eventsClickable, eventsResizeable, eventsDraggable} ) {
+    constructor( { 
+        eventsClickable, 
+        eventsResizeable, 
+        eventsDraggable,
+        eventsEditable,
+        translations = {}
+    } ) {
         
         this.#eventsClickable = eventsClickable;
         this.#eventsDraggable = eventsDraggable;
         this.#eventsResizeable = eventsResizeable;
+        this.#eventsEditable = eventsEditable;
+        this.#translations   = {
+            edit_event_btn: 'Edit the event',
+            ...translations
+        }
         
+        
+    }
+    
+    getTranslations() {
+        return this.#translations;
     }
     
     withEventsColumnPartial( { events, dateRange, eventDroppableTarget } ) {
@@ -71,6 +89,7 @@ class AbstractViewRenderer {
                         if_draggable:  this.#eventsDraggable,
                         if_resizeable: this.#eventsResizeable,
                         if_clickable:  this.#eventsClickable,
+                        if_editable:  this.#eventsEditable,
                         event, eventDroppableTarget, style, className
                     }
 
@@ -128,6 +147,7 @@ class AbstractViewRenderer {
                 return {
                     if_draggable: this.#eventsDraggable,
                     if_clickable: this.#eventsClickable,
+                    if_editable:  this.#eventsEditable,
                     event, eventDroppableTarget, style, className
                 }
             }).filter(i => i),
@@ -172,6 +192,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
 
         const vars = { ...view.vars };
 
+        vars.translations = this.getTranslations();
         vars.headerId   = 'jscheduler_ui-' + getUniqueId();
         vars.bodyId     = 'jscheduler_ui-' + getUniqueId();
         vars.has_header = vars.days.length > 1;
@@ -243,6 +264,7 @@ class MonthViewRenderer extends AbstractViewRenderer {
 
         const vars = { ...view.vars };
 
+        vars.translations = this.getTranslations();
         vars.bodyId = 'jscheduler_ui-' + getUniqueId();
 
         for (const week of vars.weeks) {

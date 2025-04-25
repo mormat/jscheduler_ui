@@ -31,7 +31,7 @@ Feature: examples page
         And "./examples/events.json" should be loaded from "2024-08-12 00:00:00.000" to "2024-08-18 23:59:59.999"
 
     @i18n
-    Scenario: Month view - i18n
+    Scenario: Week view - i18n
         When I open the "examples" page
         And I select the "i18n" example in "Week view"
         Then I should see "1 mag 2023 - 7 mag 2023"
@@ -43,6 +43,7 @@ Feature: examples page
             | ven 5 mag |
             | sab 6 mag |
             | dom 7 mag |
+        And I should see a "Modifica l'evento" tooltip
 
     Scenario: Week view - Custom hours range
         When I open the "examples" page
@@ -128,6 +129,7 @@ Feature: examples page
     And I select the "i18n" example in "Month view"
     Then I should see "maggio 2023"
     And I should see "lun mar mer gio ven sab dom"
+    And I should see a "Modifica l'evento" tooltip
 
     @crud
     Scenario: CRUD operations - Creating an event
@@ -135,11 +137,11 @@ Feature: examples page
         And I select the "Creating an event" example in "CRUD operations"
         Then the "meeting" event should be displayed at "Tue, Sep 17" from "10:00" to "12:00"
 
-    @crud
+    @crud @edit
     Scenario: CRUD operations - Updating an event
         When I open the "examples" page
         And I select the "Updating an event" example in "CRUD operations"
-        And I click on the "some task" event
+        And I edit the "some task" event
         Then the "some task" event should not be displayed
         And the "some updated task" event should be displayed at "Tue, Sep 17" from "14:00" to "16:00"
         And I should see "another task"

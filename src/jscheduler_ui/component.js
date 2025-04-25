@@ -35,6 +35,7 @@ class Scheduler {
             eventsDraggable:  false,
             eventsResizeable: false,
             eventsClickable:  false,
+            eventsEditable:   false,
             headersVisible: true,
             dateLocale:'en',
             styles: {'min-height': '480px', height: '100%'},

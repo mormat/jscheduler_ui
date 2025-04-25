@@ -157,6 +157,21 @@ When('I resize the {string} event to {string}', async function (eventName, toHou
     
 });
 
+When('I edit the {string} event', async function (eventName) {
+        
+    const parent = await this.getElement( getEventSelector(eventName) );
+    const actions = this.driver.actions({async: true});
+    await actions.move({origin: parent}).perform();
+    
+    const button = await this.getElement(
+        'a.jscheduler_ui-event-edit',
+        parent,
+    );
+    await button.click();
+        
+});
+
+
 Before(function() {
     for (const key in debugRects) {
         delete debugRects[key];

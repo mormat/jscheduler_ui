@@ -15,18 +15,24 @@ var scheduler = jscheduler_ui.render(element, {
             label: 'another task', 
             start: '2024-09-19 10:00', 
             end:   '2024-09-19 12:00',
+        },
+        {
+            some_id: 1236,
+            label: 'spanned task', 
+            start: '2024-09-17 10:00', 
+            end:   '2024-09-19 12:00',
         }
     ],
-    eventsClickable: true,
-    onEventClick: function(editedEvent) {
+    eventsEditable: true,
+    onEventEdit: function(editedEvent) {
         
         // Retrieve the current values to display on the form
         var values = editedEvent.values;
         document.getElementById('comments').innerHTML = 
-            'label=' + values.label + ',' +
-            'start=' + values.start.getTime() + ',' +
-            'end='   + values.end.getTime() + ',' +
-            'custom_id' + values.custom_id;
+            'label='  + values.label + ',' +
+            'start='  + values.start.getTime() + ',' +
+            'end='    + values.end.getTime() + ',' +
+            'some_id' + values.some_id;
     
         // When validating the form, update the event like this
         scheduler.replaceEvent(
@@ -36,7 +42,7 @@ var scheduler = jscheduler_ui.render(element, {
                 end:   '2024-09-17 16:00',
             }, 
             function(e) {
-                return e.some_id === 1234
+                return e.some_id === values.some_id
             }
         );
 

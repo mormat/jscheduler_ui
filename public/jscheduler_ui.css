@@ -26,6 +26,10 @@
     border-left: 1px solid #d3d3d3;
 }
 
+.jscheduler_ui-event {
+    font-size: small;
+}
+
 .jscheduler_ui-event-day {
     padding: 3px;
 }
@@ -74,4 +78,21 @@
 
 .jscheduler_ui-event:hover a {
     text-decoration: underline;
+}
+
+.jscheduler_ui-event-edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.jscheduler_ui-event-edit svg {
+    color: white;
+    display: none;
+}
+
+.jscheduler_ui-event:hover .jscheduler_ui-event-edit svg { 
+    display: inline;
 }

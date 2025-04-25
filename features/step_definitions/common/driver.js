@@ -43,6 +43,10 @@ Then('I should not see :', async function (dataTable) {
     
 });
 
+Then('I should see a {string} tooltip', async function (string) {
+    await this.getElement(`[title="${string}"]`);
+});
+
 When('I wait until I see {string}', async function (expectedText) {
 
     const selector = `:contains("${expectedText}")`;

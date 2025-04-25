@@ -7,7 +7,7 @@ const { createDraggable } = require('./listeners/draggables');
 
 function SchedulerListener(listeners, schedulerState) {
     
-    const { onEventDrop, onEventResize, onEventClick } = listeners;
+    const { onEventDrop, onEventResize, onEventClick, onEventEdit } = listeners;
     
     this.register = function(element) {
         element.addEventListener('click',     handleClickEvent);
@@ -34,6 +34,21 @@ function SchedulerListener(listeners, schedulerState) {
     }
     
     function handleClickEvent(e) {
+        
+        if (matchSelector(e, '.jscheduler_ui-event-edit')) {
+            e.preventDefault();
+            
+            const parentElement = e.target.closest('.jscheduler_ui-event');
+            const schedulerEvent = getSchedulerEvents().find(function({ id }) {
+                return parentElement.dataset['eventId'] === String(id);
+            });
+            
+            if (schedulerEvent) {
+                onEventEdit(schedulerEvent);
+            }
+            
+            return;
+        }
         
         if (matchSelector(e, '.jscheduler_ui-event a')) {
             
