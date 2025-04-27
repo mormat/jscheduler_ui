@@ -239,7 +239,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
             );
     
             const minEventHeight = Math.min(
-                ... offsetLengthByEvents.values().map(i => i.length) 
+                ... [...offsetLengthByEvents.values()].map(i => i.length) 
             );
                 
             vars.events_row = {
