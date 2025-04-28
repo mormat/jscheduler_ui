@@ -84,10 +84,33 @@
 
                 <div id="scheduler"></div>
                 
-                <p class="mt-3" id="comments">
+                
+                
+            </div>
+        </div>
+        
+        <div id="footer" class="row mt-3">
+            <div class="col">
+                <p id="comments">
                     Move and resize the events above to see it in action
                 </p>
-                
+            </div>
+            <div class="col text-end">
+                <p className="text-mute">
+                    <small>
+                        <a id="package_name" 
+                           className="text-dark" 
+                           href="https://github.com/mormat/jscheduler_ui"
+                        >
+                            &nbsp;
+                        </a>
+
+                        &nbsp;
+                        <span id="package_version">
+                            &nbsp;
+                        </span>
+                    </small>
+                </p>
             </div>
         </div>
         
@@ -169,6 +192,9 @@
             function updateSchedulerTitle() {
                 $('#scheduler_title').html( scheduler.getLabel( ) );
             }
+            
+            $('#package_version').html( jscheduler_ui.version );
+            $('#package_name').html( jscheduler_ui.name );
             
         });
         

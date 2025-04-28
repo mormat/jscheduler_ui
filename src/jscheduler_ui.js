@@ -6,6 +6,8 @@
 const { Scheduler } = require('./jscheduler_ui/component');
 const { format_date, Day } = require('./utils/date');
 
+
+
 function render(element, eventsOrSettings)
 {
     
@@ -32,4 +34,9 @@ function render(element, eventsOrSettings)
 
 const utils = { format_date, Day }
 
-module.exports = { render, utils }
+module.exports = { 
+    render, 
+    utils,
+    name:      __PACKAGE_NAME__,
+    version:   __PACKAGE_VERSION__,
+}
