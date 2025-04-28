@@ -188,13 +188,27 @@ setWorldConstructor(SeleniumWorld);
 
 SeleniumWorld.driver = (function() {
     const builder = new Builder().withCapabilities({
-        'browserName': 'chrome',
-        'goog:loggingPrefs': { 'browser':'ALL' },
+        ...getBrowserCapabilities()
     });
 
     const options = new chrome.Options();
     options.addArguments("--lang=en");
     builder.setChromeOptions(options);
-
+    
     return builder.build();
 })();
+
+function getBrowserCapabilities() {
+    // --profile firefox 
+    // -p firefox
+    if (process.argv.includes('firefox')) {
+        return {
+            'browserName': 'firefox',
+        }
+    }
+    
+    return {
+        'browserName': 'chrome',
+        'goog:loggingPrefs': { 'browser':'ALL' },
+    }
+}
