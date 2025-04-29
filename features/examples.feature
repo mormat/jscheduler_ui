@@ -153,3 +153,22 @@ Feature: examples page
         And I click on the "some task" event
         Then the "some task" event should not be displayed
         And I should see "another task"
+
+    @responsive
+    Scenario Outline: Responsive breakpoint
+        When I open the "examples" page
+        And I select the "Responsive rendering" example in "Misc"
+        When I click on "<text_button>"
+        Then the page should contains an '<css_selector>' element
+
+    Examples:
+        | text_button    | css_selector                             |
+        | small          | .jscheduler_ui[data-breakpoint="small"]  |
+        | medium         | .jscheduler_ui[data-breakpoint="medium"] |
+        | large          | .jscheduler_ui[data-breakpoint="large"]  |
+
+    @responsive
+    Scenario: Default breakpoint should be defined
+        When I open the "examples" page
+        And I select the "Responsive rendering" example in "Misc"
+        Then the page should contains an '.jscheduler_ui[data-breakpoint]' element

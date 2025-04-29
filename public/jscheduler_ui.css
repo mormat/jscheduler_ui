@@ -100,3 +100,23 @@
 .jscheduler_ui-event:hover .jscheduler_ui-event-edit svg { 
     display: inline;
 }
+
+.jscheduler_ui th[data-hour]{
+    font-size: 0.9em;
+}
+
+.jscheduler_ui[data-breakpoint="small"] th[data-hour]{
+    font-size: x-small;
+}
+
+.jscheduler_ui[data-breakpoint="small"] .jscheduler_ui-day-header {
+    font-size: x-small;
+}
+
+.jscheduler_ui[data-breakpoint="medium"] th[data-hour]{
+    font-size: small;
+}
+
+.jscheduler_ui[data-breakpoint="medium"] .jscheduler_ui-day-header {
+    font-size: small;
+}

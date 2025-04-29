@@ -16,6 +16,7 @@ class Scheduler {
     #state;
     #listeners;
     #currentView = {};
+    #resizeObserver;
     
     constructor( element, options, listeners ) {
         
@@ -50,7 +51,16 @@ class Scheduler {
         }, this.#state);
 
         this.#listeners.register(element);
-
+        
+        // register resize observer
+        if (options.useBreakpoint) {
+            this.#resizeObserver = new ResizeObserver(
+                resizeObserverHandler
+            );
+            this.#resizeObserver.observe(this.#element);
+        }
+        
+        this.#element.classList.add('jscheduler_ui');
     }
     
     refresh() {
@@ -77,6 +87,12 @@ class Scheduler {
     
     destroy() {
         this.#listeners.unregister(this.#element);
+        
+        if (this.#resizeObserver) {
+            this.#resizeObserver.unobserve(this.#element);
+        }
+        
+        this.#element.classList.remove('jscheduler_ui');
     }
     
     setOptions( options) {
@@ -172,6 +188,24 @@ class Scheduler {
         return this.#currentView.label;
     }
     
+}
+
+const resizeObserverHandler = function(entries) {
+        
+    for (const entry of entries) {
+        const { width } = entry.contentRect;
+        const element = entry.target;
+        
+        let breakpoint = 'large';
+        if (width <= 768) {
+            breakpoint = 'medium';
+        }
+        if (width <= 576) {
+            breakpoint = 'small';
+        }
+        
+        element.setAttribute('data-breakpoint', breakpoint);
+    }
 }
 
 module.exports = { Scheduler }

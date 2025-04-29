@@ -77,6 +77,11 @@ When('I click on {string}', async function (text) {
     
 });
 
+Then('the page should contains an {string} element', async function ( selector ) {
+    await this.getElement( selector );
+});
+
+
 AfterAll(async function() {
     
     if (!process.argv.includes('--fail-fast')) {

@@ -3,10 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/javascript.js to edit this template
  */
 
-const { Scheduler } = require('./jscheduler_ui/component');
+const { Scheduler } = require('./jscheduler_ui/scheduler');
 const { format_date, Day } = require('./utils/date');
-
-
 
 function render(element, eventsOrSettings)
 {
