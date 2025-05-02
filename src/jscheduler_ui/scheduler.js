@@ -3,6 +3,7 @@ const { Day, DateRange } = require('@src/utils/date.js');
 const { createViewRenderer } = require('./view_renderers');
 const { SchedulerListener } = require('./listeners');
 const { SchedulerEvent } = require('./models');
+const uuid = require('uuid');
 
 const { 
     StateHandler, 
@@ -18,7 +19,7 @@ class Scheduler {
     #currentView = {};
     #resizeObserver;
     
-    constructor( element, options, listeners ) {
+    constructor( element, options = {}, listeners = {} ) {
         
         this.#element = element;
         
@@ -151,10 +152,18 @@ class Scheduler {
     }
     
     pushEvent(values) {
+        
+        const valuesWithId = values.id ? values : { 
+            ...values, 
+            id: uuid.v4() 
+        };
+        
         const { events } = this.#state.values;
         this.#state.update( { 
-            events: [...events, values]
+            events: [...events, valuesWithId]
         });
+        
+        return valuesWithId;
     }
         
     replaceEvent(values, filterCallbackFn) {

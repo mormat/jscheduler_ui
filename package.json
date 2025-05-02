@@ -53,5 +53,8 @@
     "precucumber": "node src/bin/precucumber.js",
     "prepare": "webpack --mode=production",
     "build": "npm pack --pack-destination=./build"
+  },
+  "dependencies": {
+    "jsdom": "^26.1.0"
   }
 }
