@@ -1,0 +1,104 @@
+<table  class="jscheduler_ui-year_view"
+        style="width: 100%; 
+               table-layout: fixed; 
+               flex: 1 1 auto;"
+>
+    <thead>
+        <tr>
+            <td style="width: {{ yaxis.style.width }}">
+                
+            </td>
+            {{ #days }}
+                <th style = "width: {{ style.width }};
+                             overflow: hidden;
+                             text-align: center
+                            "
+                >
+                    {{ text }}
+                </th>
+            {{ /days }}
+        </tr>
+    </thead>
+    <tbody id="{{bodyId}}"
+           data-jscheduler_ui-droppable-type="timeline" 
+    >
+        {{ #months }}
+            <tr>
+                <th>
+                    {{ text }}
+                </th>
+                <td colspan="{{ row_colspan }}"
+                    style="position: relative;
+                          "
+                >
+                    
+                    {{ #daysoff }}
+                        <div class="jscheduler_ui-year_view-dayoff"
+                             style = "position: absolute;
+                                      top: 0;
+                                      left: {{ style.left }};
+                                      width: {{ style.width }};
+                                      bottom: 0;
+                             "
+                        ></div>
+                    {{ /daysoff }}
+                    
+                    <div style="position: absolute;
+                                top: 0;
+                                bottom: 0;
+                                left:  {{ style.left }};
+                                width: {{ style.width }};
+                                background-color: white;
+                               "
+                    >
+                        
+                        {{ #monthdays }}
+                            {{ #is_dayoff }}
+                            <div class="jscheduler_ui-year_view-dayoff"
+                                 style="position: absolute;
+                                        top: 0;
+                                        bottom: 0;
+                                        left: {{ left }};
+                                        width: {{ width }};
+                                       "
+                            >
+                            </div>
+                            {{ /is_dayoff }}
+                        
+                            <span class="jscheduler_ui-year_view-monthday"
+                                  style="position: absolute;
+                                         top: 0;
+                                         left: {{ left }};
+                                         width: {{ width }};
+                                        "
+                                  data-monthday="{{ day_of_month }}"
+                            >
+                                {{ day_of_month }}
+                            </span>
+                            
+                        {{ /monthdays }}
+                        
+
+                        
+                        {{ #events_row }}
+                        <div class="jscheduler_ui-daterange-row" 
+                             style="position: absolute;
+                                    top: 10px;
+                                    bottom: 0;
+                                    left:   0;
+                                    right:  0;
+                             "
+                        >
+                            {{> events_row }}
+                        </div>
+                        {{ /events_row }}
+                        
+                        
+                        
+                    </div>
+                    {{ #grid }} {{> grid }} {{ /grid }}
+                </td>
+            </tr>
+        {{ /months }}
+    </tbody>
+</table>

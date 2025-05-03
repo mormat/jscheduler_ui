@@ -34,7 +34,7 @@ class ElementDraggableArea {
 
 }
 
-// @todo CompositeDroppable ?
+// @todo rename to ColumnsDroppable ?
 class CompositeDraggableArea {
 
     #children;
@@ -89,6 +89,61 @@ class CompositeDraggableArea {
 
 }
 
+class RowCollectionDroppable {
+
+    #children;
+    #type;
+
+    constructor(children, type) {
+        this.#children = children;
+        this.#type     = type;
+    }
+
+    get type(){
+        return this.#type;
+    }
+
+    getChildren()
+    {
+        this.#children;
+    }
+
+    getData(mouseEvent) {
+        const child = this.getClosestChild(mouseEvent);
+        return child ? child.getData(mouseEvent) : {}
+    }
+
+    getRect() {
+        const rects = [];
+        for (let child of this.#children) {
+            rects.push(child.getRect());
+        }
+        return Rectangle.createBounding(rects);
+        return new Rectangle({x: 0, y: 0, width: 0, height: 0});
+    }
+
+    getClosestChild(mouseEvent) {
+        
+        const point = {x: mouseEvent.pageX, y: mouseEvent.pageY}
+        const childrenByDistance = {}
+        
+        const distances = [];
+        for (let child of this.#children) {
+            const childRect = new Rectangle(child.getRect());
+            const distance = Math.abs(
+                point.y - (childRect.y + childRect.height / 2)
+            );
+            distances.push(distance);
+            childrenByDistance[distance] = child;
+        }
+        
+        const lowest = Math.min(...distances);
+        return childrenByDistance[lowest];
+       
+    }
+
+}
+
 function createDroppable( { draggableElement }) {
     
     const droppableTarget = draggableElement.getAttribute(
@@ -118,7 +173,7 @@ function createDroppable( { draggableElement }) {
                 '[data-daterange_start][data-daterange_end]'
             ) ];
             
-            return new CompositeDraggableArea(
+            return new RowCollectionDroppable(
                 children.map( elt => new ElementDraggableArea(elt) ),
                 type
             );

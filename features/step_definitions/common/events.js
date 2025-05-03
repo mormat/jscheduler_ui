@@ -171,6 +171,61 @@ When('I edit the {string} event', async function (eventName) {
         
 });
 
+ Then(
+    'the {string} event should be displayed in {string} from {int} to {int}', 
+    async function (eventName, inMonth, fromDayInMonth, toDayInMonth) {
+        
+         const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+        
+        const expectedRect = await getDayRangeRectInYearView(
+            this, inMonth, fromDayInMonth, toDayInMonth
+        );
+        debugRects[currentStep.text] = expectedRect;
+
+        const actualRect = await eventElement.getRect();
+                
+        expect(Math.abs(actualRect.x     - expectedRect.x)    ).toBeLessThan(1.1);
+        expect(Math.abs(actualRect.width - expectedRect.width)).toBeLessThan(4);
+        expect(actualRect.y).toBeGreaterThanOrEqual(expectedRect.y);
+        expect(actualRect.height).toBeLessThanOrEqual(expectedRect.height);
+
+    }
+);
+
+When(
+    'I drag the {string} event to {int} of {string}', 
+    async function (eventName, dayMonth, inMonth) {
+        
+        const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+
+        const eventRect = await eventElement.getRect();        
+        
+        const targetRect = await getDayRangeRectInYearView(
+            this, inMonth, dayMonth, dayMonth
+        );
+        
+        const fromPoint = {
+            x: eventRect.x + 2,
+            y: eventRect.y + 2,
+            color: 'blue'
+        }
+        const toPoint = {
+            x: targetRect.x + targetRect.width  / 2,
+            y: targetRect.y + targetRect.height / 2,
+            color: 'red'
+        };
+        debugRects[currentStep.text + '(fromPoint)'] = fromPoint;
+        debugRects[currentStep.text + '(toPoint)']   = toPoint;
+        
+        await this.dragAndDrop(fromPoint, toPoint);
+        
+    }
+);
+
 
 Before(function() {
     for (const key in debugRects) {
@@ -254,7 +309,32 @@ async function getDayRect(self, atDay) {
 
 }
 
+async function getDayRangeRectInYearView(self, inMonth, fromNumDay, toNumDay) {
+    
+    const rowElement = await self.getElement(
+        `.jscheduler_ui tbody tr:has(th:contains('${inMonth}'))`
+    );
+    
+    const fromDayElement = await self.getElement(
+        `[data-monthday="${fromNumDay}"]`,
+        rowElement
+    );
+    
+    const toDayElement = await self.getElement(
+        `[data-monthday="${toNumDay}"]`,
+        rowElement
+    );
+    
+    const { y,  height } = await rowElement.getRect();
+    const { x } = await fromDayElement.getRect();
+    const toDayRect = await toDayElement.getRect();
+    const width = (toDayRect.x + toDayRect.width)  - x;
+        
+    return { x, y, height, width};
+    
+}
 
+// @todo rename to getDayRangeRect in daysview ?
 async function getDayRangeRect(self, fromDate, toDate) {
 
     const selectors = {
@@ -280,5 +360,4 @@ async function getDayRangeRect(self, fromDate, toDate) {
         y:      rects['row'].y,
         height: rects['row'].height
     }
-
 }

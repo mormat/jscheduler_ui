@@ -97,6 +97,16 @@ class Day {
         
     }
     
+    addYears(numYears) {
+        
+        const output = new Date(this.date);
+        
+        output.setYear(output.getFullYear() + numYears);
+        
+        return new Day(output);
+        
+    }
+    
     getDate() {
         return this.date;
     }
@@ -121,6 +131,14 @@ class DateRange {
     constructor(start, end) {
         this.start = new Date(start);
         this.end   = new Date(end);
+    }
+
+    static createForMonth(dateMonth) {
+        const start = format_date('yyyy-mm', dateMonth) + '-01 00:00:00.000';
+        const end   = new Date( start );
+        end.setMonth( end.getMonth() + 1);
+        end.setTime( end.getTime() - 1);
+        return new DateRange(start, end);
     }
     
     get length() {
@@ -156,6 +174,31 @@ class DateRange {
         return (value.getTime() - this.start.getTime()) * 100 / length;
     }
     
+    countDays() {
+        return Math.round(
+            this.length / (24 * 60 * 60 * 1000)
+        );
+    }
+    
+    // @todo refactor MonthView using this function
+    // @todo missing unit test
+    getWeeks() {
+        const startingDay = new Day(this.start);
+        const endingDay   = new Day(this.end);
+        
+        const weeks = [];
+        let currentDay = startingDay.getFirstDayOfWeek();
+        let lastDay    = endingDay.getLastDayOfWeek();
+        while (currentDay <= lastDay) {
+            const days = [ currentDay ];
+            for (let n = 1; n < 7; n++) {
+                days.push( days[0].addDays(n) );
+            }
+            weeks.push(days);
+            currentDay = currentDay.addDays(7);
+        }
+        return weeks;
+    }
 }
 
 // @todo missing unittest
@@ -258,6 +301,19 @@ function getOffsetAndLengthByDateRanges(dateRanges) {
     return _mapGroupedDateRanges(_groupDateRanges(dateRanges));
 }
 
+function getWeekDays({ dateLocale = 'en'} = {}) {
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date("1970-01-01");
+        d.setDate(i + 5);
+        weekDays.push(d.toLocaleString(
+           dateLocale,
+           { weekday: 'short' }
+        ));
+    }
+    return weekDays;
+}
+
 module.exports = { 
     format_date,
     DateRange,
@@ -267,4 +323,5 @@ module.exports = {
     getOffsetAndLengthByDateRanges,
     _groupDateRanges,
     _mapGroupedDateRanges,
+    getWeekDays
 }

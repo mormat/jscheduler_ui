@@ -1,4 +1,9 @@
-const { DayView, WeekView, MonthView }  = require('./views');
+const { 
+    DayView, 
+    WeekView, 
+    MonthView,
+    YearView
+}  = require('./views');
 const { Day, DateRange } = require('@src/utils/date.js');
 const { createViewRenderer } = require('./view_renderers');
 const { SchedulerListener } = require('./listeners');
@@ -81,6 +86,10 @@ class Scheduler {
             this.#currentView = new MonthView( viewParams );
         }
         
+        if (viewParams.viewMode === 'year') {
+            this.#currentView = new YearView( viewParams );
+        }
+        
         const renderer = createViewRenderer( this.#currentView, viewParams);
         this.#element.innerHTML = renderer.render( this.#currentView );
         
@@ -122,6 +131,10 @@ class Scheduler {
             day = day.addMonths(1);
         }
         
+        if (viewMode === 'year') {
+            day = day.addYears(1);
+        }
+        
         this.#state.update( { currentDate: day.getDate() })
     }
     
@@ -140,6 +153,10 @@ class Scheduler {
         
         if (viewMode === 'month') {
             day = day.addMonths(-1);
+        }
+        
+        if (viewMode === 'year') {
+            day = day.addYears(-1);
         }
         
         this.#state.update( { currentDate: day.getDate() })

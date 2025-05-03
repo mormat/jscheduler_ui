@@ -1,5 +1,108 @@
 
-const { Day, DateRange } = require('@src/utils/date');
+const { 
+    Day, 
+    DateRange,
+    format_date,
+    getWeekDays
+} = require('@src/utils/date');
+
+class YearView {
+    
+    #currentDate;
+    #dateLocale;
+    #events;
+    
+    constructor({ currentDate, dateLocale, events }) {
+        this.#currentDate = currentDate;
+        this.#dateLocale  = dateLocale;
+        this.#events      = events;
+    }
+        
+    get label() {
+        return format_date('yyyy', this.#currentDate);
+    }
+    
+    get eventsDateRange() {
+        const year = format_date('yyyy', this.#currentDate);
+        
+        return new DateRange(
+            year + '-01-01 00:00:00.000',
+            year + '-12-31 23:59:59.999',
+        )
+    }
+    
+    get vars() {
+        
+        const days = [];
+        
+        const months = [];
+        for (let i = 1; i <= 12; i++) {
+            
+            const dateRange = DateRange.createForMonth(
+                format_date('yyyy', this.#currentDate) + '-' + i + '-01'
+            );
+            
+            let text = dateRange.start.toLocaleString(
+                this.#dateLocale, 
+                { month: 'long' }
+            );
+            text = text[0].toUpperCase() + text.substring(1); // ucfirst
+            
+            const weeks = dateRange.getWeeks();
+            
+            const monthdays = [];
+            for (let n = 1; n <= dateRange.countDays(); n++) {
+                const day  = format_date('yyyy-mm', dateRange.start) + "-"+ n;
+                const date = new Date(day);
+                const is_dayoff = [0,6].includes(date.getDay());
+                monthdays.push({ day_of_month: n, is_dayoff });
+            }
+            
+            const startDay = dateRange.start.getDay() || 7;
+
+            const events = this.#events.filter( 
+                e => dateRange.intersects(e) 
+            );
+
+            months.push({ 
+                text, 
+                dateRange, 
+                weeks, 
+                monthdays,
+                startDay,
+                events
+            });
+        };
+        
+        const maxNumberOfWeeks = Math.max(...months.map(m => m.weeks.length));
+        for (let w = 1; w <= maxNumberOfWeeks ; w++) {
+            let weekDays = getWeekDays({dateLocale: this.#dateLocale});
+            if (w === maxNumberOfWeeks) {
+                const maxNumDay = Math.max(...months
+                    .filter(m => m.weeks.length === maxNumberOfWeeks)
+                    .map(m => m.dateRange.end.getDay() || 7)
+                );
+                weekDays = weekDays.filter((_, n) => n < maxNumDay);
+            }
+                        
+            days.push(
+                ...weekDays.map(function(weekDay, n) {
+                    const text = weekDay.substring(0, 1).toUpperCase();
+                    const numday_in_week = n + 1;
+                    return { text, numday_in_week  };
+                })
+            );
+                
+        }
+               
+        return { 
+            days, 
+            months
+        }
+        
+    }
+    
+}
 
 class MonthView {
     
@@ -244,4 +347,9 @@ class DayView extends AbstractDaysView {
     
 }
 
-module.exports = { DayView, WeekView, MonthView }
+module.exports = { 
+    DayView, 
+    WeekView, 
+    MonthView,
+    YearView
+}

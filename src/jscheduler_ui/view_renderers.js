@@ -5,7 +5,12 @@ const { composeMaps } = require('@src/utils/collection');
 const { compareSchedulerEventsByDaysCount } = require('@src/jscheduler_ui/models');
 const Mustache = require('mustache');
 
-const { DayView, WeekView, MonthView }  = require('./views');
+const { 
+    DayView, 
+    WeekView, 
+    MonthView,
+    YearView
+}  = require('./views');
 
 const templates = __MUSTACHE_TEMPLATES__;
 const partials  = __MUSTACHE_PARTIALS__;
@@ -22,6 +27,13 @@ function createViewRenderer( view, options ) {
     if ( view instanceof MonthView ) {
         return new RootDecorator(
             new MonthViewRenderer( options ),
+            options
+        );
+    }
+    
+    if ( view instanceof YearView ) {
+        return new RootDecorator(
+            new YearViewRenderer( options ),
             options
         );
     }
@@ -299,6 +311,68 @@ class MonthViewRenderer extends AbstractViewRenderer {
 
         return Mustache.render( templates['monthview'], vars, partials );
 
+    }
+    
+}
+
+class YearViewRenderer extends AbstractViewRenderer {
+    
+    render(view) {
+        
+        const vars = { ...view.vars };
+        
+        vars.bodyId = 'jscheduler_ui-' + getUniqueId();
+        
+        vars.row_colspan = vars.days.length;
+                
+        const yaxis_width_percent = 8;
+        
+        for (const day of vars.days) {
+            day.style = {
+                width: ( (100 - yaxis_width_percent) / vars.days.length ) + '%'
+            }
+        }
+        
+        vars.yaxis = {
+            style: {
+                width: yaxis_width_percent + '%'
+            }
+        }
+        
+        for (const month of vars.months) {
+            month.grid = this.withGridPartial({cols: vars.days.length});
+            
+            for (const i in month.monthdays) {
+                month.monthdays[i].width = (100 / (month.monthdays.length)) + '%';
+                month.monthdays[i].left  = (i * 100 / (month.monthdays.length)) + '%';
+            }
+            
+            const { startDay } = month;
+            month.style = {
+                left  : ((startDay - 1) * 100 / vars.days.length) + '%',
+                width : (month.dateRange.countDays() * 100 / vars.days.length) + '%'
+            }
+            
+            month.events_row = this.withEventsRowPartial({
+                eventDroppableTarget: '#' + vars.bodyId,
+                dateRange: month.dateRange,
+                events:    month.events.map(function({values}) {
+                    let { label, short_label } = values;
+                    if (short_label) {
+                        const dateRange = new DateRange(values.start, values.end);
+                        if (dateRange.countDays() <= 1) {
+                            label = short_label;
+                        }
+                    }
+                    return { ...values, label }
+                })
+            });
+            
+        }
+        
+        console.log('vars', vars);
+        
+        return Mustache.render( templates['yearview'], vars, partials);
     }
     
 }

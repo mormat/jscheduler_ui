@@ -42,6 +42,11 @@
     padding-left: 3px;
 }
 
+/**
+ * @todo the classname ends with 'vsep'
+ * but it is actually a horizontal separator
+ * same issue with classname ending with 'hsep'
+ */
 .jscheduler_ui-vsep {
     border-top: 1px dashed #d3d3d3;
 }
@@ -61,6 +66,34 @@
 
 .jscheduler_ui-month_view-numday-inactive {
     opacity: 0.5;
+}
+
+.jscheduler_ui-year_view thead th {
+    font-size: small;
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.jscheduler_ui-year_view tbody th {
+    font-size: small;
+}
+
+.jscheduler_ui-year_view tbody td {
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.jscheduler_ui-year_view .jscheduler_ui-hsep {
+    border-left: 1px dashed #d3d3d3;
+}
+
+.jscheduler_ui-year_view-monthday {
+    font-size: x-small;
+    text-align: right;
+    padding: 0 3px 0 0;
+}
+
+.jscheduler_ui-year_view-dayoff {
+    background-color: #eff9fa;
 }
 
 .jscheduler_ui-hsep {
