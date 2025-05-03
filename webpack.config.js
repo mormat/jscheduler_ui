@@ -63,6 +63,7 @@ module.exports = function (env, argv) {
                 '__MUSTACHE_TEMPLATES__': JSON.stringify({
                     'daysview':  get_template('daysview.html'),
                     'monthview': get_template('monthview.html'),
+                    'yearview':  get_template('yearview.html'),
                     'root':      get_template('root.html'),
                 }),
                 '__MUSTACHE_PARTIALS__':  JSON.stringify({

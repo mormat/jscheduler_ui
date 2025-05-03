@@ -1,5 +1,9 @@
-const { DateRange } = require('../src/utils/date');
-const { _groupDateRanges, _mapGroupedDateRanges } = require('../src/utils/date');
+const {
+    DateRange,
+    countWeeksInMonth,
+    _groupDateRanges, 
+    _mapGroupedDateRanges 
+} = require('../src/utils/date');
 
 describe("date-utils", () => {
     
@@ -133,6 +137,30 @@ describe("date-utils", () => {
                 length: expect.closeTo( 3/8 )
             });
         });
+        
+        test("Daterange.createForMonth", () => {
+           
+            const dateRange = DateRange.createForMonth("2025-02-10");
+            
+            expect(dateRange.start).toStrictEqual( 
+                new Date("2025-02-01 00:00:00.000")
+            );
+            expect(dateRange.end).toStrictEqual( 
+                new Date("2025-02-28 23:59:59.999")
+            );
+            
+        });
+        
+        test("DateRange.countDays()", () => {
+            
+            const dateRange = new DateRange(
+                "2025-02-01 00:00:00.000",
+                "2025-02-28 23:59:59.999"
+            )
+            
+            expect(dateRange.countDays()).toBe(28);
+            
+        })
         
     });
 

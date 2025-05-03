@@ -172,3 +172,62 @@ Feature: examples page
         When I open the "examples" page
         And I select the "Responsive rendering" example in "Misc"
         Then the page should contains an '.jscheduler_ui[data-breakpoint]' element
+
+    @year
+    Scenario: Year view - Init scheduler
+        When I open the "examples" page
+        And I select the "Init scheduler" example in "Year view"
+        Then I should see : 
+            | January   |
+            | February  |
+            | March     |
+            | April     |
+            | May       |
+            | June      |
+            | August    |
+            | September |
+            | October   |
+            | November  |
+            | December  |
+        And I should see "M T W T F S S M T W T F S S"
+
+    @year
+    Scenario: Year view - Displaying events
+        When I open the "examples" page
+        And I select the "Displaying events" example in "Year view"
+        Then the "task 1" event should be displayed in "January" from 5 to 7
+        And the "t2" event should be displayed in "March" from 10 to 10
+
+    @year
+    Scenario: Year view - Loading events with ajax
+        When I open the "examples" page
+        And I select the "Loading events with ajax" example in "Year view"
+        And I wait until I see "meeting"
+        Then the "meeting" event should be displayed in "August" from 15 to 15
+        And "./examples/events.json" should be loaded from "2024-01-01 00:00:00.000" to "2024-12-31 23:59:59.999"
+
+    @year
+    Scenario: Year view - Drag and drop events
+        When I open the "examples" page
+        And I select the "Drag and drop events" example in "Year view"
+        And I drag the "task 1" event to 12 of "February"
+        Then the "task 1" event should be displayed in "February" from 12 to 14
+
+    @year 
+    Scenario: Year view - Drag and drop events
+        When I open the "examples" page
+        And I select the "i18n" example in "Year view"
+        Then I should see : 
+            | Janvier   |
+            | Février   |
+            | Mars      |
+            | Avril     |
+            | Mai       |
+            | Juin      |
+            | Juillet   |
+            | Août      |
+            | Septembre |
+            | Octobre   |
+            | Novembre  |
+            | Décembre  |
+        And I should see "L M M J V S D"

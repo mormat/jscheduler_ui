@@ -14,38 +14,90 @@ Feature: demo page
         When I click on "day"
         Then the scheduler should be in day view
 
-    Scenario: Browse dates in week view
-        When I open the "index" page
-        And I click on "day"
-        Then I should see "Tuesday, August 13, 2024"
-        When I click on ">"
-        Then I should see "Wednesday, August 14, 2024"
-        When I click on "today"
-        Then I should see "Tuesday, August 13, 2024"
-        When I click on "<"
-        Then I should see "Monday, August 12, 2024"
+    Rule: Browsing dates in day view
+        Background:
+            When I open the "index" page
+            And I click on "day"
 
-    Scenario: Browse dates in week view
-        When I open the "index" page
-        Then I should see "Aug 12, 2024 - Aug 18, 2024"
-        When I click on ">"
-        Then I should see "Aug 19, 2024 - Aug 25, 2024"
-        When I click on "today"
-        Then I should see "Aug 12, 2024 - Aug 18, 2024"
-        When I click on "<"
-        Then I should see "Aug 5, 2024 - Aug 11, 2024"
+        Example:
+            Then I should see "Tuesday, August 13, 2024"
+            
+        Example:
+            When I click on ">"
+            Then I should see "Wednesday, August 14, 2024"
+
+        Example:
+            When I click on ">"
+            And I click on "today"
+            Then I should see "Tuesday, August 13, 2024"
+
+        Example:
+            When I click on "<"
+            Then I should see "Monday, August 12, 2024"
+
+    Rule: Browsing dates in week view
+        Background:
+            When I open the "index" page            
+
+        Example: 
+            Then I should see "Aug 12, 2024 - Aug 18, 2024"
+
+        Example: 
+            When I click on ">"
+            Then I should see "Aug 19, 2024 - Aug 25, 2024"
+
+        Example: 
+            When I click on "<"
+            Then I should see "Aug 5, 2024 - Aug 11, 2024"
+
+        Example:
+            When I click on ">"
+            When I click on "today"
+            Then I should see "Aug 12, 2024 - Aug 18, 2024"
         
-    Scenario: Browse dates in month view
-        When I open the "index" page
-        And I click on "month"
-        Then I should see "August 2024"
-        When I click on ">"
-        Then I should see "September 2024"
-        When I click on "today"
-        Then I should see "August 2024"
-        When I click on "<"
-        Then I should see "July 2024"
+    Rule: Browsing dates in month view
+        Background:
+            When I open the "index" page
+            And I click on "month"
 
+        Example:
+            Then I should see "August 2024"
+
+        Example:
+            When I click on ">"
+            Then I should see "September 2024"
+
+        Example:
+            When I click on "<"
+            Then I should see "July 2024"
+
+        Example:
+            When I click on ">"
+            And I click on "today"
+            Then I should see "August 2024"
+
+    @year
+    Rule: Browsing dates in year view
+        Background:
+            When I open the "index" page
+            And I click on "year"
+
+        Example:
+            Then I should see "2024"
+
+        Example:
+            When I click on ">"
+            Then I should see "2025"
+
+        Example:
+            When I click on "<"
+            Then I should see "2023"
+
+        Example:
+            When I click on ">"
+            And I click on "today"
+            Then I should see "2024"
+            
     # All the 'click', 'resize' and 'drop' listeners should still work if they are put together
     Scenario: Event should be clickable
         When I open the "index" page
