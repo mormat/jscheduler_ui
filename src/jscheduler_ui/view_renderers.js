@@ -17,15 +17,28 @@ const partials  = __MUSTACHE_PARTIALS__;
 
 function createViewRenderer( view, options ) {
     
-    if (view instanceof DayView || view instanceof WeekView) {
+    if (view instanceof DayView) {
         return new RootDecorator(
+            options.showTimeline ?
+            new DayTimelineRenderer( options ) :
             new DaysViewRenderer( options ),
             options
-        );
+        )
+    }
+    
+    if (view instanceof WeekView) {
+        return new RootDecorator(
+            options.showTimeline ?
+            new WeekTimelineRenderer( options ) :
+            new DaysViewRenderer( options ),
+            options
+        )
     }
     
     if ( view instanceof MonthView ) {
         return new RootDecorator(
+            options.showTimeline ?
+            new MonthTimelineRenderer( options ):
             new MonthViewRenderer( options ),
             options
         );
@@ -33,6 +46,8 @@ function createViewRenderer( view, options ) {
     
     if ( view instanceof YearView ) {
         return new RootDecorator(
+            options.showTimeline ?
+            new YearTimelineRenderer( options ):
             new YearViewRenderer( options ),
             options
         );
@@ -72,7 +87,11 @@ class AbstractViewRenderer {
         return this.#translations;
     }
     
-    withEventsColumnPartial( { events, dateRange, eventDroppableTarget } ) {
+    withEventsColumnPartial( { 
+        events, 
+        dateRange, 
+        eventDroppableTarget 
+    } ) {
 
         const groupedEvents = groupDateRangedItemsByPosition(
             events.filter(e => dateRange.contains(e))
@@ -111,13 +130,20 @@ class AbstractViewRenderer {
 
     }
 
-    withEventsRowPartial( { events, dateRange, eventDroppableTarget } ) {
+
+
+    withEventsRowPartial( { 
+        events, 
+        dateRange, 
+        eventDroppableTarget,
+        dateRangeConverter = getDateRangeByDay
+    } ) {
+
 
         const sortedEvents = [...events].sort(compareSchedulerEventsByDaysCount);
         const dateRangesByEvents = new Map(
             sortedEvents.map((event) => {
-                const start = new Date(new Day(event.start) + ' 00:00:00.000');
-                const end   = new Date(new Day(event.end)   + ' 23:59:59.999');
+                const { start, end } = dateRangeConverter(event);
                 return [event, new DateRange(start, end)];
             })
         );
@@ -136,8 +162,7 @@ class AbstractViewRenderer {
                     return null;
                 }
 
-                const start = new Day(intersect.start) + ' 00:00:00';
-                const end   = new Day(intersect.end)   + ' 23:59:59';
+                const { start, end } = dateRangeConverter(intersect);
 
                 const eventOffset = offsetLengthByEvents.get(event).offset;
                 const eventLength = offsetLengthByEvents.get(event).length;
@@ -370,8 +395,6 @@ class YearViewRenderer extends AbstractViewRenderer {
             
         }
         
-        console.log('vars', vars);
-        
         return Mustache.render( templates['yearview'], vars, partials);
     }
     
@@ -407,5 +430,267 @@ const bootstrapColors = [
     'primary', 'secondary', 'success', 'danger', 
     'warning', 'info', 'light', 'dark', 'white'
 ]
+
+function getDateRangeByDay({ start, end }) {
+    return {
+        start: new Day(start) + ' 00:00:00.000',
+        end:   new Day(end)   + ' 23:59:59.999'
+    }
+}
+
+function getDateRangeByMonth({ start, end }) {
+    
+    const endDate = new Date(end);
+    endDate.setDate(1);
+    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(endDate.getDate() - 1);
+    return {
+        start: format_date('yyyy-mm', start)   + '-01 00:00:00.000',
+        end:   format_date('yyyy-mm-dd', endDate) + ' 23:59:59.999'
+    }
+}
+
+function getDateRangeByHour({ start, end }) {
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    startDate.setMinutes(0);
+    endDate.setMinutes(0);
+    endDate.setHours(1 + endDate.getHours());
+    endDate.setMinutes(-1);
+    console.log({
+        startDate: format_date('yyyy-mm-dd hh:ii', startDate) + ':00.000', 
+        endDate:   format_date('yyyy-mm-dd hh:ii', endDate)   + ':59.999'
+    });
+    return {
+        start: format_date('yyyy-mm-dd hh:ii', start)   + ':00.000',
+        end:   format_date('yyyy-mm-dd hh:ii', endDate) + ':59.999'
+    }
+}
+
+
+class AbstractTimelineRenderer extends AbstractViewRenderer {
+    
+    get yaxisWidthPercent() {
+        return 15;
+    }
+    
+    getCols() {
+        return [];
+    }
+    
+    getData() {
+        return {};
+    }
+    
+    getEvents() {
+        return [];
+    }
+    
+    getEventsDateRangeConverter() {
+        return getDateRangeByDay;
+    }
+    
+    render(view) {
+        const vars = { ...view.vars };
+        
+        const yaxis_width_percent = 15;
+        
+        const dateRange = view.eventsDateRange;
+        const events    = this.getEvents(view).filter(
+            e => dateRange.intersects(e)
+        );
+        
+        const sections = [ ...vars.sections ];
+        
+        vars.xaxis = {
+            cols: this.getCols(view),
+        }
+        
+        vars.yaxis = {
+            style: {
+                width: yaxis_width_percent + '%'
+            },
+            rows: sections.map((section) => {
+                const { text } = section;
+
+                const events_row = this.withEventsRowPartial({
+                    eventDroppableTarget: '#foobar',
+                    dateRange: dateRange,
+                    events:    events.filter(
+                        e => e.values.section_id == section.id
+                    ),
+                    dateRangeConverter: this.getEventsDateRangeConverter(),
+                });
+                
+                const grid = this.withGridPartial(
+                    { cols: vars.xaxis.cols.length }
+                );
+                
+                return { text, events_row, grid }
+            })
+        }
+        
+        vars.data = this.getData();
+        
+        console.log('vars', vars);
+        
+        return Mustache.render( templates['timeline'], vars, partials);
+    }
+    
+}
+
+class DayTimelineRenderer extends AbstractTimelineRenderer {
+    
+    getData() {
+        return {'type_view': 'day'};
+    }
+    
+    getEvents( { vars }) {
+        return [
+            [...vars.spannedEvents],
+            ...vars.days.map(d => d.events)
+        ].flat();
+    }
+    
+    getCols() {
+        const cols = [];
+        
+        for (let i = 0; i < 24; i++) {
+            const strtime = `1970-01-01 ${i}:00`;
+            const text    = format_date('hh', strtime);
+            cols.push({ text })
+        }
+        
+        return cols;
+    }
+    
+    getEventsDateRangeConverter() {
+        return getDateRangeByHour;
+    }
+    
+}
+
+class WeekTimelineRenderer extends AbstractTimelineRenderer {
+    
+    getData() {
+        return {'type_view': 'week'};
+    }
+    
+    getEvents( { vars }) {
+        return [
+            [...vars.spannedEvents],
+            ...vars.days.map(d => d.events)
+        ].flat();
+    }
+    
+    getCols( { vars }) {
+        return vars.days.map((d) => {
+
+            const text = new Date(d.value).toLocaleString(
+                'en', 
+                { weekday: 'short' }
+            )
+            const subtext = new Date(d.value).toLocaleString(
+                'en', 
+                { day:'numeric' }
+            )
+            const style = {
+                width: ((100 - this.yaxisWidthPercent) / 7) + '%',
+            }
+
+            return { text, subtext, style }
+
+        });
+    }
+    
+}
+
+class MonthTimelineRenderer extends AbstractTimelineRenderer {
+    
+    getData() {
+        return {'type_view': 'month'};
+    }
+    
+    getEvents( { vars }) {
+        const events = [];
+        for (const week of vars.weeks) {
+            events.push(...week.events);
+        }
+        
+        return events;
+    }
+    
+    getCols( { vars }) {
+    
+        const cols = [];
+        
+        for (const week of vars.weeks) {
+            for (const day of week.days) {
+                const { date } = day.value ;
+                const text = date.toLocaleString(
+                    'en',
+                    { weekday: 'short' }
+                )[0];
+                const subtext = date.toLocaleString(
+                    'en',
+                    { day: 'numeric' }
+                )
+                const disabled = !day.isCurrentMonth;
+        
+                const style = {
+                    width: ((100 - this.yaxisWidthPercent) / (vars.weeks.length * 7)) + '%',
+                }
+        
+                cols.push({ text, subtext, style, disabled });
+            }
+        }
+        
+        return cols;
+        
+    }
+    
+}
+
+class YearTimelineRenderer extends AbstractTimelineRenderer {
+        
+    getData() {
+        return {'type_view': 'year'};
+    }
+    
+    getEvents( { vars }) {
+        const events = [];
+        for (const month of vars.months) {
+            events.push( ...month.events );
+        }
+        return events;
+    }
+        
+    getCols( ) {
+        
+        const cols = [];
+        
+        for (let i = 1; i <= 12; i++) {
+            const date = new Date(`1970-${i}-01`);
+            const text = date.toLocaleString(
+                "en",
+                { month: 'short' }
+            );
+            const style = {
+                width: ((100 - this.yaxisWidthPercent) / 12) + '%',
+            }
+            cols.push({ text, style });
+        }
+        
+        return cols;
+        
+    }
+    
+    getEventsDateRangeConverter() {
+        return getDateRangeByMonth;
+    }
+    
+}
+
 
 module.exports = { createViewRenderer }

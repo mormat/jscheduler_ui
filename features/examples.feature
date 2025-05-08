@@ -88,6 +88,26 @@ Feature: examples page
         Then the "presentation" event should be displayed at "Thu, Oct 3" from "09:00" to "16:00"
         And I should see "presentation event resized to 16:00"
 
+    @week @timeline
+    Rule: Week view - Timeline display
+        Background:
+            When I open the "examples" page
+            And I select the "Timeline display" example in "Week view"
+
+        Example:
+            Then I should see "Mon 1 Tue 2 Wed 3 Thu 4 Fri 5 Sat 6 Sun 7"
+            And I should see :
+                | Section 1 |
+                | Section 2 |
+                | Section 3 |
+                | Section 4 |
+
+        
+        Example:
+            Then the "some task" event should be displayed from "Tue 2" to "Tue 2" in "Section 2"
+            And the "spanned" event should be displayed from "Tue 2" to "Wed 3" in "Section 3"
+
+
     Scenario: Month view - Init scheduler
         When I open the "examples" page
         And I select the "Init scheduler" example in "Month view"
@@ -125,11 +145,29 @@ Feature: examples page
 
     @i18n
     Scenario: Month view - i18n
-    When I open the "examples" page
-    And I select the "i18n" example in "Month view"
-    Then I should see "maggio 2023"
-    And I should see "lun mar mer gio ven sab dom"
-    And I should see a "Modifica l'evento" tooltip
+        When I open the "examples" page
+        And I select the "i18n" example in "Month view"
+        Then I should see "maggio 2023"
+        And I should see "lun mar mer gio ven sab dom"
+        And I should see a "Modifica l'evento" tooltip
+
+    @month @timeline
+    Rule: Month view - Timeline display
+        Background:
+            When I open the "examples" page
+            And I select the "Timeline display" example in "Month view"
+
+        Example:
+            Then I should see "W 31 T 1 F 2 S 3"
+            And I should see "T 29 F 1"
+            And I should see :
+                | Section 1 |
+                | Section 2 |
+                | Section 3 |
+                | Section 4 |
+        
+        Example:
+            Then the "some task" event should be displayed from "S 4" to "T 8" in "Section 2"
 
     @crud
     Scenario: CRUD operations - Creating an event
@@ -231,3 +269,39 @@ Feature: examples page
             | Novembre  |
             | Décembre  |
         And I should see "L M M J V S D"
+
+    @year @timeline
+    Rule: Year view - Timeline display
+        Background:
+            When I open the "examples" page
+            And I select the "Timeline display" example in "Year view"
+
+        Example:
+            Then I should see "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
+            And I should see :
+                | Section 1 |
+                | Section 2 |
+                | Section 3 |
+                | Section 4 |
+        
+        Example:
+            Then the "some task" event should be displayed from "Feb" to "Feb" in "Section 2"
+            And the "long task" event should be displayed from "Apr" to "Aug" in "Section 3"
+
+    @day @timeline
+    Rule: Day view - Timeline display
+        Background:
+            When I open the "examples" page
+            And I select the "Timeline display" example in "Day view"
+
+        Example:
+            Then I should see "00 01 02 03 04 05 06"
+            And I should see "20 21 22 23"
+            And I should see :
+                | Section 1 |
+            | Section 2 |
+            | Section 3 |
+            | Section 4 |
+            
+        Example:
+            Then the "some task" event should be displayed from "10" to "11" in "Section 2"
