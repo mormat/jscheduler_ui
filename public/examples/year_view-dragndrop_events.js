@@ -22,6 +22,18 @@ jscheduler_ui.render(element, {
             ')';
             
     },
+    onEventDrop: function(vars) {
+        var from = jscheduler_ui.utils.format_date(
+            'yyyy-mm-dd hh:ii', 
+            vars.start
+        );
+        var to = jscheduler_ui.utils.format_date(
+            'yyyy-mm-dd hh:ii', 
+            vars.end
+        );
+        document.getElementById('comments').innerHTML = 
+            vars.label + ' is now from ' + from + ' to ' + to; 
+    },
     currentDate: "2025-10-10"
 });
 

@@ -11,11 +11,18 @@ class YearView {
     #currentDate;
     #dateLocale;
     #events;
+    #groups;
     
-    constructor({ currentDate, dateLocale, events }) {
+    constructor({ 
+        currentDate, 
+        dateLocale, 
+        events,
+        groups = []
+    }) {
         this.#currentDate = currentDate;
         this.#dateLocale  = dateLocale;
         this.#events      = events;
+        this.#groups    = groups;
     }
         
     get label() {
@@ -97,7 +104,8 @@ class YearView {
                
         return { 
             days, 
-            months
+            months,
+            groups: this.#groups
         }
         
     }
@@ -109,11 +117,18 @@ class MonthView {
     #currentDate;
     #dateLocale;
     #events;
+    #groups;
     
-    constructor({ currentDate, dateLocale, events }) {
+    constructor({ 
+        currentDate, 
+        dateLocale, 
+        events, 
+        groups 
+    }) {
         this.#currentDate = currentDate;
         this.#dateLocale  = dateLocale;
         this.#events      = events;
+        this.#groups    = groups;
     }
     
     get eventsDateRange() {
@@ -184,7 +199,11 @@ class MonthView {
             )
         });
         
-        return { weekdays, weeks }
+        return { 
+            weekdays, 
+            weeks,
+            groups: this.#groups
+        }
         
     }
     
@@ -197,13 +216,22 @@ class AbstractDaysView {
     #maxHour; 
     #dateLocale;
     #events;
+    #groups;
     
-    constructor( { eventsDateRange, minHour, maxHour, dateLocale, events }) {
+    constructor( { 
+        eventsDateRange, 
+        minHour, 
+        maxHour, 
+        dateLocale, 
+        events,
+        groups = []
+    }) {
         this.#eventsDateRange = eventsDateRange;
         this.#minHour = minHour;
         this.#maxHour = maxHour;
         this.#dateLocale = dateLocale;
-        this.#events = events;
+        this.#events   = events;
+        this.#groups = groups;
     }
     
     get eventsDateRange() {
@@ -277,7 +305,15 @@ class AbstractDaysView {
             return (days.findIndex( filter ) === -1);
         });
         
-        return { hours, days, spannedEvents, minHour, maxHour, eventsDateRange }
+        return { 
+            hours, 
+            days, 
+            spannedEvents, 
+            minHour, 
+            maxHour, 
+            eventsDateRange,
+            groups: this.#groups
+        }
         
     }
 }

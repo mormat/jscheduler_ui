@@ -32,17 +32,6 @@
                           "
                 >
                     
-                    {{ #daysoff }}
-                        <div class="jscheduler_ui-year_view-dayoff"
-                             style = "position: absolute;
-                                      top: 0;
-                                      left: {{ style.left }};
-                                      width: {{ style.width }};
-                                      bottom: 0;
-                             "
-                        ></div>
-                    {{ /daysoff }}
-                    
                     <div style="position: absolute;
                                 top: 0;
                                 bottom: 0;
@@ -54,7 +43,7 @@
                         
                         {{ #monthdays }}
                             {{ #is_dayoff }}
-                            <div class="jscheduler_ui-year_view-dayoff"
+                            <div class="jscheduler_ui-dayoff"
                                  style="position: absolute;
                                         top: 0;
                                         bottom: 0;

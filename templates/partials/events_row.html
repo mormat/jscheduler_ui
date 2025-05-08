@@ -1,11 +1,12 @@
 <div data-daterange_start = "{{ dateRange.start }}"
      data-daterange_end   = "{{ dateRange.end   }}"
-     style = "
-        width: 100%;
-        height: {{ style.height }};
-        position: relative
-     "
+     style = "width: 100%;
+              height: {{ style.height }};
+              position: relative
+             "
+     {{# attrs }}{{key}}="{{value}}" {{/ attrs }}
 >
+ 
     {{# for_each_events }}
     <div class = "jscheduler_ui-event jscheduler_ui-event-timeline {{ className }}"  
          style = "
@@ -38,14 +39,14 @@
         {{# if_clickable }}
         <span style="position: relative; z-index: 2">
             <a href="#" style="color: {{ event.color }}">
-                {{ event.label }}
+                {{ description }}
             </a>
         </span>
         {{/ if_clickable }}
         
         {{^ if_clickable }}
         <span style="color: {{ event.color }}">
-            {{ event.label }}
+            {{ description }}
         </span>
         {{/ if_clickable }}
 

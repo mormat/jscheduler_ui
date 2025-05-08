@@ -9,6 +9,7 @@ function getColumnDragAndDropObserver( { parentElement } ) {
     function onDrag( { mouseEvent, droppable } ) {
         clone = parentElement.cloneNode(true);
         clone.style['display'] = 'none';
+        clone.classList.add('jscheduler_ui-dragged');
         document.body.appendChild(clone);
                 
         // @targetRole should not be in dataset
@@ -66,6 +67,7 @@ function getTimelineDragAndDropObserver( { parentElement } ) {
         clone = parentElement.cloneNode(true);
         clone.style['display'] = 'none';
         clone.style['max-height'] = '22px';
+        clone.classList.add('jscheduler_ui-dragged');
         document.body.appendChild(clone);
     }
     
@@ -79,10 +81,10 @@ function getTimelineDragAndDropObserver( { parentElement } ) {
             droppableData['daterange_start'],
             droppableData['daterange_end'],
         );
-
+        
         const currentValue = draggable.getCurrentValue();
-        const start = format_date("yyyy-mm-dd", currentValue.start) + ' 00:00:00';
-        const end   = format_date("yyyy-mm-dd", currentValue.start) + ' 23:59:59';
+        const { start, end } = (new DateRange(currentValue.start, currentValue.start))
+                .fill(droppableData['column_daterange_type']);
         
         const leftPercent  = Math.max(constraint.calcPercentPosition(start) / 100, 0);
         const widthPercent = Math.min(constraint.calcPercentPosition(end  ) / 100, 1) - leftPercent;
@@ -93,6 +95,7 @@ function getTimelineDragAndDropObserver( { parentElement } ) {
         clone.style['top']      = rect.y + 'px';
         clone.style['width']   = (rect.width * widthPercent) + 'px';
         clone.style['left']    = (rect.x + rect.width * leftPercent) + 'px';
+        clone.style['min-width'] = '50px';
         
         parentElement.style['display'] = 'none';
 

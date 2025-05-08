@@ -2,7 +2,9 @@ const {
     DateRange,
     countWeeksInMonth,
     _groupDateRanges, 
-    _mapGroupedDateRanges 
+    _mapGroupedDateRanges,
+    DateStringFormatter,
+    format_date
 } = require('../src/utils/date');
 
 describe("date-utils", () => {
@@ -160,8 +162,94 @@ describe("date-utils", () => {
             
             expect(dateRange.countDays()).toBe(28);
             
+        });
+        
+        test.each([
+            ['day',      "2024-02-15 00:00:00.000", "2025-03-18 23:59:59.999"],
+            ['day_hour', "2024-02-15 10:00:00.000", "2025-03-18 22:59:59.999"],
+            ['month',    "2024-02-01 00:00:00.000", "2025-03-31 23:59:59.999"]
+            
+        ])(
+            "DateRange.fill(%s) should return {start: %s, end: %d}",
+            function(filLType, expectedStart, expectedEnd) {
+                const dateRange = new DateRange(
+                    "2024-02-15 10:32:00.000",
+                    "2025-03-18 22:12:15.666"
+                )
+
+                const actual = dateRange.fill(filLType);
+                expect(actual).toBeInstanceOf(DateRange);
+                expect(actual.start).toStrictEqual( new Date(expectedStart) );
+                expect(actual.end).toStrictEqual( new Date(expectedEnd) );
+            }
+        )
+
+        test("DateRange.fill('month') should limit 28 february", () => {
+            const dateRange = new DateRange(
+                "2025-02-15 10:32:00.000",
+                "2025-02-16 22:12:15.666"
+            );
+    
+            const actual = dateRange.fill('month');
+            expect(actual.end).toStrictEqual( 
+                new Date( "2025-02-28 23:59:59.999" ) 
+            );
+        })
+        
+        test("DateRange.fill('day_hour') specific case", () => {
+            const dateRange = new DateRange(
+                "2025-02-15 10:00:00.000",
+                "2025-02-15 12:00:00.000"
+            );
+    
+            const actual = dateRange.fill('day_hour');
+            expect(actual.end).toStrictEqual( 
+                new Date( "2025-02-15 11:59:59.999" ) 
+            );
+    
         })
         
     });
-
+    
+    describe.each([
+        ['1970-01-01 00:00:00.000', 'day',      '2024-12-02 10:00',    '2024-12-02 00:00:00.000'],
+        ['1970-01-01 00:00:00.000', 'month',    '2024-12-02 10:00',    '2024-12-01 00:00:00.000'],
+        ['1970-01-01 00:00:00.000', 'day_hour', '2024-12-02 10:12',    '2024-12-02 10:00:00.000'],
+    ])(
+        'new DateStringFormatter(%s).with(%s, %s) should return %s', 
+        function(dateValue, withType, withValue, expectedString) {
+        
+            test("using string formatted dates", () => {
+                const instance = new DateStringFormatter(dateValue);
+                const actual = instance.with(withType, withValue);
+            
+                expect(actual).toBeInstanceOf(DateStringFormatter);
+                expect(String(actual)).toBe(expectedString);
+            });
+        
+            test("using new Date() as input", () => {
+                const instance = new DateStringFormatter( new Date(dateValue) );
+                const actual = instance.with(withType, new Date(withValue) );
+            
+                expect(actual).toBeInstanceOf(DateStringFormatter);
+                expect(String(actual)).toBe(expectedString);
+            });
+            
+        }
+    );
+    
+    // @todo missing test cases for other formats
+    test.each([
+        ['uuu', "2024-12-02 12:15:10.159", '159'],
+        ['uuu', "2024-12-02 12:15:10.009", '009'],
+        ['hh:ii:ss.uuu', "2024-12-02 12:15:10.009", '12:15:10.009'],
+        ['yyyy-mm-dd hh:ii:ss.uuu', "2024-12-02 12:15:10.009", '2024-12-02 12:15:10.009'],
+    ])('format_date(%d,%d) should return %s', (format, date, expected) => {
+       
+        expect(format_date(format, date)).toBe(expected);
+        
+        expect(format_date(format, new Date(date) )).toBe(expected);
+        
+    });
+    
 });

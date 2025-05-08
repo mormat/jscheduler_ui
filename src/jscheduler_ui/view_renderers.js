@@ -17,15 +17,28 @@ const partials  = __MUSTACHE_PARTIALS__;
 
 function createViewRenderer( view, options ) {
     
-    if (view instanceof DayView || view instanceof WeekView) {
+    if (view instanceof DayView) {
         return new RootDecorator(
+            options.showGroups ?
+            new DayGroupsRenderer( options ) :
             new DaysViewRenderer( options ),
             options
-        );
+        )
+    }
+    
+    if (view instanceof WeekView) {
+        return new RootDecorator(
+            options.showGroups ?
+            new WeekGroupsRenderer( options ) :
+            new DaysViewRenderer( options ),
+            options
+        )
     }
     
     if ( view instanceof MonthView ) {
         return new RootDecorator(
+            options.showGroups ?
+            new MonthGroupsRenderer( options ):
             new MonthViewRenderer( options ),
             options
         );
@@ -33,6 +46,8 @@ function createViewRenderer( view, options ) {
     
     if ( view instanceof YearView ) {
         return new RootDecorator(
+            options.showGroups ?
+            new YearGroupsRenderer( options ):
             new YearViewRenderer( options ),
             options
         );
@@ -72,7 +87,11 @@ class AbstractViewRenderer {
         return this.#translations;
     }
     
-    withEventsColumnPartial( { events, dateRange, eventDroppableTarget } ) {
+    withEventsColumnPartial( { 
+        events, 
+        dateRange, 
+        eventDroppableTarget 
+    } ) {
 
         const groupedEvents = groupDateRangedItemsByPosition(
             events.filter(e => dateRange.contains(e))
@@ -111,14 +130,21 @@ class AbstractViewRenderer {
 
     }
 
-    withEventsRowPartial( { events, dateRange, eventDroppableTarget } ) {
-
+    withEventsRowPartial( { 
+        events, 
+        dateRange, 
+        eventDroppableTarget,
+        columnDateRangeType = 'day',
+        groupId = undefined,
+        labelType,
+    } ) {
+        
         const sortedEvents = [...events].sort(compareSchedulerEventsByDaysCount);
         const dateRangesByEvents = new Map(
             sortedEvents.map((event) => {
-                const start = new Date(new Day(event.start) + ' 00:00:00.000');
-                const end   = new Date(new Day(event.end)   + ' 23:59:59.999');
-                return [event, new DateRange(start, end)];
+                const dateRange = DateRange.fromObject(event)
+                    .fill( columnDateRangeType );
+                return [event, dateRange];
             })
         );
         const offsetLengthByEvents = composeMaps(
@@ -128,6 +154,13 @@ class AbstractViewRenderer {
             )
         );
 
+        const attr = {
+            'data-column_daterange_type': columnDateRangeType,
+        }
+        if (groupId !== undefined) {
+            attr['data-group_id'] = groupId;
+        }
+
         return {
             
             for_each_events: events.map ( ( event ) => {
@@ -136,8 +169,7 @@ class AbstractViewRenderer {
                     return null;
                 }
 
-                const start = new Day(intersect.start) + ' 00:00:00';
-                const end   = new Day(intersect.end)   + ' 23:59:59';
+                const { start, end } = intersect.fill(columnDateRangeType);
 
                 const eventOffset = offsetLengthByEvents.get(event).offset;
                 const eventLength = offsetLengthByEvents.get(event).length;
@@ -156,11 +188,20 @@ class AbstractViewRenderer {
                     style.backgroundColor = event.bgColor;
                 }
 
+                let description = event.label;
+                if (labelType) {
+                    const { labels = {} } = event.values;
+                    if (labels[labelType]) {
+                        description = labels[labelType]
+                    }
+                }
+
                 return {
                     if_draggable: this.#eventsDraggable,
                     if_clickable: this.#eventsClickable,
                     if_editable:  this.#eventsEditable,
-                    event, eventDroppableTarget, style, className
+                    event, eventDroppableTarget, style, className,
+                    description
                 }
             }).filter(i => i),
             
@@ -170,8 +211,11 @@ class AbstractViewRenderer {
             },
             style: {
                 height: '100%'
-            }
-
+            },
+            attr,
+            attrs: Object.entries(attr).map(function([key, value]) {
+                return {key, value}
+            })
         };
 
     }
@@ -230,6 +274,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
                 dateRange: day.dateRange,
                 eventDroppableTarget: '#' + vars.bodyId
             });
+            day.is_dayoff = [0,6].includes(day.value.date.getDay());
         }
 
         vars.hours[0]._days = vars.days;
@@ -264,7 +309,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
             }
             vars.events_row_height = (22 / minEventHeight) + 'px'
         }
-
+        
         return Mustache.render( templates['daysview'], vars, partials);
     }
     
@@ -307,6 +352,16 @@ class MonthViewRenderer extends AbstractViewRenderer {
                 }
 
             }
+            
+            week.daysoff = week.days.map((v, k) => {
+                const { date } = v.value;
+                const style = {   
+                    width: ( 100 / 7 )     + '%',
+                    left:  ( k * 100 / 7 ) + '%'
+                }
+                return { date, style }
+            }).filter(v => [0, 6].includes(v.date.getDay()) );
+         
         }
 
         return Mustache.render( templates['monthview'], vars, partials );
@@ -370,8 +425,6 @@ class YearViewRenderer extends AbstractViewRenderer {
             
         }
         
-        console.log('vars', vars);
-        
         return Mustache.render( templates['yearview'], vars, partials);
     }
     
@@ -407,5 +460,296 @@ const bootstrapColors = [
     'primary', 'secondary', 'success', 'danger', 
     'warning', 'info', 'light', 'dark', 'white'
 ]
+
+class AbstractGroupsRenderer extends AbstractViewRenderer {
+    
+    get yaxisWidthPercent() {
+        return 15;
+    }
+    
+    getCols() {
+        return [];
+    }
+    
+    getAttr() {
+        return {
+            id: 'jscheduler_ui-' + getUniqueId(),
+        };
+    }
+    
+    getEvents() {
+        return [];
+    }
+    
+    getColumnTimeRangeType() {
+       return 'day' 
+    }
+    
+    getDaysOff() {
+        return [];
+    }
+    
+    render(view) {
+        const vars = { ...view.vars };
+        
+        const yaxis_width_percent = 15;
+        
+        const dateRange = view.eventsDateRange;
+        const events    = this.getEvents(view).filter(
+            e => dateRange.intersects(e)
+        );
+        
+        const groups = [ ...vars.groups ];
+        const bySection = function(group_id) {
+            return s => s.id == group_id;
+        }
+        
+        for (const event of events.filter(e => e.values.group_id)) {
+            const group_id = event.values.group_id;
+            if (!groups.find(bySection(group_id))) {    
+                groups.push({
+                    id:   group_id, 
+                    text: group_id
+                });
+            }
+        }
+        
+        if (events.find(e => !e.values.group_id)) {
+            groups.push({id: null, text : ''});
+        }
+        
+        vars.attr = this.getAttr();
+        
+        vars.xaxis = {
+            cols: this.getCols(view),
+        }
+        
+        vars.yaxis = {
+            style: {
+                width: yaxis_width_percent + '%'
+            },
+            rows: groups.map((section) => {
+                const { text } = section;
+
+                const events_row = this.withEventsRowPartial({
+                    eventDroppableTarget: '#' + vars.attr['id'],
+                    dateRange: dateRange,
+                    events:    events.filter(
+                        e => (e.values.group_id || null) == section.id
+                    ),
+                    columnDateRangeType: this.getColumnTimeRangeType(),
+                    groupId: section.id,
+                    labelType: 'showGroups'
+                });
+                
+                const grid = this.withGridPartial(
+                    { cols: vars.xaxis.cols.length }
+                );
+
+                const daysoff = this.getDaysOff(view);
+                
+                return { text, events_row, grid, daysoff }
+            })
+        }
+        
+        return Mustache.render( templates['groups'], vars, partials);
+    }
+    
+}
+
+class DayGroupsRenderer extends AbstractGroupsRenderer {
+    
+    getAttr() {
+        return {
+            ...super.getAttr(),
+            'data_type_view': 'day'
+        };
+    }
+    
+    getEvents( { vars }) {
+        return [
+            [...vars.spannedEvents],
+            ...vars.days.map(d => d.events)
+        ].flat();
+    }
+    
+    getCols() {
+        const cols = [];
+        
+        for (let i = 0; i < 12; i++) {
+            const strtime = `1970-01-01 ${i * 2}:00`;
+            const text    = format_date('hh:ii', strtime);
+            cols.push({ text })
+        }
+        
+        return cols;
+    }
+    
+    getColumnTimeRangeType() {
+       return 'day_hour' 
+    }
+    
+}
+
+class WeekGroupsRenderer extends AbstractGroupsRenderer {
+    
+    getAttr() {
+        return {
+            ...super.getAttr(),
+            'data_type_view': 'week'
+        };
+    }
+    
+    getEvents( { vars }) {
+        return [
+            [...vars.spannedEvents],
+            ...vars.days.map(d => d.events)
+        ].flat();
+    }
+    
+    getCols( { vars }) {
+        return vars.days.map((d) => {
+
+            const text = new Date(d.value).toLocaleString(
+                'en', 
+                { weekday: 'short' }
+            )
+            const subtext = new Date(d.value).toLocaleString(
+                'en', 
+                { day:'numeric' }
+            )
+            const style = {
+                width: ((100 - this.yaxisWidthPercent) / 7) + '%',
+            }
+
+            return { text, subtext, style }
+
+        });
+    }
+    
+    getDaysOff( { vars }) {
+        return vars.days.map((v, k) => {
+            const { date } = v.value;
+            const style = {   
+                width: ( 100 / 7 )     + '%',
+                left:  ( k * 100 / 7 ) + '%'
+            }
+            return { date, style }
+        }).filter(v => [0, 6].includes(v.date.getDay()) );
+    }
+    
+}
+
+class MonthGroupsRenderer extends AbstractGroupsRenderer {
+    
+    getAttr() {
+        return {
+            ...super.getAttr(),
+            'data_type_view': 'month'
+        };
+    }
+    
+    getEvents( { vars }) {
+        const events = [];
+        for (const week of vars.weeks) {
+            events.push(...week.events);
+        }
+        
+        return events;
+    }
+    
+    getDays( { vars }) {
+        
+        const days = [];
+        for (const week of vars.weeks) {
+            days.push(...week.days);
+        }
+        return days;
+        
+    }
+    
+    getCols( { vars }) {
+    
+        const cols = [];
+       
+        for (const day of this.getDays({ vars })) {
+            const { date } = day.value ;
+            const text = date.toLocaleString(
+                'en',
+                { weekday: 'short' }
+            )[0];
+            const subtext = date.toLocaleString(
+                'en',
+                { day: 'numeric' }
+            )
+            const disabled = !day.isCurrentMonth;
+
+            const style = {
+                width: ((100 - this.yaxisWidthPercent) / (vars.weeks.length * 7)) + '%',
+            }
+
+            cols.push({ text, subtext, style, disabled });
+        }
+        
+        return cols;
+        
+    }
+    
+    getDaysOff( { vars }) {
+        return this.getDays( { vars }).map((v, k) => {
+            
+            const { date } = v.value;
+            const style = {   
+                width: ( 100 / (vars.weeks.length * 7) )     + '%',
+                left:  ( k * 100 / (vars.weeks.length * 7) ) + '%'
+            }
+            return { date, style }
+        }).filter(v => [0, 6].includes(v.date.getDay()) );
+    }
+    
+}
+
+class YearGroupsRenderer extends AbstractGroupsRenderer {
+        
+    getAttr() {
+        return {
+            ...super.getAttr(),
+            'data_type_view': 'year'
+        };
+    }
+    
+    getEvents( { vars }) {
+        const events = [];
+        for (const month of vars.months) {
+            events.push( ...month.events );
+        }
+        return events;
+    }
+        
+    getCols( ) {
+        
+        const cols = [];
+        
+        for (let i = 1; i <= 12; i++) {
+            const date = new Date(`1970-${i}-01`);
+            const text = date.toLocaleString(
+                "en",
+                { month: 'short' }
+            );
+            const style = {
+                width: ((100 - this.yaxisWidthPercent) / 12) + '%',
+            }
+            cols.push({ text, style });
+        }
+        
+        return cols;
+        
+    }
+    
+    getColumnTimeRangeType() {
+       return 'month' 
+    }
+    
+}
 
 module.exports = { createViewRenderer }

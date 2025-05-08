@@ -16,7 +16,10 @@
         #scheduler {
             height: 600px;
         }
-                
+         
+        .form-check-input {
+            margin-top: 9px;
+        }
     </style>
   </head>
   <body>
@@ -62,6 +65,15 @@
                                 class="btn btn-outline-primary rounded-0 border-0">
                             &gt;
                         </button>
+                        <input id="toggleGroups"
+                               class="form-check-input" 
+                               type="checkbox" 
+                        />
+                        <label class="form-check-label text-primary"
+                               for="toggleGroups"
+                        >
+                            show groups
+                        </label>
                     </div>
                     <div class="col-4 text-center">
                         <strong id="scheduler_title" class="align-middle">
@@ -141,17 +153,38 @@
                           start: startDay.addDays(1) + " 10:00", 
                           label: "interview",
                           bgColor: 'success',
+                          group_id: 2,
+                      },
+                      { 
+                          start: startDay.addDays(1) + " 14:00", 
+                          end: startDay.addDays(1) + " 16:00", 
+                          label: "medical checkup",
+                          bgColor: '#CCCCFF'
                       },
                       { 
                           start: startDay.addDays(5) + " 14:00", 
                           label: "meeting",
-                          bgColor: 'warning',
+                          bgColor: 'warning'
                       },
                       { 
                           label: "training course",
                           start: startDay.addDays(3) + " 09:00",
                           end  : startDay.addDays(5) + " 18:00",
                           bgColor: "primary" 
+                      },
+                      {
+                          label: 'website design review',
+                          start: startDay.addDays(8) + " 09:00",
+                          end  : startDay.addDays(10) + " 18:00",
+                          bgColor: '#FF8F00',
+                          group_id: "another group",
+                      },
+                      {
+                          label: 'custom feedback review',
+                          start: startDay.addDays(17) + " 09:00",
+                          end  : startDay.addDays(18) + " 18:00",
+                          bgColor: '#DE3163',
+                          group_id: "another group",
                       }
                     ],
                     eventsDraggable: true,
@@ -160,7 +193,13 @@
                     onEventClick: function(schedulerEvent) {
                         document.getElementById('comments').innerHTML = "clicked on '" + schedulerEvent.label + "'";
                     },
-                    useBreakpoint: true
+                    useBreakpoint: true,
+                    groups: [
+                        { id: 1, text: 'Group A' },
+                        { id: 2, text: 'Group B' },
+                        { id: 3, text: 'Group C' },
+                        { id: 4, text: 'Group D' },
+                    ]
                 }
             );
     
@@ -199,6 +238,12 @@
             
             $('#package_version').html( jscheduler_ui.version );
             $('#package_name').html( jscheduler_ui.name );
+            
+            $('#toggleGroups').change(function() {
+                scheduler.setOptions({
+                    showGroups: $(this).is(':checked')
+                });
+            }).prop('checked', false);
             
         });
         

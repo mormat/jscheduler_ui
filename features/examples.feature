@@ -1,12 +1,12 @@
-@examples
+@example
 Feature: examples page
 
     Background:
         Given today is "2023-05-04" 
+        When I open the "examples" page
 
     Scenario: Week view - Init scheduler
-        When I open the "examples" page
-        And I select the "Init scheduler" example in "Week view"
+        When I select the "Init scheduler" example in "Week view"
         Then the scheduler should be in week view
         And I should see :
             | Mon, May 1 Tue, May 2 |
@@ -15,8 +15,7 @@ Feature: examples page
             | 19:00 |
 
     Scenario: Week view - Displaying events
-        When I open the "examples" page
-        And I select the "Displaying events" example in "Week view"
+        When I select the "Displaying events" example in "Week view"
         Then the 'interview' event should be displayed at "Tue, Aug 13" from '10:00' to '12:00'
         And the 'meeting' event should be displayed at "Thu, Aug 15" from '14:00' to '18:00'
         And the "training course" event should be displayed from "Thu, Aug 15" to "Sat, Aug 17"
@@ -24,16 +23,14 @@ Feature: examples page
 
     @ajax
     Scenario: Week view - Loading events with ajax
-        When I open the "examples" page
-        And I select the "Loading events with ajax" example in "Week view"
+        When I select the "Loading events with ajax" example in "Week view"
         And I wait until I see "meeting"
         Then the 'meeting' event should be displayed at "Thu, Aug 15" from '14:00' to '16:00'
         And "./examples/events.json" should be loaded from "2024-08-12 00:00:00.000" to "2024-08-18 23:59:59.999"
 
     @i18n
     Scenario: Week view - i18n
-        When I open the "examples" page
-        And I select the "i18n" example in "Week view"
+        When I select the "i18n" example in "Week view"
         Then I should see "1 mag 2023 - 7 mag 2023"
         And I should see :
             | lun 1 mag |
@@ -46,8 +43,7 @@ Feature: examples page
         And I should see a "Modifica l'evento" tooltip
 
     Scenario: Week view - Custom hours range
-        When I open the "examples" page
-        And I select the "Custom hours range" example in "Week view"
+        When I select the "Custom hours range" example in "Week view"
         Then I should see :
             | 09:00 |
             | 18:00 |
@@ -56,8 +52,7 @@ Feature: examples page
             | 19:00 |
                
     Scenario Outline: Week view - Click on events
-        When I open the "examples" page
-        And I select the "Click on events" example in "Week view"
+        When I select the "Click on events" example in "Week view"
         And I click on the "<eventName>" event
         Then I should see "clicked on <eventName>"
 
@@ -68,8 +63,7 @@ Feature: examples page
 
     @drag_and_drop
     Scenario Outline: Week view - Drag and drop events
-        When I open the "examples" page
-        And I select the "Drag and drop events" example in "Week view"
+        When I select the "Drag and drop events" example in "Week view"
         And I drag the "<eventName>" event to <dropTarget>
         Then the '<eventName>' event should be displayed <expectedDisplay>
         And I should see "<eventName> event dropped"
@@ -82,15 +76,26 @@ Feature: examples page
 
     @drag_and_drop
     Scenario: Week view - Resize events
-        When I open the "examples" page
-        And I select the "Resize events" example in "Week view"
+        When I select the "Resize events" example in "Week view"
         And I resize the "presentation" event to "16:00"
         Then the "presentation" event should be displayed at "Thu, Oct 3" from "09:00" to "16:00"
         And I should see "presentation event resized to 16:00"
 
+    @week @groups
+    Scenario: Week view - Showing groups
+        When I select the "Showing groups" example in "Week view"
+        Then I should see "Mon 1 Tue 2 Wed 3 Thu 4 Fri 5 Sat 6 Sun 7"
+        And I should see :
+            | Maria D. Penny |
+            | Johnathan S. Castillo |
+            | Trish W. Dillard |
+            | Scott B. Peacock |
+        And the "some task" event should be displayed from "Tue 2" to "Tue 2" in "Johnathan S. Castillo" section
+        And the "another task" event should be displayed from "Tue 2" to "Wed 3" in "Trish W. Dillard" section
+        And the "ungrouped task" event should be displayed from "Wed 3" to "Fri 5" in "missing-group" section
+
     Scenario: Month view - Init scheduler
-        When I open the "examples" page
-        And I select the "Init scheduler" example in "Month view"
+        When I select the "Init scheduler" example in "Month view"
         Then the scheduler should be in month view
         And I should see :
             | Mon Tue Wed Thu Fri Sat Sun |
@@ -98,8 +103,7 @@ Feature: examples page
             | 29 30 31 |
 
     Scenario: Month view - Displaying events
-        When I open the "examples" page
-        And I select the "Displaying events" example in "Month view"
+        When I select the "Displaying events" example in "Month view"
         Then the "training course" event should be displayed from "1" to "2"
         And the "presentation (1)" event should be displayed from "5" to "6"
         And the "presentation (2)" event should be displayed from "7" to "8"
@@ -107,16 +111,14 @@ Feature: examples page
 
     @ajax
     Scenario: Month view - Loading events with ajax
-        When I open the "examples" page
-        And I select the "Loading events with ajax" example in "Month view"
+        When I select the "Loading events with ajax" example in "Month view"
         And I wait until I see "meeting"
         Then the 'meeting' event should be displayed from "15" to "15"
         And "./examples/events.json" should be loaded from "2024-07-29 00:00:00.000" to "2024-09-01 23:59:59.999"
 
     @drag_and_drop
     Scenario: Month view - Drag and drop events
-        When I open the "examples" page
-        And I select the "Drag and drop events" example in "Month view"
+        When I select the "Drag and drop events" example in "Month view"
         And I drag the "presentation" event to "8"
         Then the "presentation" event should be displayed from "8" to "11"
         When I drag the "presentation" event to "12"
@@ -125,22 +127,31 @@ Feature: examples page
 
     @i18n
     Scenario: Month view - i18n
-    When I open the "examples" page
-    And I select the "i18n" example in "Month view"
-    Then I should see "maggio 2023"
-    And I should see "lun mar mer gio ven sab dom"
-    And I should see a "Modifica l'evento" tooltip
+        When I select the "i18n" example in "Month view"
+        Then I should see "maggio 2023"
+        And I should see "lun mar mer gio ven sab dom"
+        And I should see a "Modifica l'evento" tooltip
+
+    @month @groups
+    Scenario: Month view - Showing groups
+        When I select the "Showing groups" example in "Month view"
+        Then I should see "W 31 T 1 F 2 S 3"
+        And I should see "T 29 F 1"
+        And I should see :
+            | Maria D. Penny |
+            | Johnathan S. Castillo |
+            | Trish W. Dillard |
+            | Scott B. Peacock |
+        And the "some task" event should be displayed from "S 4" to "T 8" in "Johnathan S. Castillo" section
 
     @crud
     Scenario: CRUD operations - Creating an event
-        When I open the "examples" page
-        And I select the "Creating an event" example in "CRUD operations"
+        When I select the "Creating an event" example in "CRUD operations"
         Then the "meeting" event should be displayed at "Tue, Sep 17" from "10:00" to "12:00"
 
     @crud @edit
     Scenario: CRUD operations - Updating an event
-        When I open the "examples" page
-        And I select the "Updating an event" example in "CRUD operations"
+        When I select the "Updating an event" example in "CRUD operations"
         And I edit the "some task" event
         Then the "some task" event should not be displayed
         And the "some updated task" event should be displayed at "Tue, Sep 17" from "14:00" to "16:00"
@@ -148,17 +159,15 @@ Feature: examples page
 
     @crud
     Scenario: CRUD operations - Deleting an event
-        When I open the "examples" page
-        And I select the "Deleting an event" example in "CRUD operations"
+        When I select the "Deleting an event" example in "CRUD operations"
         And I click on the "some task" event
         Then the "some task" event should not be displayed
         And I should see "another task"
 
     @responsive
     Scenario Outline: Responsive breakpoint
-        When I open the "examples" page
-        And I select the "Responsive rendering" example in "Misc"
-        When I click on "<text_button>"
+        When I select the "Responsive rendering" example in "Misc"
+        And I click on "<text_button>"
         Then the page should contains an '<css_selector>' element
 
     Examples:
@@ -169,14 +178,12 @@ Feature: examples page
 
     @responsive
     Scenario: Default breakpoint should be defined
-        When I open the "examples" page
-        And I select the "Responsive rendering" example in "Misc"
+        When I select the "Responsive rendering" example in "Misc"
         Then the page should contains an '.jscheduler_ui[data-breakpoint]' element
 
     @year
     Scenario: Year view - Init scheduler
-        When I open the "examples" page
-        And I select the "Init scheduler" example in "Year view"
+        When I select the "Init scheduler" example in "Year view"
         Then I should see : 
             | January   |
             | February  |
@@ -193,30 +200,26 @@ Feature: examples page
 
     @year
     Scenario: Year view - Displaying events
-        When I open the "examples" page
-        And I select the "Displaying events" example in "Year view"
+        When I select the "Displaying events" example in "Year view"
         Then the "task 1" event should be displayed in "January" from 5 to 7
         And the "t2" event should be displayed in "March" from 10 to 10
 
     @year
     Scenario: Year view - Loading events with ajax
-        When I open the "examples" page
-        And I select the "Loading events with ajax" example in "Year view"
+        When I select the "Loading events with ajax" example in "Year view"
         And I wait until I see "meeting"
         Then the "meeting" event should be displayed in "August" from 15 to 15
         And "./examples/events.json" should be loaded from "2024-01-01 00:00:00.000" to "2024-12-31 23:59:59.999"
 
     @year
     Scenario: Year view - Drag and drop events
-        When I open the "examples" page
-        And I select the "Drag and drop events" example in "Year view"
+        When I select the "Drag and drop events" example in "Year view"
         And I drag the "task 1" event to 12 of "February"
         Then the "task 1" event should be displayed in "February" from 12 to 14
 
     @year 
     Scenario: Year view - Drag and drop events
-        When I open the "examples" page
-        And I select the "i18n" example in "Year view"
+        When I select the "i18n" example in "Year view"
         Then I should see : 
             | Janvier   |
             | Février   |
@@ -231,3 +234,27 @@ Feature: examples page
             | Novembre  |
             | Décembre  |
         And I should see "L M M J V S D"
+
+    @year @groups
+    Scenario: Year view - Showing groups
+        When I select the "Showing groups" example in "Year view"
+        Then I should see "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
+        And I should see :
+            | Maria D. Penny |
+            | Johnathan S. Castillo |
+            | Trish W. Dillard |
+            | Scott B. Peacock |
+        And the "some task" event should be displayed from "Feb" to "Feb" in "Johnathan S. Castillo" section
+        And the "long task" event should be displayed from "Apr" to "Aug" in "Trish W. Dillard" section
+
+    @day @groups
+    Scenario: Day view - Showing groups
+        When I select the "Showing groups" example in "Day view"
+        Then I should see "00:00 02:00 04:00 06:00"
+        And I should see "18:00 20:00 22:00"
+        And I should see :
+            | Maria D. Penny |
+            | Johnathan S. Castillo |
+            | Trish W. Dillard |
+            | Scott B. Peacock |
+        And the "some task" event should be displayed from "10:00" to "12:00" in "Johnathan S. Castillo" section

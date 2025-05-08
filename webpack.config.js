@@ -61,10 +61,11 @@ module.exports = function (env, argv) {
                 '__WEBPACK_MODE__':       JSON.stringify( argv.mode ),
                 '__EXAMPLES_SOURCES__':   JSON.stringify(get_examples_sources()),
                 '__MUSTACHE_TEMPLATES__': JSON.stringify({
-                    'daysview':  get_template('daysview.html'),
-                    'monthview': get_template('monthview.html'),
-                    'yearview':  get_template('yearview.html'),
-                    'root':      get_template('root.html'),
+                    'daysview':      get_template('daysview.html'),
+                    'monthview':     get_template('monthview.html'),
+                    'yearview':      get_template('yearview.html'),
+                    'groups':        get_template('groups.html'),
+                    'root':          get_template('root.html'),
                 }),
                 '__MUSTACHE_PARTIALS__':  JSON.stringify({
                     events_row:    get_template('partials/events_row.html'),

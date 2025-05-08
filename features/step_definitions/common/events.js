@@ -71,6 +71,116 @@ Then(
     }
 );
 
+// for events displayed in year view
+Then(
+    'the {string} event should be displayed in {string} from {int} to {int}', 
+    async function (eventName, inMonth, fromDayInMonth, toDayInMonth) {
+        
+         const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+        
+        const expectedRect = await getDayRangeRectInYearView(
+            this, inMonth, fromDayInMonth, toDayInMonth
+        );
+        debugRects[currentStep.text] = expectedRect;
+
+        const actualRect = await eventElement.getRect();
+                
+        // actual rect should fit in expected rect
+        expect(Math.abs(actualRect.x     - expectedRect.x)    ).toBeLessThan(1.1);
+        expect(Math.abs(actualRect.width - expectedRect.width)).toBeLessThan(4);
+        expect(actualRect.y).toBeGreaterThanOrEqual(expectedRect.y);
+        expect(actualRect.height).toBeLessThanOrEqual(expectedRect.height);
+
+    }
+);
+
+
+// for events displayed in timeline
+Then(
+    'the {string} event should be displayed from {string} to {string} in {string} section', 
+    async function (eventName, from, to, inSection) {
+        
+        const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+        
+        const expectedRect = await getDayRangeInSection(
+            this, inSection, from, to
+        );
+        debugRects[currentStep.text] = expectedRect;
+        
+        const actualRect = await eventElement.getRect();
+
+        // actual rect should fit in expected rect
+        expect(Math.abs(actualRect.x      - expectedRect.x)    ).toBeLessThan(1.25);
+        expect(Math.abs(actualRect.width  - expectedRect.width)).toBeLessThan(4);
+        expect(actualRect.y).toBeGreaterThanOrEqual(expectedRect.y);
+        expect(actualRect.y + actualRect.height).toBeLessThanOrEqual(expectedRect.y + expectedRect.height + 1);
+        
+    }
+);
+
+// for events displayed in default timeline
+Then(
+    'the {string} event should be displayed from {string} to {string} in default section', 
+    async function (eventName, from, to, inSection) {
+        
+        const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+        
+        const expectedRect = await getDayRangeInSection(
+            this, null, from, to
+        );
+        debugRects[currentStep.text] = expectedRect;
+        
+        const actualRect = await eventElement.getRect();
+        
+        // actual rect should fit in expected rect
+        expect(Math.abs(actualRect.x      - expectedRect.x)    ).toBeLessThan(1.25);
+        expect(Math.abs(actualRect.width  - expectedRect.width)).toBeLessThan(4);
+        expect(Math.abs(actualRect.y      - expectedRect.y)    ).toBeLessThan(1.25);
+        expect(Math.abs(actualRect.height - expectedRect.height)).toBeLessThan(4);
+        
+    }
+);
+
+// dragging grouped events
+When(
+    'I drag the {string} event to {string} in {string} section', 
+    async function (eventName, to, inSection) {
+
+        const eventElement = await this.getElement(
+            getEventSelector(eventName)
+        );
+        const eventRect  = await eventElement.getRect();
+
+        const targetRect = await getDayRangeInSection(
+            this, inSection, to, to
+        );
+
+        const fromPoint = {
+            x: eventRect.x + 2,
+            y: eventRect.y + 2,
+            color: 'blue'
+        };
+        
+        const toPoint = {
+            x: targetRect.x + 2,
+            y: targetRect.y + 10,
+            color: 'red'
+        };
+        
+        debugRects[currentStep.text + ' (fromPoint)'] = fromPoint;
+        debugRects[currentStep.text + ' (toPoint)'] = toPoint;
+
+        await this.dragAndDrop(fromPoint, toPoint);
+
+    }
+);
+
 When(
     'I drag the {string} event to {string} at {string}', 
     async function (eventName, toDate, atHour) {
@@ -171,28 +281,6 @@ When('I edit the {string} event', async function (eventName) {
         
 });
 
- Then(
-    'the {string} event should be displayed in {string} from {int} to {int}', 
-    async function (eventName, inMonth, fromDayInMonth, toDayInMonth) {
-        
-         const eventElement = await this.getElement(
-            getEventSelector(eventName)
-        );
-        
-        const expectedRect = await getDayRangeRectInYearView(
-            this, inMonth, fromDayInMonth, toDayInMonth
-        );
-        debugRects[currentStep.text] = expectedRect;
-
-        const actualRect = await eventElement.getRect();
-                
-        expect(Math.abs(actualRect.x     - expectedRect.x)    ).toBeLessThan(1.1);
-        expect(Math.abs(actualRect.width - expectedRect.width)).toBeLessThan(4);
-        expect(actualRect.y).toBeGreaterThanOrEqual(expectedRect.y);
-        expect(actualRect.height).toBeLessThanOrEqual(expectedRect.height);
-
-    }
-);
 
 When(
     'I drag the {string} event to {int} of {string}', 
@@ -330,6 +418,30 @@ async function getDayRangeRectInYearView(self, inMonth, fromNumDay, toNumDay) {
     const toDayRect = await toDayElement.getRect();
     const width = (toDayRect.x + toDayRect.width)  - x;
         
+    return { x, y, height, width};
+    
+}
+
+async function getDayRangeInSection(self, inSection, from, to) {
+    
+    const rowElement = await self.getElement(
+        `//th[normalize-space()='${inSection}']`,
+        await self.getElement(`.jscheduler_ui tbody`)
+    );
+    
+    const fromElement = await self.getElement(
+        `.jscheduler_ui thead th:contains('${from}')`
+    );
+    
+    const toElement = await self.getElement(
+        `.jscheduler_ui thead th:contains('${to}')`
+    );
+    
+    const { y,  height } = await rowElement.getRect();
+    const { x } = await fromElement.getRect();
+    const toRect = await toElement.getRect();
+    const width = (toRect.x + toRect.width)  - x;
+    
     return { x, y, height, width};
     
 }

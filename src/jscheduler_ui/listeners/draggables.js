@@ -1,5 +1,9 @@
 
-const { DateRange, format_date } = require('@src/utils/date');
+const { 
+    DateRange, 
+    DateStringFormatter,
+    format_date 
+} = require('@src/utils/date');
 
 class AbstractDraggable {
 
@@ -42,6 +46,7 @@ class TimelineDraggable extends AbstractDraggable {
     #initialValue;
     #currentValue;
     #onChange;
+    #droppedGroupId;
 
     constructor(schedulerEvent, onChange)
     {
@@ -54,13 +59,18 @@ class TimelineDraggable extends AbstractDraggable {
         return this.#currentValue;
     }
 
-    drag() {
+    drag({ mouseEvent, droppable }) {
         this.#currentValue = this.#initialValue;
+        
+        const droppableData = droppable.getData(mouseEvent);
+        
     }
 
     move({ mouseEvent, droppable }) {
         
         const droppableData = droppable.getData(mouseEvent);
+                
+        this.#droppedGroupId = droppableData.group_id;
         
         const timelineDaterange = new DateRange(
             droppableData['daterange_start'],
@@ -74,8 +84,12 @@ class TimelineDraggable extends AbstractDraggable {
         let start = timelineDaterange.start.getTime();
         start += timelineDaterange.length * percentX / 100;
         start = new Date(
-            format_date('yyyy-mm-dd', start) + ' ' + 
-            format_date('hh:ii:ss', this.#initialValue.start)
+                
+            (new DateStringFormatter(this.#initialValue.start)).with(
+                droppableData['column_daterange_type'] || 'day',
+                start
+            )
+                
         );
         const end = start.getTime() + this.#initialValue.length;
         
@@ -89,7 +103,12 @@ class TimelineDraggable extends AbstractDraggable {
         
         const { start, end } = this.#currentValue;
         const valuesBefore = this.#initialValue.values;
-        this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
+        const valuesAfter  = { ...valuesBefore, start, end };
+        
+        if (this.#droppedGroupId !== undefined) {
+            valuesAfter.group_id = this.#droppedGroupId;
+        }
+        this.#onChange(valuesAfter, valuesBefore);
         
     }
 

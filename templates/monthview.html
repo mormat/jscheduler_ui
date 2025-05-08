@@ -27,9 +27,21 @@
                 class="jscheduler_ui-daterange"
             >
 
-                <div>                    
-                    {{ #grid }} {{> grid }} {{ /grid }}
+                {{ #grid }} {{> grid }} {{ /grid }}
 
+                {{ #daysoff }}
+                    <div class="jscheduler_ui-dayoff"
+                         style = "position: absolute;
+                                  top: 0;
+                                  left: {{ style.left }};
+                                  width: {{ style.width }};
+                                  bottom: 0;
+                                 "
+                    >
+                    </div>
+                {{ /daysoff }}
+                
+                <div>                    
                     {{ #days }}
                     <span style="width: {{ style.width }};
                                  left:  {{ style.left }};

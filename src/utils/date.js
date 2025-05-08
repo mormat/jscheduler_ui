@@ -3,6 +3,7 @@ const formatters = {
     'yyyy': (d) => String(d.getFullYear()),
     'mm':   (d) => ('0' + (d.getMonth() + 1)).slice(-2),
     'dd':   (d) => ('0' + d.getDate()).slice(-2),
+    'uuu':  d  => String(d.getMilliseconds()).padStart(3, '0'),
     'yyyy-mm': (d) => formatters['yyyy'](d) + '-' + formatters['mm'](d),
     'yyyy-mm-dd': (d) => formatters['yyyy-mm'](d) + '-' + formatters['dd'](d),
     'hh':   (d) => ('0' + d.getHours()).slice(-2),
@@ -10,8 +11,10 @@ const formatters = {
     'ss':   (d) => ('0' + d.getSeconds()).slice(-2),
     'hh:ii': (d) => formatters['hh'](d) + ':' + formatters['ii'](d),
     'hh:ii:ss': (d) => formatters['hh'](d) + ':' + formatters['ii'](d) + ':' + formatters['ss'](d),
+    'hh:ii:ss.uuu': (d) => formatters['hh'](d) + ':' + formatters['ii'](d) + ':' + formatters['ss'](d) + '.' + formatters['uuu'](d),
     'yyyy-mm-dd hh:ii': (d) => formatters['yyyy-mm-dd'](d) + ' ' + formatters['hh:ii'](d),
-    'yyyy-mm-dd hh:ii:ss': (d) => formatters['yyyy-mm-dd'](d) + ' ' + formatters['hh:ii:ss'](d)
+    'yyyy-mm-dd hh:ii:ss': (d) => formatters['yyyy-mm-dd'](d) + ' ' + formatters['hh:ii:ss'](d),
+    'yyyy-mm-dd hh:ii:ss.uuu': (d) => formatters['yyyy-mm-dd'](d) + ' ' + formatters['hh:ii:ss.uuu'](d)
 }
 
 function date_add_hour(date, numHours) {
@@ -133,6 +136,10 @@ class DateRange {
         this.end   = new Date(end);
     }
 
+    static fromObject({ start, end }) {
+        return new DateRange(start, end);
+    }
+
     static createForMonth(dateMonth) {
         const start = format_date('yyyy-mm', dateMonth) + '-01 00:00:00.000';
         const end   = new Date( start );
@@ -198,6 +205,43 @@ class DateRange {
             currentDay = currentDay.addDays(7);
         }
         return weeks;
+    }
+    
+    fill(type) {
+        
+        if (type === 'month') {
+            const end = new Date(this.end);
+            end.setDate(1);
+            end.setMonth(end.getMonth() + 1);
+            end.setDate(end.getDate() - 1);
+            return new DateRange(
+                format_date('yyyy-mm', this.start)   + '-01 00:00:00.000',
+                format_date('yyyy-mm-dd', end) + ' 23:59:59.999'
+            )
+        }
+        
+        
+        if (type === 'day_hour') {
+            const start = new Date(this.start);
+            const end   = new Date(this.end);
+            start.setMinutes(0);
+            if (end.getMinutes() == 0) {
+                end.setHours( end.getHours() - 1);
+            }
+            end.setMinutes(59);
+            return new DateRange(
+                format_date('yyyy-mm-dd hh:ii', start)   + ':00.000',
+                format_date('yyyy-mm-dd hh:ii', end)     + ':59.999'
+            )
+        }
+        
+        if (type === 'day') {
+            return new DateRange(
+                new Day(this.start) + ' 00:00:00.000',
+                new Day(this.end)   + ' 23:59:59.999'
+            )
+        }
+        
     }
 }
 
@@ -314,6 +358,51 @@ function getWeekDays({ dateLocale = 'en'} = {}) {
     return weekDays;
 }
 
+/**
+ * DateStringFormatter ?
+ */
+class DateStringFormatter {
+   
+    #value;
+    
+    constructor(value) {
+        this.#value = value;
+    }
+    
+    with(type, otherValue) {
+    
+        if (type === 'month') {
+            return new DateStringFormatter(
+                format_date('yyyy-mm', otherValue) + 
+                '-' + format_date('dd', this.#value) +
+                ' ' + format_date('hh:ii:ss.uuu', this.#value)
+            );
+        }
+        
+        if (type === 'day') {
+            return new DateStringFormatter(
+                format_date('yyyy-mm-dd', otherValue) + 
+                ' ' + format_date('hh:ii:ss.uuu', this.#value)
+            );
+        }
+        
+        if (type === 'day_hour') {
+            return new DateStringFormatter(
+                format_date('yyyy-mm-dd', otherValue) + 
+                ' ' + format_date('hh', otherValue) +
+                ':' + format_date('ii', this.#value) +
+                ':' + format_date('ss', this.#value) +
+                '.' + format_date('uuu', this.#value)
+            );
+        }
+        
+    }
+    
+    toString() {
+        return format_date('yyyy-mm-dd hh:ii:ss.uuu', this.#value);
+    }
+}
+
 module.exports = { 
     format_date,
     DateRange,
@@ -323,5 +412,6 @@ module.exports = {
     getOffsetAndLengthByDateRanges,
     _groupDateRanges,
     _mapGroupedDateRanges,
-    getWeekDays
+    getWeekDays,
+    DateStringFormatter
 }

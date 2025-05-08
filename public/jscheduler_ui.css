@@ -92,8 +92,9 @@
     padding: 0 3px 0 0;
 }
 
-.jscheduler_ui-year_view-dayoff {
+.jscheduler_ui-dayoff {
     background-color: #eff9fa;
+    opacity: 0.5;
 }
 
 .jscheduler_ui-hsep {
@@ -152,4 +153,44 @@
 
 .jscheduler_ui[data-breakpoint="medium"] .jscheduler_ui-day-header {
     font-size: small;
+}
+
+.jscheduler_ui-timeline thead {
+    height: 5%;
+}
+
+.jscheduler_ui-timeline thead th {
+    text-align: center;
+}
+
+.jscheduler_ui-timeline[data-type-view="day"] thead th {
+    font-size: small;
+}
+
+.jscheduler_ui-timeline[data-type-view="month"] thead th {
+    font-size: x-small;
+}
+
+.jscheduler_ui-timeline tbody td {
+    border-bottom: 1px dotted gray;
+    border-right: 1px dotted gray;
+}
+
+.jscheduler_ui-timeline tbody tr:first-child  td {
+    border-top: 1px dotted gray;
+}
+
+.jscheduler_ui-timeline tbody th {
+    border-bottom: 1px dotted gray;
+    border-right: 1px dotted gray;
+    border-left: 1px dotted gray;
+    padding-left: 5px;
+}
+
+.jscheduler_ui-timeline tbody tr:first-child th {
+    border-top: 1px dotted gray;
+}
+
+.jscheduler_ui-timeline .jscheduler_ui-disabled {
+    color: gray;
 }

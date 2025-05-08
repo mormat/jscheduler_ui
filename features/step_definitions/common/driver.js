@@ -47,6 +47,12 @@ Then('I should see a {string} tooltip', async function (string) {
     await this.getElement(`[title="${string}"]`);
 });
 
+Then('I should see {string} in row {int}', async function (string, int) {
+    await this.getElement(
+        `tr:nth-child(${int}):contains('${string}')`
+    );
+});
+
 When('I wait until I see {string}', async function (expectedText) {
 
     const selector = `:contains("${expectedText}")`;
@@ -59,7 +65,7 @@ When('I wait until I see {string}', async function (expectedText) {
 When('I click on {string}', async function (text) {
     
     const selectors = [
-        `//label[text()='${text}']`,
+        `//label[normalize-space()='${text}']`,
         `a:contains("${text}")`,
         `a[title="${text}"]`,
         `button:contains("${text}")`,

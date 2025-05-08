@@ -1,0 +1,78 @@
+<table  id="{{ attr.id }}"
+        class="jscheduler_ui-timeline"
+        style="width: 100%;     
+               table-layout: fixed; 
+               flex: 1 1 auto;
+              "
+        data-type-view="{{ attr.data_type_view }}"
+        data-jscheduler_ui-droppable-type="timeline"
+>
+    <thead>
+        <tr>
+            <td
+                style="width: {{ yaxis.style.width }}"
+            ></td>
+            {{ #xaxis.cols }}
+                <th 
+                    class = "{{ #disabled }}jscheduler_ui-disabled{{/disabled}}"
+                    style = "width: {{ style.width }};
+                             text-align: center;
+                            "
+                >
+                    {{ text }}
+                    {{ #subtext }}
+                    <br/>
+                    {{ /subtext }}
+                    {{ subtext }}
+                </th>
+            {{ /xaxis.cols }}
+        </tr>
+    </thead>
+    
+    <tbody>
+        
+        {{ #yaxis.rows }} 
+            <tr>
+                <th data-text="{{ text }}">
+                    {{ text }}
+                    {{^text}}
+                    <div style="min-height: 25px;"></div>
+                    {{/text}}
+                </th>
+                <td colspan="{{ xaxis.cols.length }}"
+                    style="position: relative";
+                >
+                    {{ #daysoff }}
+                        <div class="jscheduler_ui-dayoff"
+                             style = "position: absolute;
+                                      top: 0;
+                                      left: {{ style.left }};
+                                      width: {{ style.width }};
+                                      bottom: 0;
+                                     "
+                        >
+                        </div>
+                    {{ /daysoff }}
+                
+                    {{ #events_row }}
+                    <div class="jscheduler_ui-daterange-row" style="
+                         position: absolute;
+                         top: 0;
+                         bottom: 0;
+                         left: 0;
+                         right: 0;
+                        "
+                    >
+                        {{> events_row }}
+                    </div>
+                    {{ /events_row }}
+                    
+                    {{ #grid }} {{> grid }} {{ /grid }}
+                    
+                </td>
+            </tr>
+        {{ /yaxis.rows }}
+        
+    </tbody>
+    
+</table>

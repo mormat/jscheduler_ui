@@ -67,6 +67,19 @@
                 data-minhour = "{{ data.minhour }}"
                 data-maxhour = "{{ data.maxhour }}"
             >
+                {{# is_dayoff }}
+                    <div class="jscheduler_ui-dayoff"
+                         style="position: absolute;
+                                top: 0;
+                                left: 0;
+                                bottom: 0;
+                                right: 0;
+                               "
+                    >
+                    
+                    </div>
+                {{/ is_dayoff }}
+                
                 {{# events_column }} {{> events_column }} {{/ events_column }}
             </td>
             {{/ _days }}
