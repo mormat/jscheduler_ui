@@ -277,9 +277,11 @@ class DaysViewRenderer extends AbstractViewRenderer {
             day.is_dayoff = [0,6].includes(day.value.date.getDay());
         }
 
-        vars.hours[0]._days = vars.days;
-        vars.hours[0].grid  = this.withGridPartial({rows: view.hours.length});
-        vars['hours[0]'] = vars.hours[0];
+        if (vars.hours.length) {
+            vars.hours[0]._days = vars.days;
+            vars.hours[0].grid  = this.withGridPartial({rows: view.hours.length});
+            vars['hours[0]'] = vars.hours[0];
+        }
 
         if ( vars.spannedEvents.length ) {
             

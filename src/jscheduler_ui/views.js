@@ -239,7 +239,7 @@ class AbstractDaysView {
     }
     
     get minHour() {
-        return this.#minHour;
+        return Math.max(0, this.#minHour);
     }
     
     get maxHour() {
@@ -251,8 +251,10 @@ class AbstractDaysView {
     }
     
     get hours() {
-        return [...Array(this.#maxHour - this.#minHour + 1)]
-            .map( (_, n) => n + this.#minHour);
+        const min = Math.max(0, this.#minHour);
+        const max = Math.min(23, this.#maxHour);
+        if (max < min) return [];
+        return [...Array(max - min + 1)].map( (_, n) => n + min);
     }
     
     get days() {

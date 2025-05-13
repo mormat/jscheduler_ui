@@ -53,6 +53,14 @@ Then('I should see {string} in row {int}', async function (string, int) {
     );
 });
 
+Then('I should see in {string} only {string}', async function (selector, expectedText) {
+    
+    const actualText = await this.getPageText(selector);
+    
+    expect(actualText).toBe(expectedText);
+    
+})
+
 When('I wait until I see {string}', async function (expectedText) {
 
     const selector = `:contains("${expectedText}")`;
