@@ -13,7 +13,7 @@ Feature: examples page
             | Sat, May 6 Sun, May 7 |
             | 08:00 |
             | 19:00 |
-
+            
     Scenario: Week view - Displaying events
         When I select the "Displaying events" example in "Week view"
         Then the 'interview' event should be displayed at "Tue, Aug 13" from '10:00' to '12:00'
@@ -86,13 +86,13 @@ Feature: examples page
         When I select the "Showing groups" example in "Week view"
         Then I should see "Mon 1 Tue 2 Wed 3 Thu 4 Fri 5 Sat 6 Sun 7"
         And I should see :
-            | Maria D. Penny |
-            | Johnathan S. Castillo |
-            | Trish W. Dillard |
-            | Scott B. Peacock |
-        And the "some task" event should be displayed from "Tue 2" to "Tue 2" in "Johnathan S. Castillo" section
-        And the "another task" event should be displayed from "Tue 2" to "Wed 3" in "Trish W. Dillard" section
-        And the "ungrouped task" event should be displayed from "Wed 3" to "Fri 5" in "missing-group" section
+            | Maria Penny |
+            | John Castillo |
+            | Kate Dillard |
+            | Scott Peacock |
+        And the "some task" event should be displayed from "Tue 2" to "Tue 2" in "John Castillo" group
+        And the "another task" event should be displayed from "Tue 2" to "Wed 3" in "Kate Dillard" group
+        And the "ungrouped task" event should be displayed from "Wed 3" to "Fri 5" in "missing-group" group
 
     Scenario: Month view - Init scheduler
         When I select the "Init scheduler" example in "Month view"
@@ -104,26 +104,26 @@ Feature: examples page
 
     Scenario: Month view - Displaying events
         When I select the "Displaying events" example in "Month view"
-        Then the "training course" event should be displayed from "1" to "2"
-        And the "presentation (1)" event should be displayed from "5" to "6"
-        And the "presentation (2)" event should be displayed from "7" to "8"
+        Then the "training course" event should be displayed from day 1 to day 2
+        And the "presentation (1)" event should be displayed from day 5 to day 6
+        And the "presentation (2)" event should be displayed from day 7 to day 8
         And I should not see "undefined"
 
     @ajax
     Scenario: Month view - Loading events with ajax
         When I select the "Loading events with ajax" example in "Month view"
         And I wait until I see "meeting"
-        Then the 'meeting' event should be displayed from "15" to "15"
+        Then the 'meeting' event should be displayed from day 15 to day 15
         And "./examples/events.json" should be loaded from "2024-07-29 00:00:00.000" to "2024-09-01 23:59:59.999"
 
     @drag_and_drop
     Scenario: Month view - Drag and drop events
         When I select the "Drag and drop events" example in "Month view"
-        And I drag the "presentation" event to "8"
-        Then the "presentation" event should be displayed from "8" to "11"
-        When I drag the "presentation" event to "12"
-        Then the "presentation (1)" event should be displayed from "12" to "13"
-        And the "presentation (2)" event should be displayed from "14" to "15"
+        And I drag the "presentation" event to day 8
+        Then the "presentation" event should be displayed from day 8 to day 11
+        When I drag the "presentation" event to day 12
+        Then the "presentation (1)" event should be displayed from day 12 to day 13
+        And the "presentation (2)" event should be displayed from day 14 to day 15
 
     @i18n
     Scenario: Month view - i18n
@@ -138,11 +138,11 @@ Feature: examples page
         Then I should see "W 31 T 1 F 2 S 3"
         And I should see "T 29 F 1"
         And I should see :
-            | Maria D. Penny |
-            | Johnathan S. Castillo |
-            | Trish W. Dillard |
-            | Scott B. Peacock |
-        And the "some task" event should be displayed from "S 4" to "T 8" in "Johnathan S. Castillo" section
+            | Maria Penny |
+            | John Castillo |
+            | Kate Dillard |
+            | Scott Peacock |
+        And the "some task" event should be displayed from "S 4" to "T 8" in "John Castillo" group
 
     @crud
     Scenario: CRUD operations - Creating an event
@@ -201,21 +201,21 @@ Feature: examples page
     @year
     Scenario: Year view - Displaying events
         When I select the "Displaying events" example in "Year view"
-        Then the "task 1" event should be displayed in "January" from 5 to 7
-        And the "t2" event should be displayed in "March" from 10 to 10
+        Then the "task 1" event should be displayed between day 5 and day 7 in the month of "January"
+        And the "t2" event should be displayed between day 10 and day 10 in the month of "March"
 
     @year
     Scenario: Year view - Loading events with ajax
         When I select the "Loading events with ajax" example in "Year view"
         And I wait until I see "meeting"
-        Then the "meeting" event should be displayed in "August" from 15 to 15
+        Then the "meeting" event should be displayed between day 15 and day 15 in the month of "August"
         And "./examples/events.json" should be loaded from "2024-01-01 00:00:00.000" to "2024-12-31 23:59:59.999"
 
     @year
     Scenario: Year view - Drag and drop events
         When I select the "Drag and drop events" example in "Year view"
-        And I drag the "task 1" event to 12 of "February"
-        Then the "task 1" event should be displayed in "February" from 12 to 14
+        And I drag the "task 1" event to day 12 in the month of "February"
+        Then the "task 1" event should be displayed between day 12 and day 14 in the month of "February"
 
     @year 
     Scenario: Year view - Drag and drop events
@@ -240,12 +240,12 @@ Feature: examples page
         When I select the "Showing groups" example in "Year view"
         Then I should see "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
         And I should see :
-            | Maria D. Penny |
-            | Johnathan S. Castillo |
-            | Trish W. Dillard |
-            | Scott B. Peacock |
-        And the "some task" event should be displayed from "Feb" to "Feb" in "Johnathan S. Castillo" section
-        And the "long task" event should be displayed from "Apr" to "Aug" in "Trish W. Dillard" section
+            | Maria Penny |
+            | John Castillo |
+            | Kate Dillard |
+            | Scott Peacock |
+        And the "some task" event should be displayed from "Feb" to "Feb" in "John Castillo" group
+        And the "long task" event should be displayed from "Apr" to "Aug" in "Kate Dillard" group
 
     @day @groups
     Scenario: Day view - Showing groups
@@ -253,8 +253,8 @@ Feature: examples page
         Then I should see "00:00 02:00 04:00 06:00"
         And I should see "18:00 20:00 22:00"
         And I should see :
-            | Maria D. Penny |
-            | Johnathan S. Castillo |
-            | Trish W. Dillard |
-            | Scott B. Peacock |
-        And the "some task" event should be displayed from "10:00" to "12:00" in "Johnathan S. Castillo" section
+            | Maria Penny |
+            | John Castillo |
+            | Kate Dillard |
+            | Scott Peacock |
+        And the "some task" event should be displayed from "10:00" to "12:00" in "John Castillo" group

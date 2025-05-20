@@ -1,4 +1,9 @@
-const { Given, When, Then, Before } = require('@cucumber/cucumber');
+const { 
+    Given, 
+    When, 
+    Then, 
+    Before 
+} = require('@cucumber/cucumber');
 const { expect }  = require('expect');
 
 const urlParams = new URLSearchParams();
@@ -11,47 +16,90 @@ When('I open the {string} page', async function (pageName) {
     
 });
 
-When(
-    'I select the {string} example in {string}', 
-    async function (exampleName, sectionName) {
-        const element = await this.getElement([
-            `.list-group-item:contains( "${sectionName}" )`,
-            `.list-group-item:contains( "${exampleName}" )`
-        ].join(' ~ '));
-
-        const actions = this.driver.actions({async: true});
-        await actions.move({origin: element}).perform();
-        await element.click();
-    }            
-);
-
-Given('the {string} prop equals {string}', function (prop, value) {
+Then('I should see {string}', async function (expectedText) {
     
-    urlParams.set('scheduler__' + prop, value);
+    const pageText = await this.getPageText();
+    
+    expect(pageText).toContain(expectedText);
     
 });
+
+Then('I should see :', async function (dataTable) {
+        
+    const pageText = await this.getPageText();
+
+    for (const [expectedText] of dataTable.raw()) {
+        expect(pageText).toContain(expectedText);
+    }
+
+});
+
+Then('I should not see {string}', async function (expectedText) {
+        
+    const pageText = await this.getPageText();
+    
+    expect(pageText).not.toContain(expectedText);
+    
+});
+
+Then('I should not see :', async function (dataTable) {
+    
+    const pageText = await this.getPageText();
+
+    for (const [expectedText] of dataTable.raw()) {
+        expect(pageText).not.toContain(expectedText);
+    }
+    
+});
+
+Then('I should see a {string} tooltip', async function (string) {
+    
+    await this.getElement(`[title="${string}"]`);
+    
+});
+
+Then('I should see {string} in row {int}', async function (string, int) {
+    
+    await this.getElement(
+        `tr:nth-child(${int}):contains('${string}')`
+    );
+    
+});
+
+Then('I should see in {string} only {string}', async function (selector, expectedText) {
+    
+    const actualText = await this.getPageText(selector);
+    
+    expect(actualText).toBe(expectedText);
+    
+})
+
+When('I wait until I see {string}', async function (expectedText) {
+
+    const selector = `:contains("${expectedText}")`;
+    
+    await this.waitForText(expectedText);
+    
+});
+
+When('I click on {string}', async function (clickableText) {
+    
+    await this.page.clickOn(clickableText);
+    
+});
+
+Then('the page should contains an {string} element', async function ( selector ) {
+    
+    await this.getElement( selector );
+    
+});
+
 
 Given('today is {string}', function (value) {
     
     urlParams.set('today', value);
     
 });
-
-Then(
-    '{string} should be loaded from {string} to {string}', 
-    async function (url, startDate, endDate) {
-
-        const start = (new Date(startDate)).getTime();
-        const end   = (new Date(endDate)).getTime();
-    
-        const expectedText = `loading '${url}?start=${start}&end=${end}'`;
-
-        const pageText = await this.getPageText();
-
-        expect(pageText).toContain(expectedText);
-
-    }
-);
 
 Before(function() {
             

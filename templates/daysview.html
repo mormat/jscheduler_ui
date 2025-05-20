@@ -1,12 +1,13 @@
-<table id="{{headerId}}"
-    class="jscheduler_ui-day_view-header jscheduler_ui-daterange"
+<!-- jscheduler_ui-day_view-header jscheduler_ui-daterange -->
+<table 
+    class="jscheduler_ui-daysview"
     style="width: 100%; 
            table-layout: fixed; 
-           flex: 0 1 auto;"
-    data-jscheduler_ui-droppable-type="timeline" 
+           flex: 1 1 auto;"
+    
 >    
-    {{# has_header }}
     <thead>
+        {{# has_header }}
         <tr>
             <td style="width: {{ hours[0].style.width }}">
             </td>
@@ -19,45 +20,41 @@
             </th>
             {{/ days }}
         </tr>
-    </thead>
-    {{/ has_header }}
-    
-    {{# events_row }}
-    <tbody>
-        <tr>
+        {{/ has_header }}
+
+        {{# events_row }}
+        <tr id="{{headerId}}" data-jscheduler_ui-droppable-type="timeline">
             <td style="width: {{ hours[0].style.width }}"></td>
             <td class="jscheduler_ui-daterange-row" 
                 colspan="{{ colspan }}"
-                style="height: {{ events_row_height }}"
             >
+                <div style="height: {{ events_row_height }};
+                            width: 100%;
+                           "
+                >
                 {{> events_row }}
+                </div>
             </td>
         </tr>
-    </tbody>
-    {{/ events_row }}
+        {{/ events_row }}
+    </thead>
 
-</table>
-
-<table  id="{{bodyId}}"
-        class="jscheduler_ui-day_view-body"
-        style="width: 100%; 
-               table-layout: fixed; 
-               flex: 1 1 auto;"
-        data-jscheduler_ui-droppable-type="days"
->
-    <tbody style="position: relative">
+    <tbody class="jscheduler_ui-daysview-columns"
+           style="position: relative" 
+           id="{{bodyId}}"
+           data-jscheduler_ui-droppable-type="days">
         {{# hours }}
         <tr>
-            
+
             <th style="width: {{ style.width }}"
                 data-hour>
                 {{ label }}
-                
+
                 {{ #grid }} {{> grid }} {{ /grid }}
             </div>
-                
+
             </th>
-            
+
             {{# _days }}
             <td style   = "width: {{ style.width }}%;
                            position: relative" 
@@ -76,16 +73,15 @@
                                 right: 0;
                                "
                     >
-                    
+
                     </div>
                 {{/ is_dayoff }}
-                
+
                 {{# events_column }} {{> events_column }} {{/ events_column }}
             </td>
             {{/ _days }}
-            
+
         </tr>
         {{/ hours }}
     </tbody>    
 </table>
-

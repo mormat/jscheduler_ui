@@ -31,7 +31,7 @@ Feature: demo page
         And I resize the "interview" event to "14:00"
         Then the "interview" event should be displayed at "Tue, Aug 13" from "10:00" to "14:00"
 
-    @drag_and_drop @todo
+    @drag_and_drop
     Scenario: Event should be draggable
         When I open the "index" page
         And I drag the "interview" event to "Mon, Aug 12" at "10:00"
@@ -39,26 +39,26 @@ Feature: demo page
         When I drag the "training course" event to "Wed, Aug 14"
         Then the "training course" event should be displayed from "Wed, Aug 14" to "Fri, Aug 16"
         When I click on "month"
-        And I drag the "training course" event to "22"
-        Then the "training course" event should be displayed from "22" to "24"
+        And I drag the "training course" event to day 22
+        Then the "training course" event should be displayed from day 22 to day 24
 
     @groups
     Scenario Outline: Displaying events with groups
         When I open the "index" page
         And I click on "<view>"
         And I click on "show groups"
-        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" section
+        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" group
 
         Examples:
         | event_name      | view  | start  | end    | group   |
-        | interview       | week  | Tue 13 | Tue 13 | Group B |
-        | interview       | month | T 13   | T 13   | Group B |
-        | interview       | year  | Aug    | Aug    | Group B |
+        | interview       | week  | Tue 13 | Tue 13 | Room B  |
+        | interview       | month | T 13   | T 13   | Room B  |
+        | interview       | year  | Aug    | Aug    | Room B  |
         | meeting         | week  | Sat 17 | Sat 17 |         |
         | meeting         | month | S 17   | S 17   |         |
         | meeting         | year  | Aug    | Aug    |         |
         | training course | week  | Thu 15 | Sat 17 |         | # in week view, the spanned event should also be visible
-        | interview       | day   | 10:00  | 10:00  | Group B |
+        | interview       | day   | 10:00  | 10:00  | Room B  |
         | medical checkup | day   | 14:00  | 14:00  |         |
         
     @groups
@@ -66,7 +66,7 @@ Feature: demo page
         When I open the "index" page
         And I click on "month"
         And I click on "show groups"
-        Then I should see "Group D" in row 4
+        Then I should see "Room D" in row 4
         And I should see "another group" in row 5
 
     @groups @drag_and_drop @week
@@ -74,64 +74,64 @@ Feature: demo page
         When I open the "index" page
         And I click on "week"
         And I click on "show groups"
-        When I drag the "<event_name>" event to "<start>" in "<group>" section
-        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" section
+        When I drag the "<event_name>" event to "<start>" in "<group>" group
+        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" group
 
         Examples:
-            | event_name      | start  | end    | group   |
-            | interview       | Tue 13 | Tue 13 | Group C |
-            | interview       | Tue 13 | Tue 13 |         |
-            | meeting         | Tue 13 | Tue 13 | Group A |
+            | event_name      | start  | end    | group  |
+            | interview       | Tue 13 | Tue 13 | Room C |
+            | interview       | Tue 13 | Tue 13 |        |
+            | meeting         | Tue 13 | Tue 13 | Room A |
 
     @groups @drag_and_drop @month
     Scenario Outline: Dragging and dropping events when showing groups in month view
         When I open the "index" page
         And I click on "month"
         And I click on "show groups"
-        When I drag the "<event_name>" event to "<start>" in "<group>" section
-        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" section
+        When I drag the "<event_name>" event to "<start>" in "<group>" group
+        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" group
 
         Examples:
-            | event_name      | start | end  | group   |
-            | interview       | T 13  | T 13 | Group C |
-            | interview       | T 13  | T 13 |         |
-            | meeting         | T 13  | T 13 | Group A |
+            | event_name      | start | end  | group  |
+            | interview       | T 13  | T 13 | Room C |
+            | interview       | T 13  | T 13 |        |
+            | meeting         | T 13  | T 13 | Room A |
 
     @groups @drag_and_drop @year
     Scenario Outline: Dragging and dropping events when showing groups in year view
         When I open the "index" page
         And I click on "year"
         And I click on "show groups"
-        When I drag the "<event_name>" event to "<start>" in "<group>" section
-        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" section
+        When I drag the "<event_name>" event to "<start>" in "<group>" group
+        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" group
 
         Examples:
-            | event_name      | start | end  | group   |
-            | interview       | Aug   | Aug  | Group C |
-            | interview       | Aug   | Aug  |         |
-            | meeting         | Aug   | Aug  | Group A |
+            | event_name      | start | end  | group  |
+            | interview       | Aug   | Aug  | Room C |
+            | interview       | Aug   | Aug  |        |
+            | meeting         | Aug   | Aug  | Room A |
 
-    @groups @drag_and_drop @day
+    @groups @drag_and_drop @day @wip
     Scenario Outline: Dragging and dropping events when showing groups in day view
         When I open the "index" page
         And I click on "day"
         And I click on "show groups"
-        When I drag the "<event_name>" event to "<start>" in "<group>" section
-        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" section
+        When I drag the "<event_name>" event to "<start>" in "<group>" group
+        Then the "<event_name>" event should be displayed from "<start>" to "<end>" in "<group>" group
 
         Examples:
-            | event_name       | start | end   | group   |
-            | interview        | 12:00 | 12:00 | Group C |
-            | interview        | 12:00 | 12:00 |         |
-            | medical checkup  | 12:00 | 12:00 | Group B |
+            | event_name       | start | end   | group  |
+            | interview        | 12:00 | 12:00 | Room C |
+            | interview        | 12:00 | 12:00 |        |
+            | medical checkup  | 12:00 | 12:00 | Room B |
 
     @groups @drag_and_drop
     Scenario: When dragging an event in classic display, the group of the event should remain unchanged
         When I open the "index" page
         And I click on "month"
-        And  I drag the "interview" event to "8"
+        And  I drag the "interview" event to day 8
         And I click on "show groups"
-        Then the "interview" event should be displayed from "8" to "8" in "Group B" section
+        Then the "interview" event should be displayed from "8" to "8" in "Room B" group
 
     Rule: Browsing dates in day view
         Background:

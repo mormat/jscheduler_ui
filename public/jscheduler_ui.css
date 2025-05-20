@@ -6,28 +6,40 @@
     font: caption;
 }
 
-.jscheduler_ui-day_view-header {
-    margin-bottom: 5px;
-    border-collapse: collapse;
+.jscheduler_ui-daysview {
+    
 }
 
-.jscheduler_ui-day_view-header th {
+.jscheduler_ui-daysview thead th {
     text-align: center;
+    height: 20px;
 }
 
-.jscheduler_ui-day_view-body {
-    border: 1px solid #d3d3d3;
-    border-collapse: collapse;
+.jscheduler_ui-daysview thead td {
+    height: 10px;
 }
 
-.jscheduler_ui-day_view-body th {
+.jscheduler_ui-daysview-columns tr:first-child {
+    border-top: 1px solid #d3d3d3;
+}
+
+.jscheduler_ui-daysview-columns tr:last-child {
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.jscheduler_ui-daysview-columns th {
     color: rgba(0,0,0,.54);
     text-align: center;
     font-size: .9em;
+    border-left: 1px solid #d3d3d3;
 }
 
-.jscheduler_ui-day_view-body td {
+.jscheduler_ui-daysview-columns td {
     border-left: 1px solid #d3d3d3;
+}
+
+.jscheduler_ui-daysview-columns td:last-child {
+    border-right: 1px solid #d3d3d3;
 }
 
 .jscheduler_ui-event {
@@ -143,7 +155,7 @@
     font-size: x-small;
 }
 
-.jscheduler_ui[data-breakpoint="small"] .jscheduler_ui-day-header {
+.jscheduler_ui[data-breakpoint="small"] .jscheduler_ui-daysview thead {
     font-size: x-small;
 }
 
@@ -151,7 +163,7 @@
     font-size: small;
 }
 
-.jscheduler_ui[data-breakpoint="medium"] .jscheduler_ui-day-header {
+.jscheduler_ui[data-breakpoint="medium"] .jscheduler_ui-daysview thead {
     font-size: small;
 }
 
