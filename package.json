@@ -26,7 +26,7 @@
     "/dist/*.js",
     "/dist/*.css",
     "/docs",
-    "features/helpers",
+    "/features/helpers",
     "README.md"
   ],
   "devDependencies": {

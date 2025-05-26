@@ -511,13 +511,13 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
             if (!groups.find(bySection(group_id))) {    
                 groups.push({
                     id:   group_id, 
-                    text: group_id
+                    label: group_id
                 });
             }
         }
         
         if (events.find(e => !e.values.group_id)) {
-            groups.push({id: null, text : ''});
+            groups.push({id: null, label : ''});
         }
         
         vars.attr = this.getAttr();
@@ -531,7 +531,7 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
                 width: yaxis_width_percent + '%'
             },
             rows: groups.map((section) => {
-                const { text } = section;
+                const { label } = section;
 
                 const events_row = this.withEventsRowPartial({
                     eventDroppableTarget: '#' + vars.attr['id'],
@@ -550,7 +550,7 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
 
                 const daysoff = this.getDaysOff(view);
                 
-                return { text, events_row, grid, daysoff }
+                return { label, events_row, grid, daysoff }
             })
         }
         
