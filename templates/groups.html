@@ -33,11 +33,11 @@
         
         {{ #yaxis.rows }} 
             <tr>
-                <th data-text="{{ text }}">
-                    {{ text }}
-                    {{^text}}
+                <th data-text="{{ label }}">
+                    {{ label }}
+                    {{^label}}
                     <div style="min-height: 25px;"></div>
-                    {{/text}}
+                    {{/label}}
                 </th>
                 <td colspan="{{ xaxis.cols.length }}"
                     style="position: relative";

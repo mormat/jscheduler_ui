@@ -4,13 +4,13 @@ var scheduler = jscheduler_ui.render(element, {
     viewMode: 'day',
     showGroups: true,
     groups: [
-        {id: 1, text: "Maria Penny"},
-        {id: 2, text: "John Castillo"},
-        {id: 3, text: "Kate Dillard"},
-        {id: 4, text: "Scott Peacock"},
-        {id: 5, text: "William Smith"},
-        {id: 6, text: "Casey Johnson"},
-        {id: 7, text: "Anna Bartlett"}
+        {id: 1, label: "Maria Penny"},
+        {id: 2, label: "John Castillo"},
+        {id: 3, label: "Kate Dillard"},
+        {id: 4, label: "Scott Peacock"},
+        {id: 5, label: "William Smith"},
+        {id: 6, label: "Casey Johnson"},
+        {id: 7, label: "Anna Bartlett"}
     ],
     events: [
         { 
