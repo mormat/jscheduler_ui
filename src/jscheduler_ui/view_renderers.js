@@ -160,7 +160,7 @@ class AbstractViewRenderer {
             'data-column_daterange_type': columnDateRangeType,
         }
         if (groupId !== undefined) {
-            attr['data-group_id'] = groupId;
+            attr['data-group_id'] = JSON.stringify(groupId);
         }
 
         return {
@@ -502,27 +502,38 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
         const yaxis_width_percent = 15;
         
         const dateRange = view.eventsDateRange;
-        const events    = this.getEvents(view).filter(
-            e => dateRange.intersects(e)
-        );
         
         const groups = [ ...vars.groups ];
-        const bySection = function(group_id) {
-            return s => s.id == group_id;
-        }
-        
-        for (const event of events.filter(e => e.group_id)) {
-            const group_id = event.group_id;
-            if (!groups.find(bySection(group_id))) {    
-                groups.push({
-                    id:   group_id, 
-                    label: group_id
-                });
+        const groupIds = groups.map(g => g.id);
+        const events    = this.getEvents(view).filter(
+            e => dateRange.intersects(e)
+        ).map(function(e) {
+            if (e.group_id === undefined) {
+                return { ...e, group_id: null }
             }
-        }
+            if (!groupIds.includes(e.group_id)) {
+                if (Number.isInteger(e.group_id)) {
+                    return { ...e, group_id: null };
+                }
+            }
+            return e;
+        });
         
-        if (events.find(e => !e.group_id)) {
-            groups.push({id: null, label : ''});
+        const missingGroupIds = new Set(events
+            .map(e => e.group_id)
+            .filter(v => !groupIds.includes(v))
+        );
+        // put null at the end
+        if (missingGroupIds.has(null)) {    
+            missingGroupIds.delete(null);
+            missingGroupIds.add(null);
+        }
+        console.log({missingGroupIds});
+        for (const group_id of missingGroupIds) {
+            groups.push({
+                id:   group_id, 
+                label: group_id || ''
+            });
         }
         
         vars.attr = this.getAttr();

@@ -72,8 +72,12 @@ class TimelineDraggable extends AbstractDraggable {
     move({ mouseEvent, droppable }) {
         
         const droppableData = droppable.getData(mouseEvent);
-                
-        this.#droppedGroupId = droppableData.group_id;
+        
+        try {
+            this.#droppedGroupId = JSON.parse(droppableData.group_id);
+        } catch (err) {
+            this.#droppedGroupId = undefined;
+        }
         
         const timelineDaterange = new DateRange(
             droppableData['daterange_start'],

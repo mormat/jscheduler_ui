@@ -61,14 +61,6 @@ Feature: demo page
         | interview       | day   | 10:00  | 10:00  | Room B  |
         | medical checkup | day   | 14:00  | 14:00  |         |
         
-    @groups
-    Scenario: The default group should be in the last row
-        When I open the "index" page
-        And I click on "month"
-        And I click on "show groups"
-        Then I should see "Room D" in row 4
-        And I should see "another group" in row 5
-
     @groups @drag_and_drop @week
     Scenario Outline: Dragging and dropping events when showing groups in week view
         When I open the "index" page

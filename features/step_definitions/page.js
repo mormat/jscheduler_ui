@@ -94,6 +94,13 @@ Then('the page should contains an {string} element', async function ( selector )
     
 });
 
+Then('I should see {int} {string} elements', async function (expected, selector) {
+    
+    const elements = await this.findElements(selector);
+    
+    expect( elements.length ).toBe(expected);
+    
+});
 
 Given('today is {string}', function (value) {
     

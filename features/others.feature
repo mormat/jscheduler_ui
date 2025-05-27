@@ -46,3 +46,102 @@ Feature: others features
             { minHour: 12, maxHour: 12 }
         """
         Then I should see in "table tbody" only "12:00"
+
+    @wtf
+    Scenario: display default group in last row
+        When I render a scheduler with the options below:
+        """
+            { 
+                showGroups: true,
+                groups: [
+                    { id: 1, label: "Room A" }
+                ],
+                currentDate: "2024-08-13",
+                events: [
+                    { 
+                        label: "task1", 
+                        start: "2024-08-12 10:00",
+                        group_id: null
+                    },
+                    { 
+                        label: "task2", 
+                        start: "2024-08-14 10:00",
+                        group_id: "some group"
+                    },
+                    { 
+                        label: "task2", 
+                        start: "2024-08-14 10:00",
+                        group_id: "another group"
+                    }
+                ]
+            }
+        """
+        Then I should see "some group" in row 2
+        And I should see "another group" in row 3
+
+    Scenario: always display events in groups even if group is missing
+        When I render a scheduler with the options below:
+        """
+            { 
+                showGroups: true,
+                groups: [
+                    { id: 1, label: "Room A" }
+                ],
+                currentDate: "2024-08-13",
+                events: [
+                    { 
+                        label: "task1", 
+                        start: "2024-08-12 10:00",
+                        group_id: "Tasks"
+                    },
+                    { 
+                        label: "task2", 
+                        start: "2024-08-14 10:00",
+                        group_id: null
+                    },
+                    { 
+                        label: "task3", 
+                        start: "2024-08-16 10:00"
+                    },
+
+                ]
+            }
+        """
+        Then I should see 3 "tbody tr" elements
+        And the "task1" event should be displayed from "12" to "12" in "Tasks" group
+        And the "task2" event should be displayed from "14" to "14" in "" group
+        And the "task3" event should be displayed from "16" to "16" in "" group
+
+    Scenario: events with unknown group should be displayed in default group
+        When I render a scheduler with the options below:
+        """
+            { 
+                showGroups: true,
+                groups: [
+                    { id: 1, label: "Room A" },
+                    { id: 2, label: "Room B" },
+                    { id: null, label: "others" }
+                ],
+                currentDate: "2024-08-13",
+                events: [
+                    { 
+                        label: "task1", 
+                        start: "2024-08-12 10:00",
+                        group_id: 3
+                    },
+                    { 
+                        label: "task2", 
+                        start: "2024-08-14 10:00",
+                        group_id: null
+                    },
+                    { 
+                        label: "task3", 
+                        start: "2024-08-16 10:00",
+                        group_id: 0
+                    }
+                ]
+            }
+        """
+        Then the "task1" event should be displayed from "12" to "12" in "others" group
+        And the "task2" event should be displayed from "14" to "14" in "others" group
+        And the "task3" event should be displayed from "16" to "16" in "others" group
