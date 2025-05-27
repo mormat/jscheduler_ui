@@ -152,7 +152,7 @@
 }
 
 .jscheduler_ui[data-breakpoint="small"] th[data-hour]{
-    font-size: x-small;
+    font-size: xx-small;
 }
 
 .jscheduler_ui[data-breakpoint="small"] .jscheduler_ui-daysview thead {
@@ -160,7 +160,7 @@
 }
 
 .jscheduler_ui[data-breakpoint="medium"] th[data-hour]{
-    font-size: small;
+    font-size: x-small;
 }
 
 .jscheduler_ui[data-breakpoint="medium"] .jscheduler_ui-daysview thead {
