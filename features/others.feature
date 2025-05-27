@@ -47,7 +47,6 @@ Feature: others features
         """
         Then I should see in "table tbody" only "12:00"
 
-    @wtf
     Scenario: display default group in last row
         When I render a scheduler with the options below:
         """

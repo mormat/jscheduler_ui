@@ -34,9 +34,8 @@ class StateHandler
 function reduceEvents( values ) {
     
     if ('events' in values) {
-        const events = values['events'].map(e => {
-            return e && e._uuid ? e : withEventDefaultValues(e);
-        });
+
+        const events = values['events'].map(withEventDefaultValues);
 
         return { events };
     }

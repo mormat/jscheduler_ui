@@ -528,7 +528,7 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
             missingGroupIds.delete(null);
             missingGroupIds.add(null);
         }
-        console.log({missingGroupIds});
+        
         for (const group_id of missingGroupIds) {
             groups.push({
                 id:   group_id, 

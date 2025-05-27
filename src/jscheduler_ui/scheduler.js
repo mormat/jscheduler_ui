@@ -170,9 +170,9 @@ class Scheduler {
     
     pushEvent(values) {
         
-        const valuesWithId = values.id ? values : { 
+        const valuesWithId = values._uuid ? values : { 
             ...values, 
-            id: uuid.v4() 
+            _uuid: uuid.v4() 
         };
         
         const { events } = this.#state.values;

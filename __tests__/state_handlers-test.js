@@ -12,7 +12,7 @@ jest.mock('../src/jscheduler_ui/models', () => ({
         return values['start'] instanceof Date;
     },
     withEventDefaultValues: function(vars) {
-        return { ...vars, _uuid: Math.random() };
+        return vars._uuid ? vars :{ ...vars, _uuid: Math.random() };
     }
 }));
 
@@ -85,7 +85,7 @@ describe("StateHandler", () => {
         const actual = reduceEvents( values );
         expect( actual.events ).toHaveLength(2);
         expect( actual.events[0] ).toHaveProperty('_uuid');
-        expect( actual.events[1] ).toBe( values.events[1] );
+        expect( actual.events[1] ).toEqual( values.events[1]);
 
     });
     

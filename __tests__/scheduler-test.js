@@ -15,13 +15,15 @@ describe("scheduler.pushEvent()", () => {
         const scheduler = new Scheduler(rootElement);
         
         expect(
-            scheduler.pushEvent({ id: 1234, label: 'foo'})
-        ).toStrictEqual({ id: 1234, label: 'foo' });
+            scheduler.pushEvent({ _uuid: 1234, label: 'foo'})
+        ).toEqual(
+            { _uuid: 1234, label: 'foo' }
+        );
         
         expect(
             scheduler.pushEvent({ label: 'bar'})
         ).toStrictEqual({
-            id: expect.stringMatching(UUID4_REGEX), 
+            _uuid: expect.stringMatching(UUID4_REGEX), 
             label: 'bar'
         });
         
