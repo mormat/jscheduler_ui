@@ -4,13 +4,15 @@ const { getOffsetAndLengthByDateRanges } = require('@src/utils/date');
 const { composeMaps } = require('@src/utils/collection');
 const { compareSchedulerEventsByDaysCount } = require('@src/jscheduler_ui/models');
 const Mustache = require('mustache');
-
 const { 
     DayView, 
     WeekView, 
     MonthView,
     YearView
 }  = require('./views');
+const {
+    getEventHeader
+} = require('./models');
 
 const templates = __MUSTACHE_TEMPLATES__;
 const partials  = __MUSTACHE_PARTIALS__;
@@ -190,7 +192,7 @@ class AbstractViewRenderer {
 
                 let description = event.label;
                 if (labelType) {
-                    const { labels = {} } = event.values;
+                    const { labels = {} } = event;
                     if (labels[labelType]) {
                         description = labels[labelType]
                     }
@@ -270,7 +272,10 @@ class DaysViewRenderer extends AbstractViewRenderer {
                 maxhour: `${ view.maxHour + 1 }:00:00`,
             };
             day.events_column = this.withEventsColumnPartial({
-                events: day.events,
+                events:    day.events.map(e => {
+                    const header = getEventHeader(e);
+                    return { ...e, header }
+                }),
                 dateRange: day.dateRange,
                 eventDroppableTarget: '#' + vars.bodyId
             });
@@ -413,7 +418,7 @@ class YearViewRenderer extends AbstractViewRenderer {
             month.events_row = this.withEventsRowPartial({
                 eventDroppableTarget: '#' + vars.bodyId,
                 dateRange: month.dateRange,
-                events:    month.events.map(function({values}) {
+                events:    month.events.map(function(values) {
                     let { label, short_label } = values;
                     if (short_label) {
                         const dateRange = new DateRange(values.start, values.end);
@@ -506,8 +511,8 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
             return s => s.id == group_id;
         }
         
-        for (const event of events.filter(e => e.values.group_id)) {
-            const group_id = event.values.group_id;
+        for (const event of events.filter(e => e.group_id)) {
+            const group_id = event.group_id;
             if (!groups.find(bySection(group_id))) {    
                 groups.push({
                     id:   group_id, 
@@ -516,7 +521,7 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
             }
         }
         
-        if (events.find(e => !e.values.group_id)) {
+        if (events.find(e => !e.group_id)) {
             groups.push({id: null, label : ''});
         }
         
@@ -537,7 +542,7 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
                     eventDroppableTarget: '#' + vars.attr['id'],
                     dateRange: dateRange,
                     events:    events.filter(
-                        e => (e.values.group_id || null) == section.id
+                        e => (e.group_id || null) == section.id
                     ),
                     columnDateRangeType: this.getColumnTimeRangeType(),
                     groupId: section.id,

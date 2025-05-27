@@ -8,10 +8,11 @@ const {
 const { SchedulerEvent } = require('../src/jscheduler_ui/models');
 
 jest.mock('../src/jscheduler_ui/models', () => ({
-    SchedulerEvent: function(values) {
-        for (const k in values) {
-            this[k] = values[k];
-        }
+    isEventDisplayable: function(values) {
+        return values['start'] instanceof Date;
+    },
+    withEventDefaultValues: function(vars) {
+        return { ...vars, _uuid: Math.random() };
     }
 }));
 
@@ -76,14 +77,14 @@ describe("StateHandler", () => {
         const values = {
             events: [
                 { label: 'foo', start: '2020-10-10 10:00' },
-                new SchedulerEvent({ foo: 'bar'})
+                { _uuid: 123, foo: 'bar'}
             ],
             some_prop: 'some_value'
         };
         
         const actual = reduceEvents( values );
-        expect( actual ).toEqual( { events: values.events } );
-        expect( actual.events[0] ).toBeInstanceOf(SchedulerEvent);
+        expect( actual.events ).toHaveLength(2);
+        expect( actual.events[0] ).toHaveProperty('_uuid');
         expect( actual.events[1] ).toBe( values.events[1] );
 
     });
@@ -101,7 +102,7 @@ describe("StateHandler", () => {
         });
         
         const events = [
-            {'start': 1000},
+            {'start': new Date(1000) },
             {'start': new Date(1001) },
             {'start': 'invalid date' }
         ];

@@ -24,10 +24,8 @@ var scheduler = jscheduler_ui.render(element, {
         }
     ],
     eventsEditable: true,
-    onEventEdit: function(editedEvent) {
+    onEventEdit: function(values) {
         
-        // Retrieve the current values to display on the form
-        var values = editedEvent.values;
         document.getElementById('comments').innerHTML = 
             'label='  + values.label + ',' +
             'start='  + values.start.getTime() + ',' +

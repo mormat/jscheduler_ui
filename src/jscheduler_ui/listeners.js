@@ -29,7 +29,7 @@ function SchedulerListener(listeners, schedulerState) {
     function replaceEvent( values ) {
         const { events } = schedulerState.values;
         schedulerState.update( { 
-            events: events.map((e) => e.id !== values.id ? e : values)
+            events: events.map((e) => e._uuid !== values._uuid ? e : values)
         });
     }
     
@@ -39,8 +39,8 @@ function SchedulerListener(listeners, schedulerState) {
             e.preventDefault();
             
             const parentElement = e.target.closest('.jscheduler_ui-event');
-            const schedulerEvent = getSchedulerEvents().find(function({ id }) {
-                return parentElement.dataset['eventId'] === String(id);
+            const schedulerEvent = getSchedulerEvents().find(function({ _uuid }) {
+                return parentElement.dataset['eventUuid'] === _uuid;
             });
             
             if (schedulerEvent) {
@@ -55,8 +55,8 @@ function SchedulerListener(listeners, schedulerState) {
             e.preventDefault();
             
             const parentElement = e.target.closest('.jscheduler_ui-event');
-            const schedulerEvent = getSchedulerEvents().find(function({ id }) {
-                return parentElement.dataset['eventId'] === String(id);
+            const schedulerEvent = getSchedulerEvents().find(function({ _uuid }) {
+                return parentElement.dataset['eventUuid'] === _uuid;
             });
             
             if (schedulerEvent) {
@@ -73,8 +73,8 @@ function SchedulerListener(listeners, schedulerState) {
             e.preventDefault();
             
             const parentElement = e.target.closest('.jscheduler_ui-event');
-            const schedulerEvent = getSchedulerEvents().find(function({ id }) {
-                return parentElement.dataset['eventId'] === String(id);
+            const schedulerEvent = getSchedulerEvents().find(function({ _uuid }) {
+                return parentElement.dataset['eventUuid'] === _uuid;
             });
             
             const droppable = createDroppable( { draggableElement: parentElement} );
@@ -106,8 +106,8 @@ function SchedulerListener(listeners, schedulerState) {
             e.preventDefault();
             
             const parentElement = e.target.closest('.jscheduler_ui-event');
-            const schedulerEvent = getSchedulerEvents().find(function({ id }) {
-                return parentElement.dataset['eventId'] === String(id);
+            const schedulerEvent = getSchedulerEvents().find(function({ _uuid }) {
+                return parentElement.dataset['eventUuid'] === _uuid;
             });
             
             const droppable = createDroppable( { draggableElement: parentElement} );

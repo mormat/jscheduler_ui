@@ -274,6 +274,8 @@ class AbstractDaysView {
         const events = this.#events.filter(
             e => eventsDateRange.intersects(e)
         );
+
+        
         
         const hours = this.hours.map((hour) => {
             return {

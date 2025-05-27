@@ -7,8 +7,8 @@ const {
 const { Day, DateRange } = require('@src/utils/date.js');
 const { createViewRenderer } = require('./view_renderers');
 const { SchedulerListener } = require('./listeners');
-const { SchedulerEvent } = require('./models');
 const uuid = require('uuid');
+const { isEventDisplayable } = require('./models');
 
 const { 
     StateHandler, 
@@ -72,7 +72,7 @@ class Scheduler {
     refresh() {
         
         const viewParams = this.#state.values;
-        viewParams.events = viewParams.events.filter(e => e.isValid());
+        viewParams.events = viewParams.events.filter(isEventDisplayable);
         
         if (viewParams.viewMode === 'day') {
             this.#currentView = new DayView( viewParams );
@@ -188,8 +188,8 @@ class Scheduler {
         
         this.#state.update( { 
             events: events.map(function(e) {
-                if ([e.values].find(filterCallbackFn)) {
-                    return { ...e.values, ...values }
+                if ([e].find(filterCallbackFn)) {
+                    return { ...e, ...values }
                 }
                 return e;
             })
@@ -201,7 +201,7 @@ class Scheduler {
         const { events } = this.#state.values;
         this.#state.update( { 
             events: events.filter(function(e) {
-                return ![e.values].find(filterCallbackFn);
+                return ![e].find(filterCallbackFn);
             })
         });
     }

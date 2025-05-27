@@ -51,7 +51,10 @@ class TimelineDraggable extends AbstractDraggable {
     constructor(schedulerEvent, onChange)
     {
         super();
-        this.#initialValue = schedulerEvent;
+        this.#initialValue = {
+            ...schedulerEvent,
+            length: schedulerEvent.end.getTime() - schedulerEvent.start.getTime()
+        };
         this.#onChange = onChange;
     }
 
@@ -93,16 +96,23 @@ class TimelineDraggable extends AbstractDraggable {
         );
         const end = start.getTime() + this.#initialValue.length;
         
+        /*
         this.#currentValue = this.#currentValue.cloneWith( 
             { start, end },
-        );
+        );*/
+        
+        this.#currentValue = { 
+            ...this.#currentValue, 
+            start: new Date(start), 
+            end: new Date(end)
+        }
         
     }
 
     drop() {
         
         const { start, end } = this.#currentValue;
-        const valuesBefore = this.#initialValue.values;
+        const valuesBefore = this.#initialValue;
         const valuesAfter  = { ...valuesBefore, start, end };
         
         if (this.#droppedGroupId !== undefined) {
@@ -124,7 +134,10 @@ class MoveEventDraggable extends AbstractDraggable {
     constructor(schedulerEvent, onChange)
     {
         super();
-        this.#initialValue = schedulerEvent;
+        this.#initialValue = {
+            ...schedulerEvent,
+            length: schedulerEvent.end.getTime() - schedulerEvent.start.getTime()
+        };
         this.#onChange     = onChange;
     }
 
@@ -147,7 +160,7 @@ class MoveEventDraggable extends AbstractDraggable {
 
     drag({ mouseEvent, droppable }) {
         
-        this.#currentValue = this.#initialValue;
+        this.#currentValue = { ...this.#initialValue };
         
         const currentTimestamp = this.getCurrentTimestamp({ mouseEvent, droppable });
         
@@ -177,18 +190,24 @@ class MoveEventDraggable extends AbstractDraggable {
         if (startTime + this.#initialValue.length > constraint.end.getTime()) {
             startTime = constraint.end.getTime() - this.#initialValue.length;
         }
-        
+
+        /*
         this.#currentValue = this.#currentValue.cloneWith({
             start: startTime,
             end:   startTime + this.#initialValue.length
-        });
-
+        });*/
+        
+        this.#currentValue = {
+            ...this.#currentValue,
+            start: new Date(startTime),
+            end:   new Date(startTime + this.#initialValue.length)
+        }
     }
 
     drop() {
         
         const { start, end } = this.#currentValue;
-        const valuesBefore = this.#initialValue.values;
+        const valuesBefore = this.#initialValue;
         this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
         
     }
@@ -205,7 +224,10 @@ class ResizeEventDraggable extends AbstractDraggable {
     constructor(value, onChange)
     {
         super();
-        this.#initialValue = value;
+        this.#initialValue = {
+            ...value,
+            length: value.end.getTime() - value.start.getTime()
+        }
         this.#onChange     = onChange;
     }
 
@@ -262,17 +284,24 @@ class ResizeEventDraggable extends AbstractDraggable {
             endTime = this.#initialValue.start.getTime() + 15 * 60 * 1000;
         }
 
+        /*
         this.#currentValue = this.#currentValue.cloneWith({
             start: this.#currentValue.start,
             end:   endTime
-        });
+        });*/
+        
+        this.#currentValue = {
+            ...this.#currentValue,
+            start: new Date(this.#currentValue.start),
+            end:   new Date(endTime)
+        }
 
     }
 
     drop() {
         
         const { start, end } = this.#currentValue;
-        const valuesBefore = this.#initialValue.values;
+        const valuesBefore = this.#initialValue;
         this.#onChange({ ...valuesBefore, start, end }, valuesBefore);
         
     }

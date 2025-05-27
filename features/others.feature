@@ -7,7 +7,6 @@ Feature: others features
         Then the 'interview' event should be displayed at "Mon, Sep 16" from '10:00' to '12:00'
         And the 'meeting' event should be displayed at "Tue, Sep 17" from '14:00' to '16:00'
 
-    @wtf
     Scenario Outline: setting the `currentDate` prop
         When I render a scheduler with the options below:
         """

@@ -1,4 +1,7 @@
-const { SchedulerEvent } = require('./models');
+const { 
+    withEventDefaultValues ,
+    isEventDisplayable
+} = require('./models');
 
 class StateHandler
 {
@@ -32,10 +35,7 @@ function reduceEvents( values ) {
     
     if ('events' in values) {
         const events = values['events'].map(e => {
-            if (e instanceof SchedulerEvent) {
-                return e;
-            }
-            return new SchedulerEvent(e);
+            return e && e._uuid ? e : withEventDefaultValues(e);
         });
 
         return { events };
@@ -55,7 +55,8 @@ function reduceCurrentDate( values ) {
         
         const { events } = values;
         if ( events ) {
-            const dates = events.map(e => new Date(e.start)).filter(d => !isNaN(d));
+            const dates = events.filter(isEventDisplayable)
+                .map(e => new Date(e.start));
             if (dates.length) {
                 const min = Math.min( ...dates.map( d => d.getTime() ) );
                 return { currentDate: min }

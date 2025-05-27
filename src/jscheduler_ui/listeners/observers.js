@@ -1,6 +1,10 @@
 
 const { DateRange, format_date } = require('@src/utils/date');
 
+const {
+    getEventHeader
+} = require('../models');
+
 function getColumnDragAndDropObserver( { parentElement } ) {
     
     let clone = null;
@@ -45,7 +49,7 @@ function getColumnDragAndDropObserver( { parentElement } ) {
         clone.style['height']   = (rect.height * heightPercent) + 'px';
         clone.style['top']      = (rect.y + rect.height * topPercent) + 'px';
 
-        clone.querySelector('.jscheduler_ui-event-header').innerHTML = currentValue.header;
+        clone.querySelector('.jscheduler_ui-event-header').innerHTML = getEventHeader( currentValue );
 
         parentElement.style['display'] = 'none';
     }
