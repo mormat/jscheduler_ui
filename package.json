@@ -1,6 +1,6 @@
 {
   "name": "@mormat/jscheduler_ui",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "description": "A javascript scheduler ui component",
   "author": "Mathieu MOREL",
   "license": "GPL v2",
