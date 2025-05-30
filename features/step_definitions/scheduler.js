@@ -7,7 +7,7 @@ const { expect }  = require('expect');
 
 Then('the scheduler should be in day view', async function () {
 
-    await this.getElement( this.daysview.selector );
+    await this.elements.get( this.daysview.selector );
 
     const columns = await this.daysview.countColumns();
     
@@ -17,7 +17,7 @@ Then('the scheduler should be in day view', async function () {
 
 Then('the scheduler should be in week view', async function () {
 
-    await this.getElement( this.daysview.selector );
+    await this.elements.get( this.daysview.selector );
 
     const columns = await this.daysview.countColumns();
     
@@ -27,7 +27,7 @@ Then('the scheduler should be in week view', async function () {
 
 Then('the scheduler should be in month view', async function () {
     
-    await this.getElement( this.monthview.selector );
+    await this.elements.get( this.monthview.selector );
     
 });
 

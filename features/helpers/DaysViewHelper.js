@@ -9,7 +9,7 @@ class DaysViewHelper extends AbstractViewHelper {
     }
     
     async countColumns() {
-        const elements = await this._world.findElements(
+        const elements = await this.elements.select(
             this.selector + ' .jscheduler_ui-daysview-columns td'
         )
         return elements.length;
@@ -26,7 +26,7 @@ class DaysViewHelper extends AbstractViewHelper {
         const expectedRect  = await this.getDayRect(atDate);
         expectedRect.y      = await this.getHourTop(fromHour);
         expectedRect.height = await this.getHourTop(toHour) - expectedRect.y;
-        this._debugRects.push(expectedRect);
+        this.debugRects.push(expectedRect);
         
         const actualRect = await actualElement.getRect();
         
@@ -41,7 +41,7 @@ class DaysViewHelper extends AbstractViewHelper {
     async expectElementFromDayToDay(actualElement, fromDate, toDate) {
         
         const expectedRect = await this.getDayRangeRect(fromDate, toDate);
-        this._debugRects.push(expectedRect);
+        this.debugRects.push(expectedRect);
         
         const actualRect = await actualElement.getRect();
                 
@@ -70,9 +70,9 @@ class DaysViewHelper extends AbstractViewHelper {
             color: 'red'
         };
         
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
         
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
     }
 
     async dragElementAtDate(draggableElement, atDate) {
@@ -91,9 +91,9 @@ class DaysViewHelper extends AbstractViewHelper {
             y: targetRect.y + targetRect.height / 2,
             color: 'red'
         };
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
         
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
     }
     
     async resizeElementUntilHour(resizableElement, toHour) {
@@ -110,18 +110,18 @@ class DaysViewHelper extends AbstractViewHelper {
             y: (await this.getHourTop(toHour)) + 4,
         }
         
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
 
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
     }
 
     async getDayRect(atDay) {
 
-        const dayHeaderElement = await this._world.getElement(
+        const dayHeaderElement = await this.elements.get(
             this.selector + ` thead th:contains('${atDay}')`
         );
 
-        const bodyElement = await this._world.getElement(
+        const bodyElement = await this.elements.get(
             this.selector + ` .jscheduler_ui-daysview-columns`
         );
 
@@ -134,7 +134,7 @@ class DaysViewHelper extends AbstractViewHelper {
     
     async getHourTop(atHour) {
         
-        const element = await this._world.getElement(
+        const element = await this.elements.get(
             this.selector + ` [data-hour]:contains('${atHour}')`
         );
 
@@ -153,7 +153,7 @@ class DaysViewHelper extends AbstractViewHelper {
 
         const rects = {};
         for (const key in selectors) {
-            const node = await this._world.getElement(selectors[key]);
+            const node = await this.elements.get(selectors[key]);
             rects[key] = await node.getRect();
         }
 

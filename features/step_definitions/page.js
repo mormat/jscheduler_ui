@@ -18,7 +18,7 @@ When('I open the {string} page', async function (pageName) {
 
 Then('I should see {string}', async function (expectedText) {
     
-    const pageText = await this.getPageText();
+    const pageText = await this.page.getText();
     
     expect(pageText).toContain(expectedText);
     
@@ -26,7 +26,7 @@ Then('I should see {string}', async function (expectedText) {
 
 Then('I should see :', async function (dataTable) {
         
-    const pageText = await this.getPageText();
+    const pageText = await this.page.getText();
 
     for (const [expectedText] of dataTable.raw()) {
         expect(pageText).toContain(expectedText);
@@ -36,7 +36,7 @@ Then('I should see :', async function (dataTable) {
 
 Then('I should not see {string}', async function (expectedText) {
         
-    const pageText = await this.getPageText();
+    const pageText = await this.page.getText();
     
     expect(pageText).not.toContain(expectedText);
     
@@ -44,7 +44,7 @@ Then('I should not see {string}', async function (expectedText) {
 
 Then('I should not see :', async function (dataTable) {
     
-    const pageText = await this.getPageText();
+    const pageText = await this.page.getText();
 
     for (const [expectedText] of dataTable.raw()) {
         expect(pageText).not.toContain(expectedText);
@@ -54,13 +54,13 @@ Then('I should not see :', async function (dataTable) {
 
 Then('I should see a {string} tooltip', async function (string) {
     
-    await this.getElement(`[title="${string}"]`);
+    await this.elements.get(`[title="${string}"]`);
     
 });
 
 Then('I should see {string} in row {int}', async function (string, int) {
     
-    await this.getElement(
+    await this.elements.get(
         `tr:nth-child(${int}):contains('${string}')`
     );
     
@@ -68,7 +68,7 @@ Then('I should see {string} in row {int}', async function (string, int) {
 
 Then('I should see in {string} only {string}', async function (selector, expectedText) {
     
-    const actualText = await this.getPageText(selector);
+    const actualText = await this.page.getText({ selector });
     
     expect(actualText).toBe(expectedText);
     
@@ -90,13 +90,13 @@ When('I click on {string}', async function (clickableText) {
 
 Then('the page should contains an {string} element', async function ( selector ) {
     
-    await this.getElement( selector );
+    await this.elements.get( selector );
     
 });
 
 Then('I should see {int} {string} elements', async function (expected, selector) {
     
-    const elements = await this.findElements(selector);
+    const elements = await this.elements.select(selector);
     
     expect( elements.length ).toBe(expected);
     

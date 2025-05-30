@@ -2,39 +2,41 @@ const css2xpath   = require('css2xpath');
 
 class EventsHelper {
     
-    #world;
+    #driver;
+    #elements;
     
-    constructor(world) {
-        this.#world = world;
+    constructor({ driver, elements }) {
+        this.#driver   = driver;
+        this.#elements = elements;
     }
  
     async getElement(eventName) {
-        return await this.#world.getElement(
+        return await this.#elements.get(
             this.buildSelector(eventName)
         );
     }
     
     async findElements(eventName) {
-        return await this.#world.findElements(
+        return await this.#elements.select(
             this.buildSelector(eventName)
         )
     }
     
     async clickTitle(eventName) {
-        const element = await this.#world.getElement(
+        const element = await this.#elements.get(
             this.buildSelector(eventName) + ' a'
         );
         await element.click();
     }
     
     async clickEdit(eventName) {
-        const parent = await this.getElement( eventName );
-        const actions = this.#world.driver.actions({async: true});
-        await actions.move({origin: parent}).perform();
+        const rootElement = await this.getElement( eventName );
+        const actions = this.#driver.actions({async: true});
+        await actions.move({origin: rootElement}).perform();
 
-        const button = await this.#world.getElement(
+        const button = await this.#elements.get(
             'a.jscheduler_ui-event-edit',
-            parent,
+            { rootElement },
         );
         await button.click();
     }

@@ -7,20 +7,18 @@ const EventsHelper   = require('./EventsHelper');
 const DebugRectsHelper   = require('./DebugRectsHelper');
 const PageHelper   = require('./PageHelper');
 
-function buildInstances(world) {
+function buildHelpers(params) {
     
-    const debugRects = new DebugRectsHelper(world);
-        
+    const debugRects = new DebugRectsHelper(params);
+    
     return {
-        'page':   new PageHelper(world),
-        'events': new EventsHelper(world),
-        'daysview': new DaysViewHelper(world, { debugRects }),
-        'monthview': new MonthViewHelper(world, { debugRects }),
-        'yearview':  new YearViewHelper(world, { debugRects }),
-        'groupsview': new GroupsViewHelper(world, { debugRects }),
-        'debugRects': debugRects,
+        debugRects,
+        events:     new EventsHelper(params),
+        daysview:   new DaysViewHelper({...params, debugRects}),
+        monthview:  new MonthViewHelper({...params, debugRects}),
+        yearview:   new YearViewHelper({...params, debugRects}),
+        groupsview: new GroupsViewHelper({...params, debugRects})
     }
-    
 }
 
 module.exports = { 
@@ -31,6 +29,6 @@ module.exports = {
     EventsHelper,
     DebugRectsHelper,
     PageHelper,
-    buildInstances
+    buildHelpers
 }
 

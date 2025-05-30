@@ -5,6 +5,7 @@
 
 const { Scheduler } = require('./jscheduler_ui/scheduler');
 const { format_date, Day } = require('./utils/date');
+const uuid = require('uuid');
 
 function render(element, eventsOrSettings)
 {
@@ -23,14 +24,17 @@ function render(element, eventsOrSettings)
         }
     }
     
-    
     const scheduler = new Scheduler(element, props, listeners);
         
     return scheduler;
     
 }
 
-const utils = { format_date, Day }
+function generate_uuid() {
+    return uuid.v4();
+}
+
+const utils = { format_date, Day, generate_uuid }
 
 module.exports = { 
     render, 

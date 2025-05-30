@@ -2,10 +2,12 @@
 
 class DebugRectsHelper {
     
-    #items = [];
+    #driver;
+    #items;
     
-    constructor(world) {
-        this._world = world;
+    constructor({ driver }) {
+        this.#driver = driver;
+        this.#items = [];
     }
     
     push(...items) {
@@ -42,7 +44,7 @@ class DebugRectsHelper {
 
             ];
 
-            this._world.driver.executeScript(
+            this.#driver.executeScript(
                 `(function() { ${scripts.join(';')} })();`        
             );
         }

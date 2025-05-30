@@ -13,7 +13,7 @@ class GroupsViewHelper extends AbstractViewHelper {
         const expectedRect = await this.getDayRangeInGroup(
             inGroup, from, to
         );
-        this._debugRects.push(expectedRect);
+        this.debugRects.push(expectedRect);
         
         const actualRect = await actualElement.getRect();
 
@@ -44,24 +44,26 @@ class GroupsViewHelper extends AbstractViewHelper {
             color: 'red'
         };
         
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
         
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
         
     }
     
     async getDayRangeInGroup(inGroup, from, to) {
 
-        const rowElement = await this._world.getElement(
+        const rootElement = await this.elements.get(`.jscheduler_ui tbody`);
+
+        const rowElement = await this.elements.get(
             `//th[normalize-space()='${inGroup}']`,
-            await this._world.getElement(`.jscheduler_ui tbody`)
+            { rootElement }
         );
 
-        const fromElement = await this._world.getElement(
+        const fromElement = await this.elements.get(
             `.jscheduler_ui thead th:contains('${from}')`
         );
 
-        const toElement = await this._world.getElement(
+        const toElement = await this.elements.get(
             `.jscheduler_ui thead th:contains('${to}')`
         );
 

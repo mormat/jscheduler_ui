@@ -13,7 +13,7 @@ class YearViewHelper extends AbstractViewHelper {
         const expectedRect = await this.getDayRangeRectInYearView(
             inMonth, fromDayInMonth, toDayInMonth
         );
-        this._debugRects.push(expectedRect);
+        this.debugRects.push(expectedRect);
 
         const actualRect = await actualElement.getRect();
                 
@@ -46,28 +46,28 @@ class YearViewHelper extends AbstractViewHelper {
             color: 'red'
         };
         
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
         
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
     }
 
     async getDayRangeRectInYearView(inMonth, fromNumDay, toNumDay) {
 
-        const rowElement = await this._world.getElement(
+        const rootElement = await this.elements.get(
             `.jscheduler_ui tbody tr:has(th:contains('${inMonth}'))`
         );
 
-        const fromDayElement = await this._world.getElement(
+        const fromDayElement = await this.elements.get(
             `[data-monthday="${fromNumDay}"]`,
-            rowElement
+            { rootElement }
         );
 
-        const toDayElement = await this._world.getElement(
+        const toDayElement = await this.elements.get(
             `[data-monthday="${toNumDay}"]`,
-            rowElement
+            { rootElement }
         );
 
-        const { y,  height } = await rowElement.getRect();
+        const { y,  height } = await rootElement.getRect();
         const { x } = await fromDayElement.getRect();
         const toDayRect = await toDayElement.getRect();
         const width = (toDayRect.x + toDayRect.width)  - x;

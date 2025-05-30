@@ -5,64 +5,53 @@ const {
     setWorldConstructor
 } = require('@cucumber/cucumber');
 
-const { Builder } = require('selenium-webdriver');
-const chrome  = require("selenium-webdriver/chrome");
+const { 
+    PageHelper,
+    ElementsHelperWithThrowingError,
+    createDriver
+} = require('@mormat/test-utils');
 
-const { SeleniumWorld } = require('@mormat/test-utils');
-
-const helpers = require('../helpers');
+const { buildHelpers } = require('../helpers');
 
 setDefaultTimeout( 60 * 1000 );
 
-setWorldConstructor(class extends SeleniumWorld {
+let driver;
+
+setWorldConstructor(function() {
     
-    constructor() {
-        super({});
-        
-        return this.withDynamicGetters(
-            helpers.buildInstances(this)
-        );
+    if (!driver) {
+        driver = createDriver( getDriverCapabilities() );
     }
     
-    // @todo move to common lib
-    withDynamicGetters(getters) {
-        return new Proxy(this, {
-            get: function(self, field) {
-                if (field in self) return self[field]; // normal case
-                return getters[field];
-            }
-        });
+    this.driver   = driver;
+    this.elements = new ElementsHelperWithThrowingError(driver);
+    this.page     = new PageHelper(driver);
+    
+    const helpers = buildHelpers(this);;
+    for (const k in helpers) {
+        this[k] = helpers[k];
     }
     
-    createDriver() {
-        const builder = new Builder().withCapabilities(
-            this.getBrowserCapabilities()
-        );
-
-        const options = new chrome.Options();
-        options.addArguments("--lang=en");
-        builder.setChromeOptions(options);
-
-        return builder.build();
-    }
-    
-    getBrowserCapabilities() {
-        // --profile firefox 
-        // -p firefox
-        if (process.argv.includes('firefox')) {
-            return {
-                'browserName': 'firefox',
-            }
-        }
-
-        return {
-            'browserName': 'chrome',
-            'goog:loggingPrefs': { 'browser':'ALL' },
-        }
+    this.waitForText = async (expectedText, options) => {
+        await this.elements.waitFor(`:contains("${expectedText}")`, options);
     }
     
 });
 
+function getDriverCapabilities() {
+    // --profile firefox 
+    // -p firefox
+    if (process.argv.includes('firefox')) {
+        return {
+            'browserName': 'firefox',
+        }
+    }
+
+    return {
+        'browserName': 'chrome',
+        'goog:loggingPrefs': { 'browser':'ALL' },
+    }
+}
 
 Before(async function() {
     
@@ -73,7 +62,7 @@ Before(async function() {
 AfterAll(async function() {
     
     if (!process.argv.includes('--fail-fast')) {
-        SeleniumWorld.driver.close();
+        driver.close();
     }
     
 });

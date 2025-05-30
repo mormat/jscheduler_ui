@@ -15,6 +15,8 @@ module.exports = {
             'events_column': 'events_column',
             'grid':          'grid'
         },
+        __PACKAGE_NAME__: 'jest_package_name',
+        __PACKAGE_VERSION__: 'jest_package_version'
     }
 }
 

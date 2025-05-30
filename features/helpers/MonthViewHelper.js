@@ -12,7 +12,7 @@ class MonthViewHelper extends AbstractViewHelper {
     async expectElementFromDayToDay(actualElement, fromDate, toDate) {
         
         const expectedRect = await this.getDayRangeRect(fromDate, toDate);
-        this._debugRects.push(expectedRect);
+        this.debugRects.push(expectedRect);
         
         const actualRect = await actualElement.getRect();
                 
@@ -38,9 +38,9 @@ class MonthViewHelper extends AbstractViewHelper {
             y: targetRect.y + targetRect.height / 2,
             color: 'red'
         };
-        this._debugRects.push(fromPoint, toPoint);
+        this.debugRects.push(fromPoint, toPoint);
         
-        await this._world.dragAndDrop(fromPoint, toPoint);
+        await this.dragAndDrop(fromPoint, toPoint);
     }
     
     async getDayRangeRect(fromDate, toDate) {
@@ -51,14 +51,12 @@ class MonthViewHelper extends AbstractViewHelper {
             'row':      `.jscheduler_ui-daterange-row`,
         }
 
-        const parent = await this._world.getElement(
-            '.jscheduler_ui-daterange' + 
-            Object.values(selectors).map(s => `:has(${s})`).join('')
-        );
+        const row = '.jscheduler_ui-daterange' + 
+            Object.values(selectors).map(s => `:has(${s})`).join('');
 
         const rects = {};
         for (const key in selectors) {
-            const node = await this._world.getElement(selectors[key], parent);
+            const node = await this.elements.get(row + ' ' + selectors[key]);
             rects[key] = await node.getRect();
         }
 

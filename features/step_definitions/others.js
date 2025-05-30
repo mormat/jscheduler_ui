@@ -44,7 +44,7 @@ When('I render a scheduler with the options below:', async function (schedulerOp
 When(
     'I select the {string} example in {string}', 
     async function (exampleName, sectionName) {
-        const element = await this.getElement([
+        const element = await this.elements.get([
             `.list-group-item:contains( "${sectionName}" )`,
             `.list-group-item:contains( "${exampleName}" )`
         ].join(' ~ '));
@@ -64,7 +64,7 @@ Then(
     
         const expectedText = `loading '${url}?start=${start}&end=${end}'`;
 
-        const pageText = await this.getPageText();
+        const pageText = await this.page.getText();
 
         expect(pageText).toContain(expectedText);
 
