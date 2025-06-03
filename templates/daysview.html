@@ -7,12 +7,12 @@
     
 >    
     <thead>
-        {{# has_header }}
+        {{# show_headers }}
         <tr>
-            <td style="width: {{ hours[0].style.width }}">
+            <td style="width: {{ $root.xaxis_width_percent }}%">
             </td>
             {{# days }}
-            <th style="width: {{ style.width }};
+            <th style="width: {{ $root.column_width_percent }}%;
                        text-align: center" 
                 class="jscheduler_ui-daterange-header jscheduler_ui-day-header"
             >
@@ -20,13 +20,13 @@
             </th>
             {{/ days }}
         </tr>
-        {{/ has_header }}
+        {{/ show_headers }}
 
         {{# events_row }}
         <tr id="{{headerId}}" data-jscheduler_ui-droppable-type="timeline">
-            <td style="width: {{ hours[0].style.width }}"></td>
+            <td style="width: {{ $root.xaxis_width_percent }}%"></td>
             <td class="jscheduler_ui-daterange-row" 
-                colspan="{{ colspan }}"
+                colspan="{{ days.length }}"
             >
                 <div style="height: {{ events_row_height }};
                             width: 100%;
@@ -46,18 +46,17 @@
         {{# hours }}
         <tr>
 
-            <th style="width: {{ style.width }}"
+            <th style="width: {{ $root.xaxis_width_percent }}%"
                 data-hour>
                 {{ label }}
 
                 {{ #grid }} {{> grid }} {{ /grid }}
-            </div>
-
             </th>
 
             {{# _days }}
-            <td style   = "width: {{ style.width }}%;
-                           position: relative" 
+            <td style   = "width: {{ $root.column_width_percent }}%;
+                           position: relative
+                          " 
                 rowspan = "{{ rowspan }}"
                 data-jscheduler_ui-day = "{{ data.day }}"
                 data-day = "{{ data.day }}"

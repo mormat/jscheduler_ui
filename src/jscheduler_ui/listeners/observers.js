@@ -1,5 +1,5 @@
 
-const { DateRange, format_date } = require('@src/utils/date');
+const { DateRange } = require('@src/utils/date');
 
 const {
     getEventHeader

@@ -140,8 +140,7 @@
         
         $(document).ready(function() {
 
-            var today = examples.getToday();
-            var startDay = today.getFirstDayOfWeek();
+            var days = examples.getDays(17);
             
             var scheduler = jscheduler_ui.render(
                 document.getElementById('scheduler'), 
@@ -150,39 +149,39 @@
                     viewMode: $('[name=viewMode]:checked').val(),
                     events: [
                       { 
-                          start: startDay.addDays(1) + " 10:00", 
+                          start: days[1] + ' 10:00', 
                           label: "interview",
                           bgColor: 'success',
                           group_id: 2,
                       },
                       { 
-                          start: startDay.addDays(1) + " 14:00", 
-                          end: startDay.addDays(1) + " 16:00", 
+                          start: days[1] + ' 14:00', 
+                          end:   days[1] + ' 16:00', 
                           label: "medical checkup",
                           bgColor: '#CCCCFF'
                       },
                       { 
-                          start: startDay.addDays(5) + " 14:00", 
+                          start: days[5] + ' 14:00', 
                           label: "meeting",
                           bgColor: 'warning'
                       },
                       { 
                           label: "training course",
-                          start: startDay.addDays(3) + " 09:00",
-                          end  : startDay.addDays(5) + " 18:00",
+                          start: days[3] + ' 09:00', 
+                          end:   days[5] + ' 18:00', 
                           bgColor: "primary" 
                       },
                       {
                           label: 'website design review',
-                          start: startDay.addDays(8) + " 09:00",
-                          end  : startDay.addDays(10) + " 18:00",
+                          start: days[8]  + ' 09:00', 
+                          end:   days[10] + ' 18:00', 
                           bgColor: '#FF8F00',
                           group_id: "another group",
                       },
                       {
                           label: 'custom feedback review',
-                          start: startDay.addDays(17) + " 09:00",
-                          end  : startDay.addDays(18) + " 18:00",
+                          start: days[17]  + ' 09:00', 
+                          end:   days[17]  + ' 18:00', 
                           bgColor: '#DE3163',
                           group_id: "another group",
                       }

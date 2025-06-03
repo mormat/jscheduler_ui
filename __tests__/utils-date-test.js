@@ -1,10 +1,14 @@
 const {
     DateRange,
-    countWeeksInMonth,
     _groupDateRanges, 
     _mapGroupedDateRanges,
     DateStringFormatter,
-    format_date
+    date_add,
+    date_format,
+    get_first_day_of_week,
+    get_last_day_of_week,
+    get_first_day_of_month,
+    get_last_day_of_month
 } = require('../src/utils/date');
 
 describe("date-utils", () => {
@@ -238,17 +242,101 @@ describe("date-utils", () => {
         }
     );
     
-    // @todo missing test cases for other formats
     test.each([
-        ['uuu', "2024-12-02 12:15:10.159", '159'],
-        ['uuu', "2024-12-02 12:15:10.009", '009'],
-        ['hh:ii:ss.uuu', "2024-12-02 12:15:10.009", '12:15:10.009'],
-        ['yyyy-mm-dd hh:ii:ss.uuu', "2024-12-02 12:15:10.009", '2024-12-02 12:15:10.009'],
-    ])('format_date(%d,%d) should return %s', (format, date, expected) => {
-       
-        expect(format_date(format, date)).toBe(expected);
+        ["2024-12-02 12:15:10.159", 'uuu', '159'],
+        ["2024-12-02 12:15:10.009", 'uuu', '009'],
+        ["2024-12-02 12:15:10.009", 'hh:ii:ss.uuu', '12:15:10.009'],
+        ["2024-12-02 12:15:10.009", 'yyyy-mm-dd hh:ii:ss.uuu', '2024-12-02 12:15:10.009'],
+        ['2024-12-02', 'yyyy-mm-dd + extra', '2024-12-02 + extra']
+    ])('date_format(%s, %s) should return %s', (input, format, expected) => {
         
-        expect(format_date(format, new Date(date) )).toBe(expected);
+        const actual = date_format(input, format);
+        
+        expect(actual).toBe(expected);
+        
+    })
+    
+    test.each([
+        ['2024-01-02', 1, 'day',   2024, 1, 3],
+        ['2024-01-02', 2, 'day',   2024, 1, 4],
+        ['2024-01-02', 1, 'week',  2024, 1, 10],
+        ['2024-01-02', 2, 'week',  2024, 1, 17],
+        ['2024-01-02', 5, 'week',  2024, 2, 7],
+        ['2024-01-02', 1, 'month', 2024, 2, 2],
+        ['2024-01-02', 1, 'year',  2025, 1, 2],
+        ['2024-03-01', -1, 'day', 2024, 2, 29],
+    ])("date_add(%s, %s; %s) should return %s-%s-%s", (
+        input, n, type, expectedYear, expectedMonth, expectedDay
+    ) => {
+        
+        const actual = date_add(input, n, type);
+        
+        expect(actual.getFullYear()).toBe(expectedYear);
+        expect(actual.getMonth() + 1).toBe(expectedMonth);
+        expect(actual.getDate()).toBe(expectedDay);
+    });
+    
+    test.each([
+        ['10:00', 1, 'hour', 11, 0],
+        ['10:00', 2, 'hour', 12, 0],
+    ])("date_add(2024-01-02-%s, %s; %s) should return 2024-01-02-%s-%s", (
+        input, n, type, expectedHours, expectedMinutes
+    ) => {
+        
+        const actual = date_add('2024-01-02 ' + input, n, type);
+        
+        expect(actual.getFullYear()).toBe(2024);
+        expect(actual.getMonth() + 1).toBe(1);
+        expect(actual.getDate()).toBe(2);
+        expect(actual.getHours()).toBe(expectedHours);
+        expect(actual.getMinutes()).toBe(expectedMinutes);
+    });
+    
+    test.each([
+        ['2025-05-01', '2025-04-28'],
+        ['2025-04-28', '2025-04-28'],
+        ['2025-05-04', '2025-04-28'],
+    ])('get_first_day_of_week(%s) should return %s', (input, expected) => {
+        
+        const actual = get_first_day_of_week(input);
+        
+        expect(actual).toBe(expected);
+        
+    });
+    
+    test.each([
+        ['2025-05-01', '2025-05-04'],
+        ['2025-04-28', '2025-05-04'],
+        ['2025-05-04', '2025-05-04'],
+    ])('get_last_day_of_week(%s) should return %s', (input, expected) => {
+        
+        const actual = get_last_day_of_week(input);
+        
+        expect(actual).toBe(expected);
+        
+    });
+    
+    test.each([
+        ['2024-06-02', '2024-06-01'],
+        ['2024-06-01', '2024-06-01'],
+        ['2024-06-30', '2024-06-01'],
+    ])('get_first_day_of_month(%s) should return %s', (input, expected) => {
+        
+        const actual = get_first_day_of_month(input);
+        
+        expect(actual).toBe(expected);
+        
+    });
+    
+    test.each([
+        ['2024-06-02', '2024-06-30'],
+        ['2024-06-01', '2024-06-30'],
+        ['2024-06-30', '2024-06-30'],
+    ])('get_last_day_of_month(%s) should return %s', (input, expected) => {
+        
+        const actual = get_last_day_of_month(input);
+        
+        expect(actual).toBe(expected);
         
     });
     

@@ -1,8 +1,7 @@
 
 const { 
     DateRange, 
-    DateStringFormatter,
-    format_date 
+    DateStringFormatter
 } = require('@src/utils/date');
 
 class AbstractDraggable {

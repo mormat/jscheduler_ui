@@ -4,8 +4,10 @@ const {
     MonthView,
     YearView
 }  = require('./views');
-const { Day, DateRange } = require('@src/utils/date.js');
-const { createViewRenderer } = require('./view_renderers');
+const { 
+    date_add
+} = require('@src/utils/date.js');
+const { createViewRenderer } = require('./renderers');
 const { SchedulerListener } = require('./listeners');
 const uuid = require('uuid');
 const { isEventDisplayable } = require('./models');
@@ -91,8 +93,12 @@ class Scheduler {
         }
         
         const renderer = createViewRenderer( this.#currentView, viewParams);
-        this.#element.innerHTML = renderer.render( this.#currentView );
         
+        this.#element.innerHTML = renderer.render( 
+            this.#currentView,
+            viewParams
+        );
+
     }
     
     destroy() {
@@ -117,49 +123,17 @@ class Scheduler {
     next() {
         const { currentDate, viewMode } = this.#state.values;
         
-        let day = new Day( currentDate );
+        const nextDate = date_add(currentDate, 1, viewMode);
         
-        if (viewMode === 'day') {
-            day = day.addDays(1);
-        }
-        
-        if (viewMode === 'week') {
-            day = day.addDays(7);
-        }
-        
-        if (viewMode === 'month') {
-            day = day.addMonths(1);
-        }
-        
-        if (viewMode === 'year') {
-            day = day.addYears(1);
-        }
-        
-        this.#state.update( { currentDate: day.getDate() })
+        this.#state.update( { currentDate: nextDate })
     }
     
     previous() {
         const { currentDate, viewMode } = this.#state.values;
         
-        let day = new Day( currentDate );
+        const previousDate = date_add(currentDate, -1, viewMode);
         
-        if (viewMode === 'day') {
-            day = day.addDays(-1);
-        }
-        
-        if (viewMode === 'week') {
-            day = day.addDays(-7);
-        }
-        
-        if (viewMode === 'month') {
-            day = day.addMonths(-1);
-        }
-        
-        if (viewMode === 'year') {
-            day = day.addYears(-1);
-        }
-        
-        this.#state.update( { currentDate: day.getDate() })
+        this.#state.update( { currentDate: previousDate })
     }
     
     today() {
@@ -211,7 +185,8 @@ class Scheduler {
     }
             
     getLabel( ) {
-        return this.#currentView.label;
+        const { dateLocale } = this.#state.values;
+        return this.#currentView.getLabel({ dateLocale });
     }
     
 }
