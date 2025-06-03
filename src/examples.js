@@ -1,4 +1,8 @@
-const { Day } = require('./utils/date');
+const { 
+    get_first_day_of_week,
+    date_add,
+    date_format
+} = require('./utils/date');
 
 const sources = __EXAMPLES_SOURCES__;
 const webpack_mode = __WEBPACK_MODE__;
@@ -29,35 +33,22 @@ function buildModel(table) {
         
 }
 
-function getToday() {
+function getStartDay() {
     
-    return new Day(Date.now());
+    return get_first_day_of_week(Date.now());
     
 }
 
-function getEventsSample() {
+function getDays(limit = 30) {
     
-    const today = new Day(Date.now());
-    const start = today.getFirstDayOfWeek();
+    const start = get_first_day_of_week(Date.now());
     
-    return [
-        { 
-            start: start.addDays(1) + " 10:00", 
-            label: "interview",
-            bgColor: 'success',
-        },
-        { 
-            start: start.addDays(5) + "2024-08-17 14:00", 
-            label: "meeting",
-            bgColor: 'warning',
-        },
-        { 
-          label: "training course",
-          start: start.addDays(3) + " 09:00",
-          end  : start.addDays(5) + " 18:00",
-          bgColor: "primary" 
-        }
-    ]
+    const days = [];
+    for (let n = 0; n < limit; n++) {
+        const date = date_add(start, n, 'day');
+        days.push( date_format(date, 'yyyy-mm-dd') );
+    }
+    return days;
     
 }
 
@@ -76,4 +67,4 @@ if (webpack_mode !== 'production') {
     }
 }
 
-module.exports = { buildModel, getToday };
+module.exports = { buildModel, getDays };

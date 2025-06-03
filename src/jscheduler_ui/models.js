@@ -1,5 +1,5 @@
 
-const { date_add_hour, format_date } = require('../utils/date.js');
+const { date_add, date_format } = require('../utils/date.js');
 const uuid = require('uuid');
 
 /**
@@ -36,7 +36,7 @@ function withEventDefaultValues( obj ) {
     }
     
     if (!values.end && values.start) {
-        values.end = date_add_hour(values.start, 2);
+        values.end = date_add(values.start, 2, 'hour');
     }
     
     return values;
@@ -64,7 +64,7 @@ function isEventDisplayable( obj ) {
 
 function getEventHeader({start, end}) {
     return [start, end].map(
-        v => format_date('hh:ii', v)
+        v => date_format(v, 'hh:ii')
     ).join(' - ')
 }
 

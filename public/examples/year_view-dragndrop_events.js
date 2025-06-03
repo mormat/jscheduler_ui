@@ -23,13 +23,14 @@ jscheduler_ui.render(element, {
             
     },
     onEventDrop: function(vars) {
-        var from = jscheduler_ui.utils.format_date(
-            'yyyy-mm-dd hh:ii', 
-            vars.start
+        var from = jscheduler_ui.utils.date_format(
+            vars.start,
+            'yyyy-mm-dd hh:ii'
+            
         );
-        var to = jscheduler_ui.utils.format_date(
-            'yyyy-mm-dd hh:ii', 
-            vars.end
+        var to = jscheduler_ui.utils.date_format(
+            vars.end,
+            'yyyy-mm-dd hh:ii',
         );
         document.getElementById('comments').innerHTML = 
             vars.label + ' is now from ' + from + ' to ' + to; 

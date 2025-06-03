@@ -90,7 +90,7 @@ When('I click on {string}', async function (clickableText) {
 
 Then('the page should contains an {string} element', async function ( selector ) {
     
-    await this.elements.get( selector );
+    await this.elements.waitFor (selector );
     
 });
 

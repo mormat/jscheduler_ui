@@ -3,6 +3,9 @@ const CopyPlugin = require("copy-webpack-plugin");
 const path = require('path');
 const fs = require('fs');
 
+const EXAMPLES_DIR = path.join(__dirname, 'public', 'examples' );
+const TEMPLATES_DIR = path.join(__dirname, 'templates' );
+
 module.exports = function (env, argv) {
     
     const packageInfos = get_package_infos();
@@ -59,37 +62,36 @@ module.exports = function (env, argv) {
                 '__PACKAGE_NAME__':       JSON.stringify(packageInfos.name),
                 '__PACKAGE_VERSION__':    JSON.stringify(packageInfos.version),
                 '__WEBPACK_MODE__':       JSON.stringify( argv.mode ),
-                '__EXAMPLES_SOURCES__':   JSON.stringify(get_examples_sources()),
-                '__MUSTACHE_TEMPLATES__': JSON.stringify({
-                    'daysview':      get_template('daysview.html'),
-                    'monthview':     get_template('monthview.html'),
-                    'yearview':      get_template('yearview.html'),
-                    'groups':        get_template('groups.html'),
-                    'root':          get_template('root.html'),
-                }),
-                '__MUSTACHE_PARTIALS__':  JSON.stringify({
-                    events_row:    get_template('partials/events_row.html'),
-                    events_column: get_template('partials/events_column.html'),
-                    grid:          get_template('partials/grid.html')
-                })
+                '__EXAMPLES_SOURCES__':   webpack.DefinePlugin.runtimeValue(
+                    () => JSON.stringify( get_templates( EXAMPLES_DIR ) ),
+                    { contextDependencies: [ EXAMPLES_DIR ] }
+                ),
+                __MUSTACHE_TEMPLATES__: webpack.DefinePlugin.runtimeValue(
+                    () => JSON.stringify(
+                        get_templates( TEMPLATES_DIR,  { spaceless: true } )
+                    ),
+                    { contextDependencies: [ TEMPLATES_DIR ] }
+                )
             })
         ]
     }
 }
 
-function get_examples_sources() {
-    const folder = path.join(__dirname, 'public', 'examples');
-    return Object.fromEntries(
-        fs.readdirSync(folder).map( filename => [
-            filename.split('.')[0],
-            fs.readFileSync(path.join(folder, filename), 'utf8')
-        ])
-    );
-}
-
-function get_template(filename) {
-    const fullpath = path.join(__dirname, 'templates', filename);
-    return fs.readFileSync(fullpath, 'utf8').replace(/\s+/g,' ');
+function get_templates(cwd, { spaceless = false } = {}) {
+    const { globSync } = require("glob");
+    const filenames = globSync( '**/*' , { absolute: false, cwd, nodir: true });
+    
+    const templates = {};
+    for (const filename of filenames) {
+        const fullpath = path.join(cwd, filename);
+        let contents = fs.readFileSync(fullpath, 'utf8');
+        if (spaceless) {
+            contents = contents.replace(/\s+/g,' ');
+        }
+        const name = filename.replace('/', '__').split('.').shift();
+        templates[ name ] = contents;
+    }
+    return templates;
 }
 
 function get_package_infos() {
