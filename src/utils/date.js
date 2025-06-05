@@ -172,39 +172,6 @@ class DateRange {
     }
 }
 
-// @todo missing unittest
-function groupDateRangedItemsByPosition(dateRangeditems) {
-
-    const results = [];
-
-    loop_items: for (const item of dateRangeditems) {
-
-        const constraint = new DateRange(item.start, item.end - 1);
-
-        for (const position in results) {
-
-            const overlapping = results[position].find(
-                (v) => {
-                    const other = new DateRange(v.start, v.end - 1);
-                    return constraint.intersects(other);
-                }
-            );
-
-            if (!overlapping) {
-                results[position].push(item);
-                continue loop_items;
-            }
-
-        }
-
-        results.push([item]);
-
-    }
-
-    return results;
-
-}
-
 function _groupDateRanges(dateRanges) {
     
     const groups = [];
@@ -332,7 +299,6 @@ class DateStringFormatter {
 
 module.exports = { 
     DateRange,
-    groupDateRangedItemsByPosition,
     getOffsetAndLengthByDateRanges,
     _groupDateRanges,
     _mapGroupedDateRanges,

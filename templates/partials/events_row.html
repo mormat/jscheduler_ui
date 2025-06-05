@@ -20,6 +20,7 @@
          "
          data-event-uuid = "{{ event._uuid }}"
          data-jscheduler_ui-droppable-target = "{{ eventDroppableTarget }}"
+         {{# data }}data-{{ name }} = "{{ value}}"{{/ data }}
     >
 
         {{# if_draggable }}

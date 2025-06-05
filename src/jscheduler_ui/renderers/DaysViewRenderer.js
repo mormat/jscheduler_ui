@@ -75,21 +75,7 @@ class DaysViewRenderer extends AbstractViewRenderer {
         })
         if ( spannedEvents.length ) {
             
-            const dateRangesByEvents = new Map(
-                spannedEvents.map(
-                    item => [item, new DateRange(item.start, item.end)] 
-                )
-            );
-            const offsetLengthByEvents = composeMaps(
-                dateRangesByEvents,
-                getOffsetAndLengthByDateRanges(
-                    [...dateRangesByEvents.values()]
-                )
-            );
-    
-            const minEventHeight = Math.min(
-                ... [...offsetLengthByEvents.values()].map(i => i.length) 
-            );
+            const minEventHeight = 1;
                 
             vars.events_row = {
                 ...this.withEventsRowPartial( { 
@@ -98,7 +84,12 @@ class DaysViewRenderer extends AbstractViewRenderer {
                     eventDroppableTarget: '#' + vars.headerId
                 } )
             }
-            vars.events_row_height = (22 / minEventHeight) + 'px'
+            
+            const stackOffsets = vars.events_row.for_each_events.map(
+                ({ event }) => event.offset
+            );
+    
+            vars.events_row_height = (22 / (1 - Math.max(...stackOffsets))) + 'px'
         }
         
         const xaxis_width_percent = 5;
@@ -106,8 +97,6 @@ class DaysViewRenderer extends AbstractViewRenderer {
             xaxis_width_percent,
             column_width_percent: (100 - xaxis_width_percent) / days.length
         };
-        
-        console.log(vars);
         
         return this._renderTemplate( 'daysview', vars );
     }
