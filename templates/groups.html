@@ -54,7 +54,6 @@
                         </div>
                     {{ /daysoff }}
                 
-                    {{ #events_row }}
                     <div class="jscheduler_ui-daterange-row" style="
                          position: absolute;
                          top: 0;
@@ -63,9 +62,10 @@
                          right: 0;
                         "
                     >
-                        {{> events_row }}
+                        {{ #events_row }}
+                            {{> events_row }}
+                        {{ /events_row }}
                     </div>
-                    {{ /events_row }}
                     
                     {{ #grid }} {{> grid }} {{ /grid }}
                     

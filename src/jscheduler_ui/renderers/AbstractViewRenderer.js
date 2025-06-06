@@ -5,6 +5,7 @@ const Mustache = require('mustache');
 const { date_format, DateRange } = require('@src/utils/date');
 const { compareSchedulerEventsByDaysCount } = require('@src/jscheduler_ui/models');
 const { getOffsetAndLengthByDateRanges } = require('@src/utils/date');
+const { getEventHeader } = require('../models');
 
 const { templates } = require('../settings');
 
@@ -43,7 +44,7 @@ class AbstractViewRenderer {
     getTranslations() {
         return this.#translations;
     }
-    
+        
     withEventsColumnPartial( { 
         events, 
         dateRange, 
@@ -54,8 +55,15 @@ class AbstractViewRenderer {
             events.filter(e => dateRange.contains(e))
         );
 
+        const data = {
+            day:     'whatever',
+            daterange_start: date_format(dateRange.start),
+            daterange_end:   date_format(dateRange.end),            
+        }
+
         return {
-            for_each_events: stackedEvents.map((event) => {
+            data,
+            events: stackedEvents.map((event) => {
 
                 const style = {
                     'position': 'absolute',
@@ -72,17 +80,30 @@ class AbstractViewRenderer {
                     style.backgroundColor = event.bgColor;
                 }
 
+                const header = getEventHeader(event);
+
                 return { 
+                    ...event, 
+                    header,
                     if_draggable:  this.#eventsDraggable,
                     if_resizeable: this.#eventsResizeable,
                     if_clickable:  this.#eventsClickable,
                     if_editable:  this.#eventsEditable,
-                    event, eventDroppableTarget, style, className
+                    eventDroppableTarget, 
+                    style, 
+                    className
                 }
 
             })
         };
 
+    }
+    
+    includeEventsRow(vars, view, options) {
+        vars.events_row = this.withEventsRowPartial({
+            dateRange: view.eventsDateRange,
+            ...options
+        });
     }
     
     withEventsRowPartial( { 

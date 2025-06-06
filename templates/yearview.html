@@ -67,9 +67,6 @@
                             
                         {{ /monthdays }}
                         
-
-                        
-                        {{ #events_row }}
                         <div class="jscheduler_ui-daterange-row" 
                              style="position: absolute;
                                     top: 10px;
@@ -78,11 +75,10 @@
                                     right:  0;
                              "
                         >
-                            {{> events_row }}
+                            {{ #events_row }}
+                                {{> events_row }}
+                            {{ /events_row }}
                         </div>
-                        {{ /events_row }}
-                        
-                        
                         
                     </div>
                     {{ #grid }} {{> grid }} {{ /grid }}

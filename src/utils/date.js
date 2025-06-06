@@ -9,7 +9,7 @@ const _date_formatters = {
     'uuu':  d  => String(d.getMilliseconds()).padStart(3, '0'),
 }
 
-function date_format(date, format) {
+function date_format(date, format = 'yyyy-mm-dd hh:ii:ss.uuu') {
     const d = new Date(date);
     let output = format;
     for (const k in _date_formatters) {

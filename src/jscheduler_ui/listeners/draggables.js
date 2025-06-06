@@ -150,11 +150,11 @@ class MoveEventDraggable extends AbstractDraggable {
 
     getCurrentTimestamp({ mouseEvent, droppable }) {
 
-        const { percentY, day, minhour, maxhour } = droppable.getData(mouseEvent);
+        const { percentY, ...data } = droppable.getData(mouseEvent);
         
         const constraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour,
+            data['daterange_start'], 
+            data['daterange_end']
         );
         
         return constraint.start.getTime() + (constraint.length * percentY / 100);
@@ -173,11 +173,11 @@ class MoveEventDraggable extends AbstractDraggable {
 
     move({ mouseEvent, droppable }) {
 
-        const { day, minhour, maxhour } = droppable.getData(mouseEvent);
+        const data = droppable.getData(mouseEvent);
         
         const constraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour,
+            data['daterange_start'], 
+            data['daterange_end']
         );
 
         const currentTimestamp = this.getCurrentTimestamp({ mouseEvent, droppable });
@@ -245,11 +245,11 @@ class ResizeEventDraggable extends AbstractDraggable {
 
     getCurrentTimestamp( { mouseEvent, droppable }) {
 
-        const { percentY, day, minhour, maxhour } = droppable.getData(mouseEvent);
+        const { percentY, ...data } = droppable.getData(mouseEvent);
         
         const constraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour
+            data['daterange_start'], 
+            data['daterange_end']
         );
 
         return constraint.start.getTime() + (constraint.length * percentY / 100);
@@ -257,11 +257,11 @@ class ResizeEventDraggable extends AbstractDraggable {
 
     drag({ mouseEvent, droppable }) {
         
-        const { day, minhour, maxhour } = droppable.getData(mouseEvent);
+        const data = droppable.getData(mouseEvent);
         
         this.#initialConstraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour
+            data['daterange_start'], 
+            data['daterange_end']
         );
         
         this.#currentValue = this.#initialValue;
@@ -269,11 +269,11 @@ class ResizeEventDraggable extends AbstractDraggable {
 
     move({ mouseEvent, droppable }) {
         
-        const { percentY, day, minhour, maxhour } = droppable.getData(mouseEvent);
+        const { percentY, ...data } = droppable.getData(mouseEvent);
         
         const constraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour
+            data['daterange_start'], 
+            data['daterange_end']
         );
 
         let endTime = this.getCurrentTimestamp( { mouseEvent, droppable } );

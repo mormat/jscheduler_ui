@@ -28,11 +28,10 @@ function getColumnDragAndDropObserver( { parentElement } ) {
             droppable.getClosestChild(mouseEvent)
         );
 
-        const { day, minhour, maxhour } = area.getData(mouseEvent);
-
+        const data = area.getData(mouseEvent);
         const constraint = new DateRange(
-            day + ' ' + minhour,
-            day + ' ' + maxhour
+            data['daterange_start'], 
+            data['daterange_end']
         );
 
         const currentValue = draggable.getCurrentValue();

@@ -70,3 +70,14 @@ Then(
 
     }
 );
+
+Then(
+    'the height of {string} element should be between {int} and {int}', 
+    async function (selector, minHeight, maxHeight) {
+        const element = await this.elements.get(selector);
+        const rect = await element.getRect();
+        expect(rect.height).toBeGreaterThanOrEqual(minHeight);
+        expect(rect.height).toBeLessThanOrEqual(maxHeight);
+    }
+)
+
