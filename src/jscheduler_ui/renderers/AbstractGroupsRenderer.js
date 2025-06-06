@@ -3,33 +3,21 @@ const AbstractViewRenderer = require('./AbstractViewRenderer');
 
 class AbstractGroupsRenderer extends AbstractViewRenderer {
     
-    get yaxisWidthPercent() {
-        return 15;
+    #data
+    
+    constructor({ data = {}, ...otherParams} ) {
+        super(otherParams);
+        this.#data = {
+            ...data,
+            droppable_id: 'jscheduler_ui-' + this.getUniqueId()
+        }
     }
     
     getCols() {
         return [];
     }
     
-    getAttr() {
-        return {
-            id: 'jscheduler_ui-' + this.getUniqueId(),
-        };
-    }
-    
-    getColumnTimeRangeType() {
-       return 'day' 
-    }
-    
-    getDaysOff() {
-        return [];
-    }
-    
     render(view, { groups, ...otherOptions }) {
-        
-        const vars = {  };
-        
-        const yaxis_width_percent = 15;
         
         const dateRange = view.eventsDateRange;
         
@@ -66,39 +54,42 @@ class AbstractGroupsRenderer extends AbstractViewRenderer {
             });
         }
         
-        vars.attr = this.getAttr();
+        const cols = this.getCols(view);
         
-        vars.xaxis = {
-            cols: this.getCols(view),
+        const rows = groups.map((section) => {
+            const { label } = section;
+
+            const events_row = this.withEventsRowPartial({
+                eventDroppableTarget: '#' + this.#data.droppable_id,
+                dateRange: dateRange,
+                events:    events.filter(
+                    e => (e.group_id || null) == section.id
+                ),
+                columnDateRangeType: this.#data.column_unit,
+                groupId: section.id,
+                labelType: 'showGroups'
+            });
+
+            const cells_layout = this.buildCellsLayout(
+                cols.map(({data}) => ({
+                    label: '', 
+                    is_dayoff: (data || {}).is_dayoff
+                }))     
+            )
+
+            return { label, events_row, cells_layout }
+
+        });
+        
+        const yaxis_width_percent = 15;
+        
+        const data = {
+            ...this.#data,
+            yaxis_width: yaxis_width_percent + '%',
+            column_width: ((100 - yaxis_width_percent) / cols.length) + '%'
         }
         
-        vars.yaxis = {
-            style: {
-                width: yaxis_width_percent + '%'
-            },
-            rows: groups.map((section) => {
-                const { label } = section;
-
-                const events_row = this.withEventsRowPartial({
-                    eventDroppableTarget: '#' + vars.attr['id'],
-                    dateRange: dateRange,
-                    events:    events.filter(
-                        e => (e.group_id || null) == section.id
-                    ),
-                    columnDateRangeType: this.getColumnTimeRangeType(),
-                    groupId: section.id,
-                    labelType: 'showGroups'
-                });
-                
-                const grid = this.withGridPartial(
-                    { cols: vars.xaxis.cols.length }
-                );
-
-                const daysoff = this.getDaysOff(view);
-                
-                return { label, events_row, grid, daysoff }
-            })
-        }
+        const vars = { cols, rows, data };
         
         return this._renderTemplate('groups', vars);
     }

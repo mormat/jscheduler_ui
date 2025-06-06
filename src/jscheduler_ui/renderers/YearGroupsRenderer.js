@@ -2,13 +2,16 @@ const AbstractGroupsRenderer = require('./AbstractGroupsRenderer');
 
 class YearGroupsRenderer extends AbstractGroupsRenderer {
         
-    getAttr() {
-        return {
-            ...super.getAttr(),
-            'data_type_view': 'year'
-        };
+    constructor(otherParams) {
+        super(
+            {...otherParams,
+            data: { 
+                type_view: 'year',
+                column_unit: 'month' 
+            }
+        });
     }
-    
+        
     getCols( ) {
         
         const cols = [];
@@ -19,18 +22,11 @@ class YearGroupsRenderer extends AbstractGroupsRenderer {
                 "en",
                 { month: 'short' }
             );
-            const style = {
-                width: ((100 - this.yaxisWidthPercent) / 12) + '%',
-            }
-            cols.push({ text, style });
+            cols.push({ text });
         }
         
         return cols;
         
-    }
-    
-    getColumnTimeRangeType() {
-       return 'month' 
     }
     
 }

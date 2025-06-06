@@ -1,5 +1,16 @@
-
-    {{# for_each_events }}
+{{# events_column }} 
+<div class="jscheduler_ui-partials__events_column"
+     style="position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+           "
+     data-jscheduler_ui-day = "{{ data.day }}"
+     data-daterange_start = "{{ data.daterange_start }}"
+     data-daterange_end   = "{{ data.daterange_end }}"
+>
+    {{# events }}
     <div class="jscheduler_ui-event jscheduler_ui-event-day {{ className }}"
          style="position: absolute;
                 top:    {{ style.top }};
@@ -8,8 +19,8 @@
                 width:  {{ style.width }};
                 background-color: {{ style.backgroundColor }}
                 "
-         data-event-uuid="{{event._uuid}}"
-         data-jscheduler_ui-droppable-target="{{eventDroppableTarget}}"
+         data-event-uuid="{{ _uuid }}"
+         data-jscheduler_ui-droppable-target="{{ eventDroppableTarget }}"
     >
 
         {{# if_draggable }}
@@ -38,26 +49,26 @@
 
         {{# if_clickable }}
         <span style="position: relative;
-                     color: {{ event.color }};
+                     color: {{ color }};
                      z-index: 3;"
         >
             <a class="jscheduler_ui-event-header" href="#">
-                {{ event.header }}
+                {{ header }}
             </a>
             <br/>
             <a href="#">
-                {{ event.label }}
+                {{ label }}
             </a>
         </span>
         {{/ if_clickable }}
 
         {{^ if_clickable }}
-        <span style="color: {{ event.color }}">
+        <span style="color: {{ color }}">
             <span class="jscheduler_ui-event-header">
-                {{ event.header }}
+                {{ header }}
             </span>
             <br/>
-            {{ event.label }}
+            {{ label }}
         </span>
         {{/ if_clickable }}
         
@@ -71,5 +82,6 @@
         {{/ if_editable }}
 
     </div>
-    {{/ for_each_events }}
-                
+    {{/ events }}
+</div>
+{{/ events_column }}

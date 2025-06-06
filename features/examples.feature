@@ -211,7 +211,7 @@ Feature: examples page
         Then the "meeting" event should be displayed between day 15 and day 15 in the month of "August"
         And "./examples/events.json" should be loaded from "2024-01-01 00:00:00.000" to "2024-12-31 23:59:59.999"
 
-    @year @wtf
+    @year
     Scenario: Year view - Drag and drop events
         When I select the "Drag and drop events" example in "Year view"
         And I drag the "task 1" event to day 12 in the month of "February"

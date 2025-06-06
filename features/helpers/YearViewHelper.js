@@ -58,12 +58,12 @@ class YearViewHelper extends AbstractViewHelper {
         );
 
         const fromDayElement = await this.elements.get(
-            `[data-monthday="${fromNumDay}"]`,
+            `.jscheduler_ui-cell:contains('${fromNumDay}')`,
             { rootElement }
         );
 
         const toDayElement = await this.elements.get(
-            `[data-monthday="${toNumDay}"]`,
+            `.jscheduler_ui-cell:contains('${toNumDay}')`,
             { rootElement }
         );
 

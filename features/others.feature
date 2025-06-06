@@ -47,6 +47,28 @@ Feature: others features
         """
         Then I should see in "table tbody" only "12:00"
 
+    Scenario: height of spanned events in week view
+        When I render a scheduler with the options below:
+        """
+            {
+                viewMode: 'week',
+                initialDate: '2025-05-01',
+                events: [
+                    {
+                        label: 'first', 
+                        start: '2025-05-01 10:00', 
+                        end:   '2025-05-02 18:00'
+                    },
+                    {
+                        label: 'second', 
+                        start: '2025-05-01 10:00', 
+                        end:   '2025-05-03 18:00'
+                    },
+                ]
+            }
+        """
+        Then the height of "thead tr:nth-child(2)" element should be between 40 and 50
+
     Scenario: display default group in last row
         When I render a scheduler with the options below:
         """

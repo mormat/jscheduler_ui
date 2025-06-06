@@ -1,0 +1,20 @@
+{{ #cells_layout }}
+<div class="jscheduler_ui-partials__cells"
+     style="position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+           ">
+    {{ #cells }}
+        <div class="jscheduler_ui-cell {{ className }}"
+             style="float: left; 
+                    height: 100%;
+                    width: {{ data.cell_width }}
+                   ">
+            <span>{{ label }}</span>
+
+        </div>
+    {{ /cells }}
+</div>
+{{ /cells_layout }}

@@ -5,11 +5,14 @@ const { date_format } = require('@src/utils/date');
 
 class DayGroupsRenderer extends AbstractGroupsRenderer {
     
-    getAttr() {
-        return {
-            ...super.getAttr(),
-            'data_type_view': 'day'
-        };
+    constructor(otherParams) {
+        super({
+            ...otherParams,
+            data: { 
+                type_view: 'day',
+                column_unit: 'day_hour'
+            }
+        });
     }
     
     getCols() {
@@ -22,10 +25,6 @@ class DayGroupsRenderer extends AbstractGroupsRenderer {
         }
         
         return cols;
-    }
-    
-    getColumnTimeRangeType() {
-       return 'day_hour' 
     }
     
 }

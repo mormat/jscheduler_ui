@@ -5,33 +5,32 @@
 >
     <thead>
         <tr>
-            <td style="width: {{ yaxis.style.width }}">
-                
+            <td style="width: {{ data.yacis_width }}">
             </td>
-            {{ #days }}
-                <th style = "width: {{ style.width }};
+            {{ #headers }}
+                <th style = "width: {{ data.column_width }};
                              overflow: hidden;
                              text-align: center
                             "
                 >
-                    {{ text }}
+                    {{ label }}
                 </th>
-            {{ /days }}
+            {{ /headers }}
         </tr>
+        
     </thead>
-    <tbody id="{{bodyId}}"
+    <tbody id="{{ data.body_id }}"
            data-jscheduler_ui-droppable-type="timeline" 
     >
-        {{ #months }}
+        {{ #rows }}
             <tr>
                 <th>
-                    {{ text }}
+                    {{ label }}
                 </th>
-                <td colspan="{{ row_colspan }}"
+                <td colspan="{{ headers.length }}"
                     style="position: relative;
                           "
                 >
-                    
                     <div style="position: absolute;
                                 top: 0;
                                 bottom: 0;
@@ -39,37 +38,10 @@
                                 width: {{ style.width }};
                                 background-color: white;
                                "
-                    >
+                    >      
                         
-                        {{ #monthdays }}
-                            {{ #is_dayoff }}
-                            <div class="jscheduler_ui-dayoff"
-                                 style="position: absolute;
-                                        top: 0;
-                                        bottom: 0;
-                                        left: {{ left }};
-                                        width: {{ width }};
-                                       "
-                            >
-                            </div>
-                            {{ /is_dayoff }}
+                        {{ > cells_layout }}
                         
-                            <span class="jscheduler_ui-year_view-monthday"
-                                  style="position: absolute;
-                                         top: 0;
-                                         left: {{ left }};
-                                         width: {{ width }};
-                                        "
-                                  data-monthday="{{ day_of_month }}"
-                            >
-                                {{ day_of_month }}
-                            </span>
-                            
-                        {{ /monthdays }}
-                        
-
-                        
-                        {{ #events_row }}
                         <div class="jscheduler_ui-daterange-row" 
                              style="position: absolute;
                                     top: 10px;
@@ -79,15 +51,11 @@
                              "
                         >
                             {{> events_row }}
-                        </div>
-                        {{ /events_row }}
-                        
-                        
-                        
+                        </div>   
                     </div>
-                    {{ #grid }} {{> grid }} {{ /grid }}
+                    
                 </td>
             </tr>
-        {{ /months }}
+        {{ /rows }}
     </tbody>
 </table>

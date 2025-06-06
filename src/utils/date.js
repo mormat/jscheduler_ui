@@ -9,7 +9,7 @@ const _date_formatters = {
     'uuu':  d  => String(d.getMilliseconds()).padStart(3, '0'),
 }
 
-function date_format(date, format) {
+function date_format(date, format = 'yyyy-mm-dd hh:ii:ss.uuu') {
     const d = new Date(date);
     let output = format;
     for (const k in _date_formatters) {
@@ -239,19 +239,6 @@ function getOffsetAndLengthByDateRanges(dateRanges) {
     return _mapGroupedDateRanges(_groupDateRanges(dateRanges));
 }
 
-function getWeekDays({ dateLocale = 'en'} = {}) {
-    const weekDays = [];
-    for (let i = 0; i < 7; i++) {
-        const d = new Date("1970-01-01");
-        d.setDate(i + 5);
-        weekDays.push(d.toLocaleString(
-           dateLocale,
-           { weekday: 'short' }
-        ));
-    }
-    return weekDays;
-}
-
 /**
  * DateStringFormatter ?
  */
@@ -302,7 +289,6 @@ module.exports = {
     getOffsetAndLengthByDateRanges,
     _groupDateRanges,
     _mapGroupedDateRanges,
-    getWeekDays,
     DateStringFormatter,
     date_add,
     date_format,

@@ -1,8 +1,10 @@
-<div data-daterange_start = "{{ dateRange.start }}"
+{{# events_row }}
+<div class="jscheduler_ui-partials__events_row"
+     data-daterange_start = "{{ dateRange.start }}"
      data-daterange_end   = "{{ dateRange.end   }}"
      style = "width: 100%;
               height: {{ style.height }};
-              position: relative
+              position: relative;
              "
      {{# attrs }}{{key}}="{{value}}" {{/ attrs }}
 >
@@ -63,3 +65,4 @@
     </div>
     {{/ for_each_events }}
 </div>
+{{/ events_row }}

@@ -5,7 +5,7 @@ const AbstractViewHelper  = require('./AbstractViewHelper');
 class MonthViewHelper extends AbstractViewHelper {
 
     get selector() {
-        return '.jscheduler_ui-month_view';
+        return '.jscheduler_ui-monthview';
     }
 
     // expect an element to be displayed in a specific day range
@@ -46,8 +46,8 @@ class MonthViewHelper extends AbstractViewHelper {
     async getDayRangeRect(fromDate, toDate) {
 
         const selectors = {
-            'fromDate': `.jscheduler_ui-daterange-header:contains('${fromDate}')`,
-            'toDate':   `.jscheduler_ui-daterange-header:contains('${toDate}')`,
+            'fromDate': `.jscheduler_ui-cell:contains('${fromDate}')`,
+            'toDate':   `.jscheduler_ui-cell:contains('${toDate}')`,
             'row':      `.jscheduler_ui-daterange-row`,
         }
 

@@ -157,7 +157,7 @@ function createDroppable( { draggableElement }) {
         case 'days': {
 
             const children = [ ...element.querySelectorAll(
-                'td[data-jscheduler_ui-day]'
+                '.jscheduler_ui-partials__events_column'
             ) ];
 
             return new CompositeDraggableArea(

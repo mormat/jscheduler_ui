@@ -10,6 +10,10 @@
     
 }
 
+.jscheduler_ui-daysview-hsep {
+    border-top: 1px dashed #d3d3d3;
+}
+
 .jscheduler_ui-daysview thead th {
     text-align: center;
     height: 20px;
@@ -63,21 +67,37 @@
     border-top: 1px dashed #d3d3d3;
 }
 
-.jscheduler_ui-month_view {
+.jscheduler_ui-monthview {
     border-collapse: collapse;
 }
 
-.jscheduler_ui-month_view th {
+.jscheduler_ui-monthview th {
     text-align: center;
     padding-bottom: 5px;
 }
 
-.jscheduler_ui-month_view td {
+.jscheduler_ui-monthview td {
     border: 1px solid #d3d3d3;
 }
 
-.jscheduler_ui-month_view-numday-inactive {
+.jscheduler_ui-cell {
+    text-align: right;
+    border-left: 1px solid #d3d3d3;
+    padding-right: 2px;
+    font-size: 14px;
+    padding-top: 1px;
+}
+
+.jscheduler_ui-cell:first-child {
+    border-left: none;
+}
+
+.jscheduler_ui-cell-disabled > span {
     opacity: 0.5;
+}
+
+.jscheduler_ui-cell-dayoff {
+    background-color: #f7fcfd;
 }
 
 .jscheduler_ui-year_view thead th {
@@ -94,19 +114,11 @@
     border-bottom: 1px solid #F5F5F5;
 }
 
-.jscheduler_ui-year_view .jscheduler_ui-hsep {
-    border-left: 1px dashed #d3d3d3;
-}
-
-.jscheduler_ui-year_view-monthday {
+.jscheduler_ui-year_view .jscheduler_ui-cell {
     font-size: x-small;
     text-align: right;
     padding: 0 3px 0 0;
-}
-
-.jscheduler_ui-dayoff {
-    background-color: #eff9fa;
-    opacity: 0.5;
+    border-left: 1px dashed #d3d3d3;
 }
 
 .jscheduler_ui-hsep {

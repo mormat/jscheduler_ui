@@ -25,7 +25,7 @@ Feature: demo page
         And I click on the "interview" event
         Then I should see "clicked on 'interview'"
 
-    @drag_and_drop
+    @drag_and_drop @wtf
     Scenario: Event should be resizable
         When I open the "index" page
         And I resize the "interview" event to "14:00"

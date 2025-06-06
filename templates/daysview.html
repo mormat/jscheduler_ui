@@ -4,83 +4,89 @@
     style="width: 100%; 
            table-layout: fixed; 
            flex: 1 1 auto;"
-    
 >    
     <thead>
-        {{# show_headers }}
+        {{# headers.length }}
         <tr>
-            <td style="width: {{ $root.xaxis_width_percent }}%">
+            <td style="width: {{ data.xaxis_width }}">
             </td>
-            {{# days }}
-            <th style="width: {{ $root.column_width_percent }}%;
+            {{# headers }}
+            <th style="width: {{ data.column_width }};
                        text-align: center" 
                 class="jscheduler_ui-daterange-header jscheduler_ui-day-header"
             >
                 {{ label }}
             </th>
-            {{/ days }}
+            {{/ headers }}
         </tr>
-        {{/ show_headers }}
+        {{/ headers.length }}
 
-        {{# events_row }}
-        <tr id="{{headerId}}" data-jscheduler_ui-droppable-type="timeline">
-            <td style="width: {{ $root.xaxis_width_percent }}%"></td>
+        <tr id="{{ data.header_id }}" data-jscheduler_ui-droppable-type="timeline">
+            <td style="width: {{ data.xaxis_width }}"></td>
             <td class="jscheduler_ui-daterange-row" 
-                colspan="{{ days.length }}"
+                colspan="{{ columns.length }}"
             >
-                <div style="height: {{ events_row_height }};
-                            width: 100%;
-                           "
-                >
                 {{> events_row }}
-                </div>
             </td>
         </tr>
-        {{/ events_row }}
     </thead>
 
     <tbody class="jscheduler_ui-daysview-columns"
            style="position: relative" 
-           id="{{bodyId}}"
+           id="{{ data.body_id }}"
            data-jscheduler_ui-droppable-type="days">
-        {{# hours }}
         <tr>
 
-            <th style="width: {{ $root.xaxis_width_percent }}%"
+            <th style="width: {{ data.xaxis_width }}"
                 data-hour>
-                {{ label }}
-
-                {{ #grid }} {{> grid }} {{ /grid }}
+                
+                <div style='position: absolute; 
+                            top: 0; 
+                            left: 0; 
+                            right: 0; 
+                            bottom: 0;
+                           '
+                >
+                    {{# rows }}
+                        <div class="jscheduler_ui-daysview-row"
+                             style="height: {{ data.row_height }};;
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+                                    position: relative;
+                                   " 
+                            >
+                            <div style="width: {{ data.xaxis_width }};
+                                       ">
+                                {{ label }}
+                            </div>
+                            {{ ^is_first_row }}
+                            <div class="jscheduler_ui-daysview-hsep"
+                                 style="position: absolute;
+                                        top: 0; 
+                                        left: 0; 
+                                        right: 0; 
+                                        bottom: 0;
+                                       ">
+                                
+                            </div>
+                            {{ /is_first_row }}
+                        </div>
+                    {{/ rows }}
+                </div>
+                
             </th>
 
-            {{# _days }}
-            <td style   = "width: {{ $root.column_width_percent }}%;
+            {{# columns }}
+            <td class   = "{{ className }}"
+                style   = "width: {{ data.column_width }};
                            position: relative
-                          " 
-                rowspan = "{{ rowspan }}"
-                data-jscheduler_ui-day = "{{ data.day }}"
-                data-day = "{{ data.day }}"
-                data-minhour = "{{ data.minhour }}"
-                data-maxhour = "{{ data.maxhour }}"
+                          "
             >
-                {{# is_dayoff }}
-                    <div class="jscheduler_ui-dayoff"
-                         style="position: absolute;
-                                top: 0;
-                                left: 0;
-                                bottom: 0;
-                                right: 0;
-                               "
-                    >
-
-                    </div>
-                {{/ is_dayoff }}
-
-                {{# events_column }} {{> events_column }} {{/ events_column }}
+                {{> events_column }}
             </td>
-            {{/ _days }}
+            {{/ columns }}
 
         </tr>
-        {{/ hours }}
     </tbody>    
 </table>

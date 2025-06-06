@@ -135,7 +135,7 @@ class DaysViewHelper extends AbstractViewHelper {
     async getHourTop(atHour) {
         
         const element = await this.elements.get(
-            this.selector + ` [data-hour]:contains('${atHour}')`
+            this.selector + ` .jscheduler_ui-daysview-row:contains('${atHour}')`
         );
 
         const { y } = await element.getRect();
